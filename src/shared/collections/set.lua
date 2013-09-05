@@ -1,42 +1,30 @@
-Set = {}
-local set_mt = {}
+require 'class.middleclass'
 
-function Set.new (list)
-	local set = {}
-	setmetatable(set, set_mt)
+Set = class('Set')
+
+function Set:initialize(list)
+	self.set = {}
 	for _, l in ipairs(list) do 
-		set[l] = true 
+		self.set[l] = true 
 	end
-	return set
 end
 
-function Set.add (set, element)
-	set[element] = true
-	return set
+function Set:add(element)
+	self.set[element] = true
 end
 
-function Set.remove(set, element)
-	set[element] = nil
-	return set
+function Set:remove(element)
+	self.set[element] = nil
 end
 
-function Set.contains(set, element)
-	return set[element]
+function Set:contains(element)
+	return self.set[element]
 end
 
-function Set.tostring(set)
+function Set:__tostring()
 	local l = {} -- List of elements
-	for e in pairs(set) do
+	for e in pairs(self.set) do
 		l[#l + 1] = e
 	end
 	return "{" .. table.concat(l, ", ") .. "}"
 end
-
-function Set.print(set)
-	print(Set.tostring(set))
-end
-
--- Metatable stuff
-set_mt.__tostring = Set.tostring
-
-return Set

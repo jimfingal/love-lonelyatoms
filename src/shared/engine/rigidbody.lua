@@ -71,6 +71,11 @@ function RigidBody:setMaxAcceleration(x, y)
 	self.maxAcceleration.y = y
 end
 
+function RigidBody:setDrag(x, y)
+	self.drag.x = x
+	self.drag.y = y
+end
+
 
 function RigidBody:__tostring()
 	return "( velocity: " .. tostring(self.velocity) .. 
@@ -78,6 +83,8 @@ function RigidBody:__tostring()
 		", max velocity: " .. tostring(self.maxVelocity) .. 
 		", acceleration: " .. tostring(self.acceleration) .. 
 		", min acceleration: " .. tostring(self.minAcceleration) .. 
-		", max acceleration: " .. tostring(self.maxAcceleration)
+		", max acceleration: " .. tostring(self.maxAcceleration) ..
+		", drag: " .. tostring(self.drag) 
+
 	
 end

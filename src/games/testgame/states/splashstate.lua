@@ -22,10 +22,16 @@ function SplashState:update(dt)
       self:stateManager():changeState(States.MENU)
     end
 
+    if love.keyboard.isDown(" ") or love.keyboard.isDown("return") then
+       self:stateManager():changeState(States.PLAY)
+    end
+
 end
 
 
 function SplashState:draw()
+
+    love.graphics.setBackgroundColor(63, 63, 63, 255)
 
 	love.graphics.setColor(204,147,147)
 	love.graphics.setFont(self:assetManager():getFont(Assets.FONT_LARGE))

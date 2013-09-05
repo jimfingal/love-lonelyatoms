@@ -21,6 +21,8 @@ end
 
 function MenuState:draw()
 
+    love.graphics.setBackgroundColor(63, 63, 63, 255)
+
 	love.graphics.setColor(204,147,147)
 	love.graphics.setFont(self:assetManager():getFont(Assets.FONT_LARGE))
     menu_str = "MENU SCREEN"

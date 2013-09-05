@@ -1,5 +1,6 @@
 require 'class.middleclass'
 require 'engine.gameobject'
+require 'engine.transform'
 
 Sprite = class('Sprite', GameObject)
 
@@ -11,11 +12,11 @@ function Sprite:initialize(name, x, y, width, height)
 	
 	-- Property: width
 	-- Width in pixels.
-	self.width = 0
+	self.width = width or 0
 
 	-- Property: height
 	-- Height in pixels.
-	self.height = 0
+	self.height = height or 0
 
 
 	self.img = nil

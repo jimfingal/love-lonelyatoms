@@ -4,13 +4,13 @@ require 'engine.vector'
 Transform = class('Transform')
 
 
-function Transform:initialize()
+function Transform:initialize(x, y)
 
 	-- Property: Position. 
 	-- x == 0 is the left edge of the window.
 	-- y == 0 is the top edge of the window.
 
-	self.position = Vector(0, 0)
+	self.position = Vector(x or 0, y or 0)
 
 	-- Property: rotation
 	-- Rotation of drawn sprite in radians. This does not affect the bounds
