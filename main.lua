@@ -1,7 +1,7 @@
-require "engine.gamestatemanager"
-require 'engine.assetmanager'
-require 'assets'
-require 'states'
+require "gamestatemanager"
+require "gamestate"
+require 'assetmanager'
+require 'gameconstants'
 
 function love.load()
 
@@ -14,6 +14,17 @@ function love.load()
   state_manager = GameStateManager()
 
   asset_manager = AssetManager("/assets/fonts/", "/assets/sounds/", "/assets/images/")
+
+  local splash_state = GameState(States.SPLASH, state_manager, asset_manager)
+  state_manager:registerState(splash_state)
+
+  local menu_state = GameState(States.MENU, state_manager, asset_manager)
+  state_manager:registerState(menu_state)
+
+  local game_state = GameState(States.PLAY, state_manager, asset_manager)
+  state_manager:registerState(game_state)
+
+  state_manager:changeState(States.SPLASH)
 
 end
 
