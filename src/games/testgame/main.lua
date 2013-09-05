@@ -1,7 +1,12 @@
 require "engine.gamestatemanager"
 require "engine.gamestate"
 require 'engine.assetmanager'
-require 'gameconstants'
+require 'states.states'
+require 'states.splashstate'
+require 'states.menustate'
+require 'states.playstate'
+
+require 'assets.assets'
 
 function love.load()
 
@@ -16,82 +21,22 @@ function love.load()
 	asset_manager = AssetManager("assets/fonts/", "assets/sounds/", "assets/images/")
 
   ps2p = "PressStart2P.ttf"
-	asset_manager:loadFont(Assets.FONT_BIG, ps2p, 30)
+	asset_manager:loadFont(Assets.FONT_LARGE, ps2p, 30)
+  asset_manager:loadFont(Assets.FONT_MEDIUM, ps2p, 18)
+  asset_manager:loadFont(Assets.FONT_SMALL, ps2p, 14)
 
 
   -- Splash State
-	local splash_state = GameState(States.SPLASH, state_manager, asset_manager)
-  
-  splash_state.time = 0
-
-  function splash_state:update(dt)
-
-    self.time = self.time + dt
-
-    if self.time > 2 then
-      self:stateManager():changeState(States.MENU)
-    end
-
-  end
-
-
-	function splash_state:draw()
-
-		love.graphics.setColor(204,147,147)
-		love.graphics.setFont(self:assetManager():getFont(Assets.FONT_BIG))
-    menu_str = "SPLASH SCREEN"
-    love.graphics.print(menu_str, 175, 100)
-    menu_str = "STARTING IN " .. tostring(2 - self.time)
-    love.graphics.print(menu_str, 175, 125)
-
-
-	end
-
-
+	local splash_state = SplashState(States.SPLASH, state_manager, asset_manager)
 	state_manager:registerState(splash_state)
 
-
   -- Menu State
-  local menu_state = GameState(States.MENU, state_manager, asset_manager)
-
-  function menu_state:update(dt)
-
-    if love.keyboard.isDown(" ") or love.keyboard.isDown("return") then
-       self:stateManager():changeState(States.PLAY)
-    end
-
-  end
-
-  function menu_state:draw()
-		love.graphics.setColor(204,147,147)
-		love.graphics.setFont(self:assetManager():getFont(Assets.FONT_BIG))
-    menu_str = "MENU SCREEN"
-    love.graphics.print(menu_str, 175, 100)
-    menu_str = "Press Space to Play"
-    love.graphics.print(menu_str, 175, 125)
-
-	end
-
+  local menu_state = MenuState(States.MENU, state_manager, asset_manager)
   state_manager:registerState(menu_state)
 
-
   -- Play State
-  local game_state = GameState(States.PLAY, state_manager, asset_manager)
-
-  function game_state:update(dt)
-
-  end
-
-  function game_state:draw()
-    love.graphics.setColor(204,147,147)
-    love.graphics.setFont(self:assetManager():getFont(Assets.FONT_BIG))
-    menu_str = "PLAY SCREEN"
-    love.graphics.print(menu_str, 175, 100)
-  end
-
-
+  local game_state = PlayState(States.PLAY, state_manager, asset_manager)
   state_manager:registerState(game_state)
-
 
   -- Initialize
   state_manager:changeState(States.SPLASH)
