@@ -1,7 +1,7 @@
 require 'middleclass'
 require 'vector'
 
-RigidBody = class('Transform')
+RigidBody = class('RigidBody')
 
 function RigidBody:initialize()
 

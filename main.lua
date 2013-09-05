@@ -12,6 +12,7 @@ function love.load()
                origin = 0 }
 
   state_manager = GameStateManager()
+
   asset_manager = AssetManager("/assets/fonts/", "/assets/sounds/", "/assets/images/")
 
 end

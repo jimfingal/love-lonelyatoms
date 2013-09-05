@@ -2,4 +2,10 @@
 -- These names get used within the program to retrieve the concrete assets that get loaded and stored in the asset manager.
 Assets = {}
 
-return Assets
+
+-- States
+States = {}
+
+States.SPLASH = "splash"
+States.MENU = "menu"
+States.PLAY = "game"
