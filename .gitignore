@@ -1,4 +1,4 @@
 *.sublime*
-/build/
+/_build/
 /distro/
 .DS_Store

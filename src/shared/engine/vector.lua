@@ -1,4 +1,4 @@
-require 'middleclass'
+require 'class.middleclass'
 
 local sqrt, cos, sin, atan2 = math.sqrt, math.cos, math.sin, math.atan2
 

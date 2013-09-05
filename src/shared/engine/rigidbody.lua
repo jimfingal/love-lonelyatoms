@@ -1,5 +1,5 @@
-require 'middleclass'
-require 'vector'
+require 'class.middleclass'
+require 'engine.vector'
 
 RigidBody = class('RigidBody')
 

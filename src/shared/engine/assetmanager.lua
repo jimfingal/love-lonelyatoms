@@ -1,4 +1,4 @@
-require 'middleclass'
+require 'class.middleclass'
 
 AssetManager = class("AssetManager")
 

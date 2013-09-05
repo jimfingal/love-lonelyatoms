@@ -1,5 +1,5 @@
-require 'middleclass'
-require 'gameobject'
+require 'class.middleclass'
+require 'engine.gameobject'
 
 Sprite = class('Sprite', GameObject)
 

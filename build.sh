@@ -1,10 +1,28 @@
+
+# Requires input
+if [ $# -ne 1 ]
+then
+    echo "Error in $0 - Invalid Argument Count"
+    echo "Syntax: $0 input_file"
+    exit
+fi
+
 # Get rid of any running love instances
 killall love
 
 sleep 1
 
-BUILD_DIR="build"
+GAME_NAME=$1
+BUILD_DIR="_build"
 DISTRO_DIR="distro"
+SHARED_DIR="./src/shared"
+GAME_DIR="./src/games/$GAME_NAME"
+
+if [ ! -d $GAME_DIR ]
+then
+	echo "Error: no game directory named ${1}"
+	exit
+fi
 
 # Clean up directories
 rm -rf ./$DISTRO_DIR
@@ -15,16 +33,16 @@ mkdir $BUILD_DIR
 
 
 # Copy files to build dir
-cp ./*.lua $BUILD_DIR
-cp -r ./src/* $BUILD_DIR
+cp -r $SHARED_DIR/* $BUILD_DIR # Shared files
+cp -r $GAME_DIR/* $BUILD_DIR # Game-specific
 
 cd $BUILD_DIR
 
-zip -rj ../$DISTRO_DIR/ping.love ./*
+zip -r ../$DISTRO_DIR/$GAME_NAME.love ./*
 
 cd ..
 
 # rm -rf $BUILD_DIR # Disable if we want to inspect output
 
 
-open ./distro/ping.love
+open ./$DISTRO_DIR/$GAME_NAME.love
