@@ -18,31 +18,23 @@ function PlayState:initialize(name, state_manager, asset_manager)
     self.world = SpriteGroup('allsprites', true, true)
     self.world:add(self.player)
 
-    for i = 0, love.graphics.getWidth(), 25 do
 
-        local top_tile = Tile('x' .. tostring(i), i, 0, 25, 25)
-        local bottom_tile = Tile('x' .. tostring(i), i, love.graphics.getHeight() - 25, 25, 25)
-        
-        self.world:add(top_tile)
-        self.world:add(bottom_tile)
-        
-        self.tiles:add(top_tile)
-        self.tiles:add(top_tile)
+    local TILE_SIZE = 10
 
-    end
+    local top_tile = Tile('x' .. tostring(i), 0, 0, love.graphics.getWidth(), TILE_SIZE)
+    local bottom_tile = Tile('x' .. tostring(i), 0, love.graphics.getHeight() - TILE_SIZE, love.graphics.getWidth(), TILE_SIZE)
+    local left_tile = Tile('y' .. tostring(i), 0, TILE_SIZE, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE)
+    local right_tile = Tile('y' .. tostring(i), love.graphics.getWidth() - TILE_SIZE, TILE_SIZE, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE)
 
-    for i = 25, love.graphics.getHeight() - 25, 25 do
+    self.world:add(top_tile)
+    self.world:add(bottom_tile)   
+    self.world:add(left_tile)
+    self.world:add(right_tile)
 
-        local left_tile = Tile('y' .. tostring(i), 0, i, 25, 25)
-        local right_tile = Tile('y' .. tostring(i), love.graphics.getWidth() - 25, i, 25, 25)
-        
-        self.world:add(left_tile)
-        self.world:add(right_tile)
-
-        self.tiles:add(left_tile)
-        self.tiles:add(right_tile)
-    end
-
+    self.tiles:add(top_tile)
+    self.tiles:add(bottom_tile)   
+    self.tiles:add(left_tile)
+    self.tiles:add(right_tile)
 
     self.debug = true
 
@@ -52,7 +44,11 @@ end
 function PlayState:update(dt)
 
     self.world:startFrame(dt)
+    
     self.world:update(dt)
+
+
+
     self.world:endFrame(dt)
 
 end
