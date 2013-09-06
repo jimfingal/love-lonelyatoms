@@ -1,6 +1,8 @@
 require 'class.middleclass'
 require 'engine.gamestate'
+require 'engine.spritegroup'
 require 'sprites.player'
+require 'sprites.tile'
 require 'collections.set'
 
 PlayState = class('Play', GameState)
@@ -9,11 +11,37 @@ function PlayState:initialize(name, state_manager, asset_manager)
 
     GameState.initialize(self, name, state_manager, asset_manager)
 
-    self.player = Player('player', 50, 500, 100, 20)
+    self.player = Player('player', 50, 500, 50, 50)
 
-    self.world = {}
+    self.tiles = SpriteGroup('tiles', false, false)
 
-    self.world[1] = self.player
+    self.world = SpriteGroup('allsprites', true, true)
+    self.world:add(self.player)
+
+    for i = 0, love.graphics.getWidth(), 25 do
+
+        local top_tile = Tile('x' .. tostring(i), i, 0, 25, 25)
+        local bottom_tile = Tile('x' .. tostring(i), i, love.graphics.getHeight() - 25, 25, 25)
+        
+        self.world:add(top_tile)
+        self.world:add(bottom_tile)
+        
+        self.tiles:add(top_tile)
+        self.tiles:add(top_tile)
+
+    end
+
+    for i = 25, love.graphics.getHeight() - 25, 25 do
+
+        local left_tile = Tile('y' .. tostring(i), 0, i, 25, 25)
+        local right_tile = Tile('y' .. tostring(i), love.graphics.getWidth() - 25, i, 25, 25)
+        
+        self.world:add(left_tile)
+        self.world:add(right_tile)
+
+        self.tiles:add(left_tile)
+        self.tiles:add(right_tile)
+    end
 
 
     self.debug = true
@@ -23,11 +51,9 @@ end
 
 function PlayState:update(dt)
 
-	for _, sprite in ipairs(self.world) do
-    	if sprite.active then
-	    	sprite:update(dt)
-	    end
-    end
+    self.world:startFrame(dt)
+    self.world:update(dt)
+    self.world:endFrame(dt)
 
 end
 
@@ -36,6 +62,8 @@ function PlayState:draw()
 
     love.graphics.setBackgroundColor(63, 63, 63, 255)
 
+    self.world:draw()
+
     love.graphics.setColor(204,147,147)
     love.graphics.setFont(self:assetManager():getFont(Assets.FONT_LARGE))
     
@@ -43,37 +71,22 @@ function PlayState:draw()
 
     love.graphics.print(menu_str, 200, 25)
 
-    local debugstart = 250
 
-    love.graphics.setFont(self:assetManager():getFont(Assets.FONT_SMALL))
+    --[[ 
 
-    for _, sprite in ipairs(self.world) do
-
-    	love.graphics.print(tostring(sprite.name), 10, debugstart)
-    	debugstart = debugstart + 25
-
-    	if sprite.visible then
-	    	sprite:draw()
-	    end
-    end
-
+    local debugstart = 50
     
 	if self.debug then
-	    
 
-		--[[
-	    love.graphics.print("vX:" .. self.ball.x_vel, 10, 250)
-	    love.graphics.print("vY:" .. self.ball.y_vel, 10, 275)
-	    love.graphics.print("bgdSecs:" .. background_snd:tell("seconds"), 10, 300)
-	    love.graphics.print("srcs:" .. love.audio.getNumSources(), 10, 325)
-	    love.graphics.print("pS:" .. self.paddle.speed, 10, 350)
-	    love.graphics.print("pD:" ..self.paddle.direction, 10, 375)
-	    love.graphics.print("pX:" ..self.paddle.x, 10, 400)
-	    love.graphics.print("bL:" .. background_length, 10, 425)
-	    love.graphics.print("sL:" .. song_length, 10, 450)
-        love.graphics.print("fps:" .. self.fps, 10, 475) ]]
-	    
+        love.graphics.setFont(self:assetManager():getFont(Assets.FONT_SMALL))
+
+       for _, sprite in self.world:members() do
+            love.graphics.print(tostring(sprite.name), 50, debugstart)
+            debugstart = debugstart + 25
+        end
     end
+
+    ]]
 
 
 

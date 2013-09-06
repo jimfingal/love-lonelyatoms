@@ -64,11 +64,27 @@ function Sprite:setFill(r, g, b)
 	self.fill = {r, g, b}
 end
 
+
+function Sprite:startFrame(dt)
+	-- Overrided by subclasses
+end
+
+function Sprite:update(dt)
+	-- Overrided by subclasses
+end
+
+function Sprite:endFrame(dt)
+	-- Overrided by subclasses
+end
+
+
+
 function Sprite:draw()
 
 	if self.img then
 		love.graphics.draw(self.img, self.transform.position.x, self.transform.position.y, self.width, self.height)
 	else
+		love.graphics.setColor(self.fill[1], self.fill[2], self.fill[3])
 		love.graphics.rectangle("fill", self.transform.position.x, self.transform.position.y, self.width, self.height)
 	end
 end

@@ -13,7 +13,7 @@ function Player:initialize(name, x, y, width, height)
 	self.active = true
 	self.visible = true
 
-	self:setFill(220,220,204)
+	self:setFill(147,147,205)
 
     self.rigidbody = RigidBody()
     self.rigidbody:setMaxVelocity(800, 0)
@@ -25,41 +25,43 @@ function Player:initialize(name, x, y, width, height)
 end
 
 
+function Player:startFrame(dt)
 
-function Player:update(dt)
-
-	-- Paddle right.
+        -- Paddle right.
     if love.keyboard.isDown("right") then
 
-    	self.rigidbody.velocity = self.rigidbody.velocity + (self.speed_delta * dt)
+        self.rigidbody.velocity = self.rigidbody.velocity + (self.speed_delta * dt)
 
     -- Paddle left.    
     elseif love.keyboard.isDown("left") then
 
-       	self.rigidbody.velocity = self.rigidbody.velocity - (self.speed_delta * dt)
+        self.rigidbody.velocity = self.rigidbody.velocity - (self.speed_delta * dt)
 
     -- If left or right isn't being pressed, slow the paddle down. 
     else
     
-    	if self.rigidbody.velocity > Vector.zero then
-    		
-    		self.rigidbody.velocity = self.rigidbody.velocity - (self.rigidbody.drag * dt)
+        if self.rigidbody.velocity > Vector.zero then
+            
+            self.rigidbody.velocity = self.rigidbody.velocity - (self.rigidbody.drag * dt)
 
-    		if self.rigidbody.velocity < Vector.zero then
-    			self.rigidbody.velocity = Vector.zero
-    		end
+            if self.rigidbody.velocity < Vector.zero then
+                self.rigidbody.velocity = Vector.zero
+            end
 
-    	elseif self.rigidbody.velocity < Vector.zero then
+        elseif self.rigidbody.velocity < Vector.zero then
 
-    		self.rigidbody.velocity = self.rigidbody.velocity + (self.rigidbody.drag * dt)
+            self.rigidbody.velocity = self.rigidbody.velocity + (self.rigidbody.drag * dt)
 
-    		if self.rigidbody.velocity > Vector.zero then
-    			self.rigidbody.velocity = Vector.zero
-    		end
+            if self.rigidbody.velocity > Vector.zero then
+                self.rigidbody.velocity = Vector.zero
+            end
 
-    	end
+        end
     end
 
+end
+
+function Player:update(dt)
 
     if self.rigidbody.velocity > self.rigidbody.maxVelocity then
     	self.rigidbody.velocity = self.rigidbody.maxVelocity
@@ -90,3 +92,10 @@ function Player:update(dt)
         self.paddle.direction = "left"
         --]]
 end
+
+function Player:onCollide(other)
+    if other.class == 'Tile' then
+        self.rigidbody.velocity = Vector.zero
+    end
+end
+
