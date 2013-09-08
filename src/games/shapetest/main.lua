@@ -1,5 +1,6 @@
 require 'engine.shapes'
 require 'collections.list'
+Timer = require 'external.timer'
 
 function love.load()
     -- initialize library
@@ -26,22 +27,33 @@ function love.load()
     periodic = 1
 
     mouse = mouse_shapes:memberAt(periodic)
-    -- mouse = RectangleShape(300, 100, 100, 50)
+
     mouse:moveTo(love.mouse.getPosition())
+
+    input_disabled = false
+
 
 end
 
 function love.update(dt)
 
-    if love.keyboard.isDown(" ") then
+   if love.keyboard.isDown(" ") then
 
-        periodic = periodic + 1
-       
-        if periodic > 3 then
-            periodic = 1
-        end
+     if not input_disabled then
 
-        mouse = mouse_shapes:memberAt(periodic)
+            periodic = periodic + 1
+           
+            if periodic > 3 then
+                periodic = 1
+            end
+
+            mouse = mouse_shapes:memberAt(periodic)
+
+            input_disabled = true
+
+            Timer.add(0.2, function() input_disabled = false end)
+
+       end
     end
 
 
@@ -58,8 +70,9 @@ function love.update(dt)
     ]]--
     -- move circle to mouse position
 
-
     mouse:moveTo(love.mouse.getPosition())
+
+    Timer.update(dt)
 
 end
 
