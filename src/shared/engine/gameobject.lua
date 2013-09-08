@@ -1,4 +1,4 @@
-require 'class.middleclass'
+require 'external.middleclass'
 
 GameObject = class('GameObject')
 

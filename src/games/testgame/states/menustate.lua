@@ -1,4 +1,4 @@
-require 'class.middleclass'
+require 'external.middleclass'
 require 'engine.gamestate'
 
 MenuState = class('Menu', GameState)

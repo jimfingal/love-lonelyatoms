@@ -1,4 +1,4 @@
-require 'class.middleclass'
+require 'external.middleclass'
 require 'engine.sprite'
 require 'engine.rigidbody'
 require 'engine.vector'
