@@ -4,6 +4,7 @@ require 'engine.spritegroup'
 require 'sprites.player'
 require 'sprites.tile'
 require 'collections.set'
+Input = require 'engine.input'
 
 PlayState = class('Play', GameState)
 
@@ -38,16 +39,25 @@ function PlayState:initialize(name, state_manager, asset_manager)
 
     self.debug = true
 
+
+    self.input = InputManager()
+
+    self.input:registerInput('right', Actions.PLAYER_RIGHT)
+    self.input:registerInput('left', Actions.PLAYER_LEFT)
+    self.input:registerInput('a', Actions.PLAYER_LEFT)
+    self.input:registerInput('d', Actions.PLAYER_RIGHT)
+
+
 end
 
 
 function PlayState:update(dt)
 
-    self.world:startFrame(dt)
+    self.input:update(dt)
+
+    self.world:startFrame(dt, self.input)
     
     self.world:update(dt)
-
-
 
     self.world:endFrame(dt)
 
@@ -68,21 +78,14 @@ function PlayState:draw()
     love.graphics.print(menu_str, 200, 25)
 
 
-    --[[ 
-
     local debugstart = 50
     
 	if self.debug then
 
         love.graphics.setFont(self:assetManager():getFont(Assets.FONT_SMALL))
+        love.graphics.print(love.timer.getFPS(), 50, debugstart)
 
-       for _, sprite in self.world:members() do
-            love.graphics.print(tostring(sprite.name), 50, debugstart)
-            debugstart = debugstart + 25
-        end
     end
-
-    ]]
 
 
 

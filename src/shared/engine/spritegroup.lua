@@ -45,17 +45,17 @@ function SpriteGroup:members()
 	return self.sprites:members()
 end
 
-function SpriteGroup:startFrame(elapsed)
+function SpriteGroup:startFrame(elapsed, input)
 
 	if not self.active then return end
 
 	for i, sprite in self:members() do
 		if sprite.active then
-			sprite:startFrame(elapsed)
+			sprite:startFrame(elapsed, input)
 		end
 	end
 
-	if self.onStartFrame then self:onStartFrame(elapsed) end
+	if self.onStartFrame then self:onStartFrame(elapsed, input) end
 
 end
 

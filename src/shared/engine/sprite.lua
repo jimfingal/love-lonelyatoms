@@ -65,7 +65,7 @@ function Sprite:setFill(r, g, b)
 end
 
 
-function Sprite:startFrame(dt)
+function Sprite:startFrame(dt, input)
 	-- Overrided by subclasses
 end
 

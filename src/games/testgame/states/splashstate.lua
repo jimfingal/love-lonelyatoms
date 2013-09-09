@@ -1,6 +1,8 @@
 require 'external.middleclass'
 require 'engine.gamestate'
 require 'assets.assets'
+require 'engine.input'
+require 'states.actions'
 
 SplashState = class('Splash', GameState)
 
@@ -10,11 +12,17 @@ function SplashState:initialize(name, state_manager, asset_manager)
 
     self.timer = 2
 
+    self.input = InputManager()
+
+    self.input:registerInput(' ', Actions.SKIP_SPLASH)
+    self.input:registerInput('return', Actions.SKIP_SPLASH)
 
 end
 
 
 function SplashState:update(dt)
+
+    self.input:update(dt)
 
     self.timer = self.timer - dt
 
@@ -22,7 +30,7 @@ function SplashState:update(dt)
       self:stateManager():changeState(States.MENU)
     end
 
-    if love.keyboard.isDown(" ") or love.keyboard.isDown("return") then
+    if self.input:newAction(Actions.SKIP_SPLASH) then
        self:stateManager():changeState(States.PLAY)
     end
 

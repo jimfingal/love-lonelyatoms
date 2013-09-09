@@ -5,6 +5,8 @@ require 'states.states'
 require 'states.splashstate'
 require 'states.menustate'
 require 'states.playstate'
+require 'states.actions'
+require 'engine.input'
 
 require 'assets.assets'
 
@@ -40,6 +42,9 @@ function love.load()
 
   -- Initialize
   state_manager:changeState(States.SPLASH)
+
+
+
 
 end
 

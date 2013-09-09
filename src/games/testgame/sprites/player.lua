@@ -2,6 +2,7 @@ require 'external.middleclass'
 require 'engine.sprite'
 require 'engine.rigidbody'
 require 'engine.vector'
+require 'states.actions'
 
 Player = class('Player', Sprite)
 
@@ -20,57 +21,73 @@ function Player:initialize(name, x, y, width, height)
     self.rigidbody:setMinVelocity(-800, 0)
     self.rigidbody:setDrag(10, 0)
 
-    self.speed_delta = Vector(40, 0)
+    self.speed_delta = Vector(1500, 0)
 
 end
 
 
-function Player:startFrame(dt)
+function Player:accelerateRight(dt)
+    self.rigidbody.velocity = self.rigidbody.velocity + (self.speed_delta * dt)
+end
 
-        -- Paddle right.
-    if love.keyboard.isDown("right") then
 
-        self.rigidbody.velocity = self.rigidbody.velocity + (self.speed_delta * dt)
+function Player:accelerateLeft(dt)
+    self.rigidbody.velocity = self.rigidbody.velocity - (self.speed_delta * dt)
+end
 
-    -- Paddle left.    
-    elseif love.keyboard.isDown("left") then
+function Player:capVelocity()
+    if self.rigidbody.velocity > self.rigidbody.maxVelocity then
+        self.rigidbody.velocity = self.rigidbody.maxVelocity
+    elseif self.rigidbody.velocity < self.rigidbody.minVelocity then
+        self.rigidbody.velocity = self.rigidbody.minVelocity
+    end
+end
 
-        self.rigidbody.velocity = self.rigidbody.velocity - (self.speed_delta * dt)
+function Player:applyDrag(dt)
 
-    -- If left or right isn't being pressed, slow the paddle down. 
-    else
-    
-        if self.rigidbody.velocity > Vector.zero then
-            
-            self.rigidbody.velocity = self.rigidbody.velocity - (self.rigidbody.drag * dt)
+    if self.rigidbody.velocity > Vector.zero then
+        
+        self.rigidbody.velocity = self.rigidbody.velocity - (self.rigidbody.drag * dt)
 
-            if self.rigidbody.velocity < Vector.zero then
-                self.rigidbody.velocity = Vector.zero
-            end
-
-        elseif self.rigidbody.velocity < Vector.zero then
-
-            self.rigidbody.velocity = self.rigidbody.velocity + (self.rigidbody.drag * dt)
-
-            if self.rigidbody.velocity > Vector.zero then
-                self.rigidbody.velocity = Vector.zero
-            end
-
+        if self.rigidbody.velocity < Vector.zero then
+            self.rigidbody.velocity = Vector.zero
         end
+
+    elseif self.rigidbody.velocity < Vector.zero then
+
+        self.rigidbody.velocity = self.rigidbody.velocity + (self.rigidbody.drag * dt)
+
+        if self.rigidbody.velocity > Vector.zero then
+            self.rigidbody.velocity = Vector.zero
+        end
+
+    end
+end
+
+function Player:startFrame(dt, input)
+
+    if input:heldAction(Actions.PLAYER_RIGHT) then
+    
+        self:accelerateRight(dt)
+    
+    elseif input:heldAction(Actions.PLAYER_LEFT) then
+    
+        self:accelerateLeft(dt)
+
+    else
+
+        self:applyDrag(dt)
+    
     end
 
 end
 
 function Player:update(dt)
 
-    if self.rigidbody.velocity > self.rigidbody.maxVelocity then
-    	self.rigidbody.velocity = self.rigidbody.maxVelocity
-    elseif self.rigidbody.velocity < self.rigidbody.minVelocity then
-    	self.rigidbody.velocity = self.rigidbody.minVelocity
-    end
-        
+    self:capVelocity()
 
-	self.transform.position = self.transform.position + self.rigidbody.velocity
+
+	self.transform.position = self.transform.position + (self.rigidbody.velocity * dt)
 
     --[[ Process translations based on Velocity
 
@@ -90,7 +107,7 @@ function Player:update(dt)
             self.paddle.speed = 0
         end
         self.paddle.direction = "left"
-        --]]
+    --]]
 end
 
 function Player:onCollide(other)
