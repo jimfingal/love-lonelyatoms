@@ -11,6 +11,7 @@ end
 
 Vector.zero = Vector(0,0)
 
+
 function Vector.isvector(a)
 	return a.class.name == 'Vector'
 end

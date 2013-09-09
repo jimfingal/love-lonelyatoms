@@ -22,3 +22,7 @@ function Brick:initialize(name, x, y, width, height, sound, r, g, b)
 	self.snd = sound
 
 end
+
+function Brick:playSound()
+
+end

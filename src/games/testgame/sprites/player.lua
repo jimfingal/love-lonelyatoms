@@ -105,7 +105,7 @@ function Player:processInput(dt, input)
 
 end
 
-function Player:collideWithImmovableRectangle(collided_sprite)
+function Player:collideWithWall(collided_sprite)
 
     assert(instanceOf(RectangleShape, collided_sprite.collider), "Can only be applied to rectangles")
 

@@ -19,8 +19,8 @@ end
 
 function InputManager:update(dt)
 
-  actions_seen = {}
-  pressed = {}
+  local actions_seen = {}
+  self.pressed = {}
 
   for key, action_constant in pairs(self.input_to_action) do
 
