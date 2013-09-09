@@ -28,7 +28,7 @@ function AssetManager:loadFont(key, font_name, font_size)
 		font_size = self.default_font_size
 	end
 
-	font = love.graphics.newFont(self.font_path .. font_name, font_size)
+	local font = love.graphics.newFont(self.font_path .. font_name, font_size)
 	
 	self.fonts[key] = font
 end
@@ -37,3 +37,20 @@ function AssetManager:getFont(name)
 	assert(self.fonts[name], "Font must be registered")
 	return self.fonts[name]
 end
+
+
+function AssetManager:loadSound(key, sound_name)
+	assert(key, "Missing argument: name of sound")
+	assert(sound_name, "Missing argument: sound to register")
+
+	local snd  = love.audio.newSource(self.sound_path .. sound_name)
+	
+	self.sounds[key] = snd
+end
+
+function AssetManager:getSound(name)
+	assert(self.sounds[name], "sound must be registered")
+	return self.sounds[name]
+end
+
+
