@@ -6,7 +6,6 @@ require 'engine.shapes'
 
 Brick = class('Brick', Sprite)
 
-
 function Brick:initialize(name, x, y, width, height, sound, r, g, b)
 
 
@@ -24,5 +23,5 @@ function Brick:initialize(name, x, y, width, height, sound, r, g, b)
 end
 
 function Brick:playSound()
-
+	love.audio.play(self.snd)
 end

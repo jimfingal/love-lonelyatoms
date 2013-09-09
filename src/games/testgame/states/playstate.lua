@@ -7,6 +7,7 @@ require 'sprites.tile'
 require 'collections.set'
 Input = require 'engine.input'
 require 'brickloader'
+require 'assets.assets'
 
 PlayState = class('Play', GameState)
 
@@ -18,7 +19,8 @@ function PlayState:initialize(name, state_manager, asset_manager)
     self.world_edges = SpriteGroup('tiles', false, false)
 
    
-    self.bricks = BrickLoader.load_bricks()
+    -- Function of load?
+    self.bricks = BrickLoader.load_bricks(asset_manager)
     self.world:add(self.bricks)
 
     local TILE_SIZE = 50
@@ -57,6 +59,15 @@ function PlayState:initialize(name, state_manager, asset_manager)
     self.input:registerInput('d', Actions.PLAYER_RIGHT)
     self.input:registerInput(' ', Actions.RESET_BALL)
 
+end
+
+function PlayState:enter()
+
+    local background = asset_manager:getSound(Assets.BACKGROUND_SOUND)
+
+    background:setVolume(0.25)
+    background:setLooping(true)
+    love.audio.play(background)
 end
 
 

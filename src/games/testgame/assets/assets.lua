@@ -6,3 +6,5 @@ Assets.FONT_LARGE = "fontbig"
 Assets.FONT_MEDIUM = "fontmedium"
 Assets.FONT_SMALL = "fontsmall"
 
+
+Assets.BACKGROUND_SOUND = "background"

@@ -43,7 +43,7 @@ function AssetManager:loadSound(key, sound_name)
 	assert(key, "Missing argument: name of sound")
 	assert(sound_name, "Missing argument: sound to register")
 
-	local snd  = love.audio.newSource(self.sound_path .. sound_name)
+	local snd  = love.audio.newSource(self.sound_path .. sound_name, 'static')
 	
 	self.sounds[key] = snd
 end
