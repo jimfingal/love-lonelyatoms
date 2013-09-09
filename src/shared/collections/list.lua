@@ -20,6 +20,22 @@ function List:append(element)
 	table.insert(self.list, element)
 end
 
+function List:popLeft()
+	local left = self.list[1]
+	table.remove(self.list, 1)
+	return left
+end
+
+function List:popRight()
+	local right = self.list[#self.list]
+	table.remove(self.list, #self.list)
+	return right
+end
+
+function List:popRight()
+
+end
+
 -- Removes an item the first time it appears
 function List:removeFirst(element)
 	for i, item in ipairs(self.list) do

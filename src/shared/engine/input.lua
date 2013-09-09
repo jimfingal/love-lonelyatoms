@@ -27,16 +27,13 @@ function InputManager:update(dt)
     -- Check every key that is registered
     if love.keyboard.isDown(key) then
 
-
-      actions_seen[action_constant] = true
-
       previous_dt = self.held[action_constant]
 
       -- If it was pressed the last time we checked, add on to the time it's been held, and 
       -- remove it from the "just pressed" map
       if previous_dt and not actions_seen[action_constant] then
 
-        self.held[action_constant] = dt + previous_dy
+        self.held[action_constant] = dt + previous_dt
 
       else
 
@@ -46,6 +43,9 @@ function InputManager:update(dt)
         self.held[action_constant] = dt
 
       end
+
+      actions_seen[action_constant] = true
+
 
     end
 
@@ -73,4 +73,13 @@ end
 -- Return whether the key to trigger a given action has been held - if so return dt
 function InputManager:heldAction(action_constant)
   return self.held[action_constant]
+end
+
+
+function InputManager:newActions()
+  return self.pressed
+end
+
+function InputManager:heldActions()
+  return self.held
 end
