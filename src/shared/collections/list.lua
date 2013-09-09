@@ -48,6 +48,9 @@ function List:memberAt(index)
 	return self.list[index]
 end
 
+function List:size()
+	return #self.list
+end
 
 function List:__tostring()
 	return "{" .. table.concat(self.list, ", ") .. "}"

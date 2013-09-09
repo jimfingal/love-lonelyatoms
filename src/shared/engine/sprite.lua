@@ -2,6 +2,7 @@ require 'external.middleclass'
 require 'engine.gameobject'
 require 'engine.transform'
 require 'engine.spritegroup'
+require 'engine.color'
 
 
 Sprite = class('Sprite', GameObject)
@@ -26,7 +27,7 @@ function Sprite:initialize(name, shape, collider)
 
 	self.img = nil
 
-	self.fill = {0, 0, 0}
+	self.fill = Color(0, 0, 0)
 
 	--[[
 	-- Property: flipX
@@ -72,8 +73,8 @@ function Sprite:setImg(img)
 	self.img = img
 end
 
-function Sprite:setFill(r, g, b)
-	self.fill = {r, g, b}
+function Sprite:setFill(r, g, b, a)
+	self.fill = Color(r, g, b, a)
 end
 
 function Sprite:processInput(dt, input)
@@ -111,7 +112,7 @@ end
 function Sprite:draw()
 
 	-- TODO handle images
-	love.graphics.setColor(self.fill[1], self.fill[2], self.fill[3])
+	love.graphics.setColor(self.fill:unpack())
 	self.shape:draw('fill')
 
 	--[[

@@ -2,9 +2,11 @@ require 'external.middleclass'
 require 'engine.gamestate'
 require 'engine.spritegroup'
 require 'sprites.player'
+require 'sprites.ball'
 require 'sprites.tile'
 require 'collections.set'
 Input = require 'engine.input'
+require 'brickloader'
 
 PlayState = class('Play', GameState)
 
@@ -12,20 +14,24 @@ function PlayState:initialize(name, state_manager, asset_manager)
 
     GameState.initialize(self, name, state_manager, asset_manager)
 
-    self.player = Player('player', 50, 500, 50, 50)
-
+    self.world = SpriteGroup('allsprites', true, true)
     self.world_edges = SpriteGroup('tiles', false, false)
 
-    self.world = SpriteGroup('allsprites', true, true)
+    self.player = Player('player', 350, 500, 100, 10)
     self.world:add(self.player)
 
+    self.ball = Ball('ball', 395, 490, 10, 10)
+    self.world:add(self.ball)
+
+    self.bricks = BrickLoader.load_bricks()
+    self.world:add(self.bricks)
 
     local TILE_SIZE = 10
 
-    local top_tile = Tile('x' .. tostring(i), 0, 0, love.graphics.getWidth(), TILE_SIZE)
-    local bottom_tile = Tile('x' .. tostring(i), 0, love.graphics.getHeight() - TILE_SIZE, love.graphics.getWidth(), TILE_SIZE)
-    local left_tile = Tile('y' .. tostring(i), 0, TILE_SIZE, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE)
-    local right_tile = Tile('y' .. tostring(i), love.graphics.getWidth() - TILE_SIZE, TILE_SIZE, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE)
+    local top_tile = Tile('x' .. tostring(i), 0, -1 * TILE_SIZE, love.graphics.getWidth(), TILE_SIZE)
+    local bottom_tile = Tile('x' .. tostring(i), 0, love.graphics.getHeight() + TILE_SIZE, love.graphics.getWidth(), TILE_SIZE)
+    local left_tile = Tile('y' .. tostring(i), -1 * TILE_SIZE, TILE_SIZE, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE)
+    local right_tile = Tile('y' .. tostring(i), love.graphics.getWidth() + TILE_SIZE, TILE_SIZE, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE)
 
     self.world:add(top_tile)
     self.world:add(bottom_tile)   
@@ -75,14 +81,14 @@ function PlayState:draw()
     self.world:draw()
 
     love.graphics.setColor(204,147,147)
-    love.graphics.setFont(self:assetManager():getFont(Assets.FONT_LARGE))
+    love.graphics.setFont(self:assetManager():getFont(Assets.FONT_MEDIUM))
     
     menu_str = "PLAY AROUND!"
 
-    love.graphics.print(menu_str, 200, 25)
+    love.graphics.print(menu_str, 200, 550)
 
 
-    local debugstart = 50
+    local debugstart = 575
     
 	if self.debug then
 

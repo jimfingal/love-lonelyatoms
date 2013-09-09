@@ -25,7 +25,7 @@ function Player:initialize(name, x, y, width, height)
     self.rigidbody = RigidBody()
     self.rigidbody:setMaxVelocity(800, 0)
     self.rigidbody:setMinVelocity(-800, 0)
-    self.rigidbody:setDrag(10, 0)
+    self.rigidbody:setDrag(800, 0)
 
     self.speed_delta = Vector(1500, 0)
     self.base_speed = Vector(200, 0)
@@ -42,11 +42,21 @@ function Player:moveTo(x, y)
 end
 
 function Player:accelerateRight(dt)
+
+    if self.rigidbody.velocity < Vector.zero then 
+        self.rigidbody.velocity = self.base_speed
+    end
+
     self.rigidbody.velocity = self.rigidbody.velocity + (self.speed_delta * dt)
 end
 
 
 function Player:accelerateLeft(dt)
+
+    if self.rigidbody.velocity > Vector.zero then 
+        self.rigidbody.velocity = -self.base_speed
+    end
+
     self.rigidbody.velocity = self.rigidbody.velocity - (self.speed_delta * dt)
 end
 
@@ -91,7 +101,6 @@ function Player:processInput(dt, input)
 
     else
         self:applyDrag(dt)
-    
     end
 
 end
