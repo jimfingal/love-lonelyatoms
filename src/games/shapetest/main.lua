@@ -1,6 +1,7 @@
 require 'engine.shapes'
 require 'collections.list'
 Timer = require 'external.timer'
+require 'external.middleclass'
 
 function love.load()
     -- initialize library
@@ -80,6 +81,19 @@ function love.draw()
 
     love.graphics.setBackgroundColor(63, 63, 63, 255)
 
+    love.graphics.setColor(147,176,205)
+
+     if (mouse:collidesWith(point)) then
+
+        if instanceOf(PointShape, mouse) then
+            love.graphics.setBackgroundColor(50, 50, 50, 255)
+        end
+            
+        mouse:draw()
+    else
+        mouse:draw('fill')
+    end
+
     love.graphics.setColor(205,147,176)
 
     if (circle:collidesWith(mouse)) then
@@ -100,12 +114,7 @@ function love.draw()
     love.graphics.setColor(147,147,205)
     point:draw('fill')
 
-    love.graphics.setColor(147,176,205)
 
-     if (mouse:collidesWith(point)) then
-        mouse:draw()
-    else
-        mouse:draw('fill')
-    end
+
 
 end
