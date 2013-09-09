@@ -14,7 +14,7 @@ function PlayState:initialize(name, state_manager, asset_manager)
 
     self.player = Player('player', 50, 500, 50, 50)
 
-    self.tiles = SpriteGroup('tiles', false, false)
+    self.world_edges = SpriteGroup('tiles', false, false)
 
     self.world = SpriteGroup('allsprites', true, true)
     self.world:add(self.player)
@@ -32,10 +32,10 @@ function PlayState:initialize(name, state_manager, asset_manager)
     self.world:add(left_tile)
     self.world:add(right_tile)
 
-    self.tiles:add(top_tile)
-    self.tiles:add(bottom_tile)   
-    self.tiles:add(left_tile)
-    self.tiles:add(right_tile)
+    self.world_edges:add(top_tile)
+    self.world_edges:add(bottom_tile)   
+    self.world_edges:add(left_tile)
+    self.world_edges:add(right_tile)
 
     self.debug = true
 
@@ -55,8 +55,12 @@ function PlayState:update(dt)
 
     self.input:update(dt)
 
-    self.world:startFrame(dt, self.input)
+    self.world:processInput(dt, self.input)
     
+    -- I want to be able to check a collision between one item, another item or group, and call a callback that
+    -- handles the two items that collided if it happens
+    self.player:processCollision(self.world_edges, function (player, collided_tile) player:collideWithImmovableRectangle(collided_tile) end)
+
     self.world:update(dt)
 
     self.world:endFrame(dt)

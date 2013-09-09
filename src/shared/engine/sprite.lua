@@ -1,14 +1,19 @@
 require 'external.middleclass'
 require 'engine.gameobject'
 require 'engine.transform'
+require 'engine.spritegroup'
+
 
 Sprite = class('Sprite', GameObject)
 
 
-function Sprite:initialize(name, x, y, width, height)
+function Sprite:initialize(name, shape, collider)
+
 	GameObject.initialize(self, name)
 
-	self.transform = Transform(x, y)
+	self.shape = shape
+
+	self.collider = collider
 	
 	-- Property: width
 	-- Width in pixels.
@@ -46,6 +51,13 @@ function Sprite:initialize(name, x, y, width, height)
 
 end
 
+function Sprite:moveTo(x, y)
+	self.shape:moveTo(x, y)
+	if self.collider then 
+		self.collider:moveTo(x, y) 
+	end
+end
+
 function Sprite:die()
 	self.active = false
 	self.visible = false
@@ -64,8 +76,7 @@ function Sprite:setFill(r, g, b)
 	self.fill = {r, g, b}
 end
 
-
-function Sprite:startFrame(dt, input)
+function Sprite:processInput(dt, input)
 	-- Overrided by subclasses
 end
 
@@ -77,14 +88,38 @@ function Sprite:endFrame(dt)
 	-- Overrided by subclasses
 end
 
+function Sprite:processCollision(other, callback)
+
+	if instanceOf(SpriteGroup, other) then
+
+		for _, member in other:members() do
+
+			self:processCollision(member, callback)
+
+		end
+
+	else
+		-- If collision occurs
+		if other.active and other.collider and self.collider:collidesWith(other.collider) then
+			callback(self, other)
+		end
+	end
+
+end
 
 
 function Sprite:draw()
 
+	-- TODO handle images
+	love.graphics.setColor(self.fill[1], self.fill[2], self.fill[3])
+	self.shape:draw('fill')
+
+	--[[
 	if self.img then
-		love.graphics.draw(self.img, self.transform.position.x, self.transform.position.y, self.width, self.height)
+		love.graphics.draw(self.img, self.shape.position.x, self.transform.position.y, self.width, self.height)
 	else
 		love.graphics.setColor(self.fill[1], self.fill[2], self.fill[3])
 		love.graphics.rectangle("fill", self.transform.position.x, self.transform.position.y, self.width, self.height)
 	end
+	-- ]]
 end

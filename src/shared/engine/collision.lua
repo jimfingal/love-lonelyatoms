@@ -1,6 +1,15 @@
 require 'external.middleclass'
+require 'collections.list'
 
-Collision = class("Collision")
+CollisionManager = class("CollisionManager")
 
 
-Collision.static = {}
+function CollisionManager:initialize()
+	self.watched_collisions = List()
+end
+
+function CollisionManager:checkSpriteCollisions(a, b, callback)
+
+	collisions = List()
+
+end

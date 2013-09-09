@@ -1,5 +1,6 @@
 require 'engine.vector'
 require 'external.middleclass'
+require 'engine.transform'
 
 Shape = class('Shape')
 
@@ -13,7 +14,9 @@ CircleShape = class('CircleShape', Shape)
 
 function CircleShape:initialize(x, y, radius)
 
-	self.center = Vector(x, y)
+	self.transform = Transform(x, y)
+	self.center = self.transform:vector()	-- Convenience reference
+
 	self.radius = radius
 
 end
@@ -59,7 +62,7 @@ function clamp(value, min, max)
 end
 
 function CircleShape:moveTo(x, y)
-	self.center = Vector(x, y)
+	self.transform:moveTo(x, y)
 end
 
 function CircleShape:draw(mode)
@@ -73,7 +76,9 @@ PointShape = class('PointShape', Shape)
 
 function PointShape:initialize(x, y)
 
-	self.center = Vector(x, y)
+	self.transform = Transform(x, y)
+	self.center = self.transform:vector()	-- Convenience reference
+
 
 end
 
@@ -111,7 +116,7 @@ function PointShape:collidesWith(other)
 end
 
 function PointShape:moveTo(x, y)
-	self.center = Vector(x, y)
+	self.transform:moveTo(x, y)
 end
 
 function PointShape:draw()
@@ -125,7 +130,9 @@ RectangleShape = class('RectangleShape', Shape)
 -- X and Y are point in upper left hand corner
 function RectangleShape:initialize(x, y, width, height)
 
-	self.upper_left = Vector(x, y)
+	self.transform = Transform(x, y)
+	self.upper_left = self.transform:vector()	-- Convenience reference
+
 	self.width = width
 	self.height = height
 
@@ -168,12 +175,20 @@ function RectangleShape:collidesWith(other)
 end
 
 function RectangleShape:moveTo(x, y)
-	self.upper_left = Vector(x, y)
+	self.transform:moveTo(x, y)
 end
 
 function RectangleShape:draw(mode)
-	love.graphics.rectangle(mode or "line", self.upper_left.x, self.upper_left.y, self.width, self.height)
+
+	local x = self.transform.position.x
+	local y = self.transform.position.y
+
+	love.graphics.rectangle(mode or "line", x, y, self.width, self.height)
 end
 
+
+function RectangleShape:__tostring()
+	return "(("..tonumber(self.transform.position.x)..","..tonumber(self.transform.position.y).."), w=" .. self.width .. " h=" .. self.height .. ")"
+end
 
 -- TODO: make these all use transforms

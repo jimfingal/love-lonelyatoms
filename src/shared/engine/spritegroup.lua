@@ -45,17 +45,17 @@ function SpriteGroup:members()
 	return self.sprites:members()
 end
 
-function SpriteGroup:startFrame(elapsed, input)
+function SpriteGroup:processInput(elapsed, input)
 
 	if not self.active then return end
 
 	for i, sprite in self:members() do
 		if sprite.active then
-			sprite:startFrame(elapsed, input)
+			sprite:processInput(elapsed, input)
 		end
 	end
 
-	if self.onStartFrame then self:onStartFrame(elapsed, input) end
+	if self.onProcessInput then self:onProcessInput(elapsed, input) end
 
 end
 
@@ -88,6 +88,18 @@ function SpriteGroup:endFrame(elapsed)
 	if self.onEndFrame then self:onEndFrame(elapsed) end
 
 end
+
+
+function SpriteGroup:processCollision(other, callback)
+
+	-- Should work whether or not other is a group
+	for _, member in self:members() do
+		member:processCollision(other)
+	end
+
+end
+
+
 
 -- Method: draw
 -- Draws all visible member sprites onscreen.

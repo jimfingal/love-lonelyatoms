@@ -25,6 +25,10 @@ function Transform:initialize(x, y)
 
 end
 
+function Transform:vector()
+	return self.position
+end
+
 function Transform:moveTo(x, y)
 	self.position.x = x;
 	self.position.y = y;
