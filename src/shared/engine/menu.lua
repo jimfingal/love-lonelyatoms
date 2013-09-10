@@ -142,7 +142,8 @@ function SimpleMenu:draw()
 
 	end
 
-	love.graphics.print(self.selected_index, x_index, y_index)
+	-- Debug
+	-- love.graphics.print(self.selected_index, x_index, y_index)
 
 end
 

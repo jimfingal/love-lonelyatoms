@@ -45,7 +45,7 @@ function PlayState:initialize(name, state_manager, asset_manager)
     self.ball = Ball('ball', 395, 500 - 15, 15, 15)
     self.world:add(self.ball)
 
-    self.debug = true
+    self.debug = false
 
 
     self.input = InputManager()

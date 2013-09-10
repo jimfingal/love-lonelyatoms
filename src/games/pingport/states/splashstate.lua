@@ -3,6 +3,7 @@ require 'engine.gamestate'
 require 'assets.assets'
 require 'engine.input'
 require 'states.actions'
+require 'engine.animation'
 
 SplashState = class('Splash', GameState)
 
@@ -10,26 +11,31 @@ function SplashState:initialize(name, state_manager, asset_manager)
 
     GameState.initialize(self, name, state_manager, asset_manager)
 
-    self.timer = 2
-
     self.input = InputManager()
 
     self.input:registerInput(' ', Actions.SKIP_SPLASH)
     self.input:registerInput('return', Actions.SKIP_SPLASH)
 
+    self.splash_text = TextAnimation("E C H O B R E A K O U T", 0.125, false)
+
+    -- self.timer = 5
+
+    self.splash_text:play()
 end
 
 
 function SplashState:update(dt)
 
     self.input:update(dt)
+    self.splash_text:update(dt)
 
-    self.timer = self.timer - dt
+    -- self.timer = self.timer - dt
 
-    if self.timer < 0.001 then
+    
+    if self.splash_text.status == Animation.PAUSED then
       self:stateManager():changeState(States.MENU)
     end
-
+    
     if self.input:newAction(Actions.SKIP_SPLASH) then
        self:stateManager():changeState(States.MENU)
     end
@@ -43,11 +49,32 @@ function SplashState:draw()
 
 	love.graphics.setColor(204,147,147)
 	love.graphics.setFont(self:assetManager():getFont(Assets.FONT_LARGE))
-    menu_str = "SPLASH SCREEN"
-    love.graphics.print(menu_str, 175, 100)
 
-    love.graphics.setFont(self:assetManager():getFont(Assets.FONT_SMALL))
+    self.splash_text:draw(25, 100)
+
+    --[[
     menu_str = "STARTING IN " .. tostring(self.timer)
     love.graphics.print(menu_str, 200, 125)
+    ]]
+
+    love.graphics.setFont(self:assetManager():getFont(Assets.FONT_SMALL))
+
+    menu_str = "Splash timer: " .. tostring(self.splash_text.timer)
+    love.graphics.print(menu_str, 200, 150)
+
+    menu_str = "Splash position: " .. tostring(self.splash_text.position)
+    love.graphics.print(menu_str, 200, 175)
+
+
+    --[[
+       love.graphics.setBackgroundColor(63, 63, 63, 255)
+
+    -- TODO color scheme manager.
+    love.graphics.setColor(204,147,147)
+    love.graphics.setFont(self:assetManager():getFont(Assets.FONT_LARGE))
+    love.graphics.print("E C H O B R E A K O U T", 25, 100)
+    ]]
+
+
 
 end
