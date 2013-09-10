@@ -30,7 +30,6 @@ BrickLoader.load_bricks = function(asset_manager, brick_source)
 	
 	local bricks = SpriteGroup('bricks', true, true)
 
-
 	if not brick_source then 
 
 		background = "wereinthistogether_background.mp3"

@@ -31,7 +31,6 @@ function SimpleMenu:initialize(x, y, width, height)
     self.input:registerInput('up', MENU_UP)
     self.input:registerInput('down', MENU_DOWN)
     self.input:registerInput('return', MENU_SELECT)
-    self.input:registerInput(' ', MENU_SELECT)
 
 end
 
@@ -131,7 +130,7 @@ function SimpleMenu:draw()
 
 	end
 
-	love.graphics.print(self.selected_index, x_index, y_index)
+	--love.graphics.print(self.selected_index, x_index, y_index)
 
 end
 

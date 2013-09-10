@@ -38,7 +38,7 @@ end
 
 function SpriteGroup:remove(sprite)
 	assert(sprite, 'asked to remove nil to a group')
-	self.sprites:remove(sprite)
+	self.sprites:removeFirst(sprite)
 end
 
 function SpriteGroup:members()

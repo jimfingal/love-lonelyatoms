@@ -18,9 +18,7 @@ function PlayState:initialize(name, state_manager, asset_manager)
     self.world = SpriteGroup('allsprites', true, true)
     self.world_edges = SpriteGroup('tiles', false, false)
 
-   
-    -- Function of load?
-    self.bricks = BrickLoader.load_bricks(asset_manager)
+    self.bricks = SpriteGroup('bricks', true, true)
     self.world:add(self.bricks)
 
     local TILE_SIZE = 50
@@ -47,7 +45,6 @@ function PlayState:initialize(name, state_manager, asset_manager)
     self.ball = Ball('ball', 395, 489, 10, 10)
     self.world:add(self.ball)
 
-
     self.debug = true
 
 
@@ -65,15 +62,29 @@ function PlayState:initialize(name, state_manager, asset_manager)
 
 end
 
-function PlayState:enter()
+function PlayState:enter(brick_input)
+
+    self.victory = false
+
+    -- Loading....
+    love.graphics.setBackgroundColor(63, 63, 63, 255)
+    love.graphics.setColor(204,147,147)
+    love.graphics.setFont(self:assetManager():getFont(Assets.FONT_MEDIUM))
+    love.graphics.print("Loading...", 200, 550)
+
+    -- Reset bricks
+    self.world:remove(self.bricks)
+    self.bricks = BrickLoader.load_bricks(self.asset_manager, brick_input)
+    self.world:add(self.bricks)
 
     local background = asset_manager:getSound(Assets.BACKGROUND_SOUND)
-
+    love.audio.stop()
     background:setVolume(0.25)
     background:setLooping(true)
     love.audio.play(background)
 
-    self.victory = false
+    self.player:moveTo(350, 500)
+    self.ball:die()
 end
 
 
@@ -138,15 +149,8 @@ function PlayState:draw()
 
     self.world:draw()
 
-    love.graphics.setColor(204,147,147)
-    love.graphics.setFont(self:assetManager():getFont(Assets.FONT_MEDIUM))
-    
-    menu_str = "PLAY AROUND!"
-
-    love.graphics.print(menu_str, 200, 550)
-
     if self.victory then
-
+        love.graphics.setColor(204,147,147)
         love.graphics.setFont(self:assetManager():getFont(Assets.FONT_LARGE))
         love.graphics.print("YOU WIN!!!", 200, 200)
         self.ball:die()
@@ -154,15 +158,22 @@ function PlayState:draw()
     end
 
 
-    local debugstart = 575
+    local debugstart = 300
 
 	if self.debug then
 
         love.graphics.setFont(self:assetManager():getFont(Assets.FONT_SMALL))
         love.graphics.print(love.timer.getFPS(), 50, debugstart)
+        love.graphics.print("Ball x: " .. self.ball.shape.upper_left.x, 50, debugstart + 20)
+        love.graphics.print("Ball y: " .. self.ball.shape.upper_left.y, 50, debugstart + 40)
 
     end
 
+    if not self.ball.active then
+        love.graphics.setColor(204,147,147)
+        love.graphics.setFont(self:assetManager():getFont(Assets.FONT_MEDIUM))
+        love.graphics.print("Press Space to Lanch Ball", 200, 550)
+    end
 
 
 end

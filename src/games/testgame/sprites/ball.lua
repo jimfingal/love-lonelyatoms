@@ -39,9 +39,10 @@ end
 
 function Ball:reset(player)
 
-	self:revive()
+	self:die()
     self:moveTo(player.shape.transform.position.x + player.shape.width / 2, player.shape.transform.position.y - self.shape.height)
     self.rigidbody:setVelocity(default_x_vel, default_y_vel)
+    self:revive()
 
 end
 
