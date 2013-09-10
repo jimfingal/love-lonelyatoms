@@ -64,6 +64,8 @@ end
 
 function PlayState:enter(brick_input)
 
+    self.input:clear()
+
     self.victory = false
 
     -- Loading....
@@ -87,7 +89,7 @@ function PlayState:enter(brick_input)
     background:setLooping(true)
     love.audio.play(background)
 
-
+    self.player:stop()
     self.player:moveTo(350, 500)
     self.ball:die()
 end
@@ -118,8 +120,7 @@ function PlayState:update(dt)
     
     -- I want to be able to check a collision between one item, another item or group, and call a callback that
     -- handles the two items that collided if it happens
-    self.player:processCollision(self.world_edges, function (player, collided_tile) player:collideWithWall(collided_tile, self.input) end)
-
+    self.player:processCollision(self.world_edges, function (player, collided_tile) player:collideWithWall(collided_tile) end)
 
     self.ball:processCollision(self.player, function(ball, paddle) ball:collideWithPaddle(paddle) end)
 
@@ -178,8 +179,6 @@ function PlayState:draw()
         love.graphics.print("Ball y: " .. self.ball.shape.upper_left.y, 50, debugstart + 40)
 
     end
-
-   
 
 
 end

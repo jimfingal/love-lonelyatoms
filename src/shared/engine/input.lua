@@ -16,6 +16,10 @@ function InputManager:registerInput(key, action_constant)
 
 end
 
+function InputManager:clear()
+  self.held = {}
+  self.pressed = {}
+end
 
 function InputManager:update(dt)
 

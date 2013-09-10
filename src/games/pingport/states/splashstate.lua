@@ -20,6 +20,8 @@ function SplashState:initialize(name, state_manager, asset_manager)
 
     -- self.timer = 5
 
+    self.debug = false
+
     self.splash_text:play()
 end
 
@@ -52,29 +54,24 @@ function SplashState:draw()
 
     self.splash_text:draw(25, 100)
 
-    --[[
-    menu_str = "STARTING IN " .. tostring(self.timer)
-    love.graphics.print(menu_str, 200, 125)
-    ]]
-
-    love.graphics.setFont(self:assetManager():getFont(Assets.FONT_SMALL))
-
-    menu_str = "Splash timer: " .. tostring(self.splash_text.timer)
-    love.graphics.print(menu_str, 200, 150)
-
-    menu_str = "Splash position: " .. tostring(self.splash_text.position)
-    love.graphics.print(menu_str, 200, 175)
+  
 
 
-    --[[
-       love.graphics.setBackgroundColor(63, 63, 63, 255)
+    if self.debug then
 
-    -- TODO color scheme manager.
-    love.graphics.setColor(204,147,147)
-    love.graphics.setFont(self:assetManager():getFont(Assets.FONT_LARGE))
-    love.graphics.print("E C H O B R E A K O U T", 25, 100)
-    ]]
+        --[[
+        menu_str = "STARTING IN " .. tostring(self.timer)
+        love.graphics.print(menu_str, 200, 125)
+        ]]
 
+        love.graphics.setFont(self:assetManager():getFont(Assets.FONT_SMALL))
 
+        menu_str = "Splash timer: " .. tostring(self.splash_text.timer)
+        love.graphics.print(menu_str, 200, 150)
+
+        menu_str = "Splash position: " .. tostring(self.splash_text.position)
+        love.graphics.print(menu_str, 200, 175)
+
+    end
 
 end

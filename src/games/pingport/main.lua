@@ -8,6 +8,8 @@ require 'states.playstate'
 require 'states.actions'
 require 'engine.input'
 
+require 'states.autogame'
+
 require 'assets.assets'
 
 function love.load()
@@ -44,16 +46,29 @@ function love.load()
   state_manager:changeState(States.SPLASH)
 
 
+  auto_game = AutoGame()
 
 
 end
 
 -- Perform computations, etc. between screen refreshes.
 function love.update(dt)
+
+  if state_manager:currentStateName() ~= States.PLAY then
+      auto_game:update(dt)
+  end
+
   state_manager:update(dt)
+
 end
 
 -- Update the screen.
 function love.draw()
-  state_manager:draw()
+
+    if state_manager:currentStateName() ~= States.PLAY then
+        auto_game:draw(dt)
+    end
+
+    state_manager:draw()
+
 end

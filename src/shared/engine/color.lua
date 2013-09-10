@@ -12,5 +12,5 @@ end
 
 
 function Color:unpack()
-	return self.r, self.g, self.b, self.a
+	return self.r, self.g, self.b, self.alpha
 end

@@ -59,6 +59,7 @@ end
 
 
 
+
 function MenuState:enter()
     -- love.audio.stop()
     self.menu:highlightMenuItem(self.menu.selected_index)
@@ -67,7 +68,6 @@ end
 
 
 function MenuState:update(dt)
-
 
     -- Quit
     if self.input:newAction(Actions.QUIT_GAME) then
@@ -97,3 +97,4 @@ function MenuState:draw()
 
    
 end
+

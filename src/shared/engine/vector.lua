@@ -44,7 +44,7 @@ function Vector:__sub(other)
 end
 
 function Vector:__mul(multiplier)
-	assert(type(multiplier) == "number", "argument must be a number")
+	assert(type(multiplier) == "number", "argument must be a number, instead is " .. type(multiplier))
 	return Vector(self.x * multiplier, self.y * multiplier)
 end
 

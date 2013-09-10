@@ -30,6 +30,8 @@ function Player:initialize(name, x, y, width, height)
     self.speed_delta = Vector(1500, 0)
     self.base_speed = Vector(200, 0)
 
+    self.current_action = nil
+
 end
 
 
@@ -39,6 +41,13 @@ function Player:moveTo(x, y)
     self.collider:moveTo(x, y)
     self.leftEdge:moveTo(x, y)
     self.rightEdge:moveTo(x + (self.shape.width/2), y)
+end
+
+
+function Player:stop()
+
+    self.rigidbody.velocity = Vector.zero
+    self.rigidbody.acceleration = Vector.zero
 end
 
 function Player:accelerateRight(dt)
@@ -94,18 +103,22 @@ function Player:processInput(dt, input)
     if input:heldAction(Actions.PLAYER_RIGHT) then
     
         self:accelerateRight(dt)
+        self.current_action = Actions.PLAYER_RIGHT
     
     elseif input:heldAction(Actions.PLAYER_LEFT) then
     
         self:accelerateLeft(dt)
+        self.current_action = Actions.PLAYER_LEFT
 
     else
         self:applyDrag(dt)
+        self.current_action = nil
+
     end
 
 end
 
-function Player:collideWithWall(collided_sprite, input)
+function Player:collideWithWall(collided_sprite)
 
     assert(instanceOf(RectangleShape, collided_sprite.collider), "Can only be applied to rectangles")
 
@@ -121,7 +134,7 @@ function Player:collideWithWall(collided_sprite, input)
 
         self:moveTo(new_x, self.shape.transform.position.y)
 
-        if input:heldAction(Actions.PLAYER_LEFT) then
+        if self.current_action == Actions.PLAYER_LEFT then
             self.rigidbody.velocity = Vector.zero
         else
             self.rigidbody.velocity = -self.rigidbody.velocity
@@ -133,7 +146,7 @@ function Player:collideWithWall(collided_sprite, input)
         -- Translate to be on the other side of it
         self:moveTo(collided_position.x - self.collider.width - 1, self.shape.transform.position.y)
 
-        if input:heldAction(Actions.PLAYER_RIGHT) then
+        if self.current_action == Actions.PLAYER_RIGHT then
             self.rigidbody.velocity = Vector.zero
         else
             self.rigidbody.velocity = -self.rigidbody.velocity
@@ -159,6 +172,38 @@ function Player:update(dt)
     local new_position = self.shape.transform:vector() + (self.rigidbody.velocity * dt) 
 
     self:moveTo(new_position.x, new_position.y)
+
+end
+
+
+function Player:processAI(dt, ball)
+
+    local paddle_origin = self.shape.transform.position.x
+    local paddle_width = self.shape.width
+    local third_of_paddle = paddle_width / 3
+
+    local middle_ball = ball.shape.transform.position.x + self.shape.width/2
+
+    local first_third = paddle_origin + third_of_paddle
+    local second_third = first_third + third_of_paddle
+    local third_third = paddle_origin + paddle_width
+
+    if middle_ball < first_third then
+
+        self:accelerateLeft(dt)
+        self.current_action = Actions.PLAYER_LEFT
+
+    elseif middle_ball > second_third then
+        
+        self:accelerateRight(dt)
+        self.current_action = Actions.PLAYER_RIGHT
+
+    else
+
+        self:applyDrag(dt)
+        self.current_action = nil
+
+    end
 
 end
 

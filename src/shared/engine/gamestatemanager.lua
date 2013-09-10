@@ -5,6 +5,7 @@ GameStateManager = class("GameStateManager")
 function GameStateManager:initialize()
 	self.last_state = nil
 	self.current_state = nil
+	self.current_state_name = nil
 	self.states = {}
 end
 
@@ -27,6 +28,7 @@ function GameStateManager:changeState(to_name, ...)
 	assert(self:stateExists(to_name), "State must exist")
 	self.last_state = self.current_state
 	self.current_state = self.states[to_name]
+	self.current_state_name = to_name
 	self.current_state:enter(...)
 	return to
 end
@@ -37,6 +39,10 @@ end
 
 function GameStateManager:currentState()
 	return self.current_state
+end
+
+function GameStateManager:currentStateName()
+	return self.current_state_name
 end
 
 -- Callbacks to forward

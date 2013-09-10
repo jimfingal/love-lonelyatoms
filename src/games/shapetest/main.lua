@@ -115,6 +115,4 @@ function love.draw()
     point:draw('fill')
 
 
-
-
 end
