@@ -62,6 +62,9 @@ BrickLoader.load_bricks = function(asset_manager, brick_source)
 			end
 		end
 
+	else
+		config = require '01LightningRiskedItAll'
+
 	end
 
 	return bricks

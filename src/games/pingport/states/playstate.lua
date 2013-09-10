@@ -39,10 +39,10 @@ function PlayState:initialize(name, state_manager, asset_manager)
     self.world_edges:add(right_tile)
 
 
-    self.player = Player('player', 350, 500, 100, 10)
+    self.player = Player('player', 350, 500, 100, 20)
     self.world:add(self.player)
 
-    self.ball = Ball('ball', 395, 489, 10, 10)
+    self.ball = Ball('ball', 395, 500 - 15, 15, 15)
     self.world:add(self.ball)
 
     self.debug = true
@@ -156,7 +156,6 @@ function PlayState:draw()
         self.ball:die()
 
     end
-
 
     local debugstart = 300
 
