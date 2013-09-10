@@ -32,9 +32,6 @@ function List:popRight()
 	return right
 end
 
-function List:popRight()
-
-end
 
 -- Removes an item the first time it appears
 function List:removeFirst(element)

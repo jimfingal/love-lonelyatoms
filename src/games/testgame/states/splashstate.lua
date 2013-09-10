@@ -31,7 +31,7 @@ function SplashState:update(dt)
     end
 
     if self.input:newAction(Actions.SKIP_SPLASH) then
-       self:stateManager():changeState(States.PLAY)
+       self:stateManager():changeState(States.MENU)
     end
 
 end
