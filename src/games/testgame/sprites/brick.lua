@@ -6,7 +6,9 @@ require 'engine.shapes'
 
 Brick = class('Brick', Sprite)
 
-function Brick:initialize(name, x, y, width, height, sound, r, g, b)
+local DEATH_SOUND = "death"
+
+function Brick:initialize(name, x, y, width, height, r, g, b, sound)
 
 
 	sprite_and_collider_shape = RectangleShape(x, y, width, height)
@@ -17,11 +19,22 @@ function Brick:initialize(name, x, y, width, height, sound, r, g, b)
 	self.visible = true
 
 	self:setFill(r, g, b)
+
+	self.sounds = {}
+
+	-- TODO: some sort of asset manager that functions both globally and is attached to sprites?
+	if sound then
+		self.sounds[DEATH_SOUND] = sound
+	end
 	
-	self.snd = sound
+end
+
+function Brick:loadDeathSound(snd)
+
+	self.sounds[DEATH_SOUND] = snd
 
 end
 
-function Brick:playSound()
-	love.audio.play(self.snd)
+function Brick:playDeathSound()
+	love.audio.play(self.sounds[DEATH_SOUND])
 end

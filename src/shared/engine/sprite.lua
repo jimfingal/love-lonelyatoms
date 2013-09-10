@@ -24,7 +24,6 @@ function Sprite:initialize(name, shape, collider)
 	-- Height in pixels.
 	self.height = height or 0
 
-
 	self.img = nil
 
 	self.fill = Color(0, 0, 0)

@@ -59,6 +59,8 @@ function PlayState:initialize(name, state_manager, asset_manager)
     self.input:registerInput('d', Actions.PLAYER_RIGHT)
     self.input:registerInput(' ', Actions.RESET_BALL)
 
+    self.victory = false
+
 end
 
 function PlayState:enter()
@@ -68,6 +70,8 @@ function PlayState:enter()
     background:setVolume(0.25)
     background:setLooping(true)
     love.audio.play(background)
+
+    self.victory = false
 end
 
 
@@ -80,6 +84,8 @@ function PlayState:update(dt)
         self.ball:reset(self.player)
     end
 
+
+    -- TODO don't actually like this since it's unclear what is using input.
     self.world:processInput(dt, self.input)
     
     -- I want to be able to check a collision between one item, another item or group, and call a callback that
@@ -94,9 +100,22 @@ function PlayState:update(dt)
     self.ball:processCollision(self.bricks, function(ball, brick) ball:collideWithBrick(brick) end)
 
 
+    -- TODO make more explicit what is happening in this phase?
     self.world:update(dt)
 
+    -- TODO make more explicit what is happening in this phase?
     self.world:endFrame(dt)
+
+
+    self.victory = true
+    for _, brick in self.bricks:members() do
+        if brick.active then
+            self.victory = false
+            break
+        end
+    end
+
+
 
 end
 
@@ -114,9 +133,17 @@ function PlayState:draw()
 
     love.graphics.print(menu_str, 200, 550)
 
+    if self.victory then
+
+        love.graphics.setFont(self:assetManager():getFont(Assets.FONT_LARGE))
+        love.graphics.print("YOU WIN!!!", 200, 200)
+        self.ball:die()
+
+    end
+
 
     local debugstart = 575
-    
+
 	if self.debug then
 
         love.graphics.setFont(self:assetManager():getFont(Assets.FONT_SMALL))

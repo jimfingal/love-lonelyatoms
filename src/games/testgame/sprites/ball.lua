@@ -5,14 +5,12 @@ require 'engine.vector'
 require 'engine.shapes'
 require 'states.actions'
 
-
 Ball = class('Ball', Sprite)
 
 local default_x_vel = 200
 local default_y_vel = -425
 
 function Ball:initialize(name, x, y, width, height)
-
 
 	sprite_and_collider_shape = RectangleShape(x, y, width, height)
 
@@ -79,10 +77,14 @@ function Ball:collideWithWall(wall)
 
 		self:die()
 
-	else
+	elseif collider_position.x <= love.graphics.getHeight() then
 
+		self:moveTo(1, self.shape.transform.position.y)
 		self:invertHorizontalVelocity()
 
+	else
+		self:moveTo(love.graphics.getWidth() - self.shape.width, self.shape.transform.position.y)
+		self:invertHorizontalVelocity()
 	end
 
 end
@@ -90,7 +92,7 @@ end
 
 function Ball:collideWithBrick(brick)
 
-	brick:playSound()
+	brick:playDeathSound()
 	brick:die()
 
 	-- TODO handle bullet shit

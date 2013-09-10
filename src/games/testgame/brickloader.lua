@@ -37,7 +37,8 @@ BrickLoader.load_bricks = function(asset_manager, brick_source)
 
 		asset_manager:loadSound(Assets.BACKGROUND_SOUND, background)
 
-		for y = 0, 340, 20 do
+		for y = 0, 20, 20 do
+--		for y = 0, 340, 20 do
 
 			local x_start = 0
 			local x_end = 700
@@ -55,8 +56,7 @@ BrickLoader.load_bricks = function(asset_manager, brick_source)
 
 				asset_manager:loadSound("wereinthistogether1.mp3", "wereinthistogether1.mp3")
 
-				local brick = Brick(x .. y, x, y, 100, 20, 	asset_manager:getSound("wereinthistogether1.mp3"), this_color.r, this_color.g, this_color.b)
-
+				local brick = Brick(x .. y, x, y, 100, 20, this_color.r, this_color.g, this_color.b, asset_manager:getSound("wereinthistogether1.mp3"))
 
 				bricks:add(brick)
 
