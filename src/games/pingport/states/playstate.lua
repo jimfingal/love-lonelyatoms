@@ -98,7 +98,7 @@ function PlayState:update(dt)
     self.input:update(dt)
 
     -- Reset Ball
-    if self.input:newAction(Actions.RESET_BALL) then
+    if self.input:newAction(Actions.RESET_BALL) and not self.victory then
         self.ball:reset(self.player)
     end
 
@@ -118,7 +118,7 @@ function PlayState:update(dt)
     
     -- I want to be able to check a collision between one item, another item or group, and call a callback that
     -- handles the two items that collided if it happens
-    self.player:processCollision(self.world_edges, function (player, collided_tile) player:collideWithWall(collided_tile) end)
+    self.player:processCollision(self.world_edges, function (player, collided_tile) player:collideWithWall(collided_tile, self.input) end)
 
 
     self.ball:processCollision(self.player, function(ball, paddle) ball:collideWithPaddle(paddle) end)
@@ -160,6 +160,12 @@ function PlayState:draw()
         love.graphics.print("YOU WIN!!!", 200, 200)
         self.ball:die()
 
+    elseif not self.ball.active then
+
+        -- Only display if we haven't won
+        love.graphics.setColor(204,147,147)
+        love.graphics.setFont(self:assetManager():getFont(Assets.FONT_MEDIUM))
+        love.graphics.print("Press Space to Launch Ball", 200, 550)
     end
 
     local debugstart = 300
@@ -173,11 +179,7 @@ function PlayState:draw()
 
     end
 
-    if not self.ball.active then
-        love.graphics.setColor(204,147,147)
-        love.graphics.setFont(self:assetManager():getFont(Assets.FONT_MEDIUM))
-        love.graphics.print("Press Space to Launch Ball", 200, 550)
-    end
+   
 
 
 end

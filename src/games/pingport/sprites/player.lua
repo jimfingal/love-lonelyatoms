@@ -105,7 +105,7 @@ function Player:processInput(dt, input)
 
 end
 
-function Player:collideWithWall(collided_sprite)
+function Player:collideWithWall(collided_sprite, input)
 
     assert(instanceOf(RectangleShape, collided_sprite.collider), "Can only be applied to rectangles")
 
@@ -121,10 +121,23 @@ function Player:collideWithWall(collided_sprite)
 
         self:moveTo(new_x, self.shape.transform.position.y)
 
+        if input:heldAction(Actions.PLAYER_LEFT) then
+            self.rigidbody.velocity = Vector.zero
+        else
+            self.rigidbody.velocity = -self.rigidbody.velocity
+        end
+
+
     elseif self.rightEdge:collidesWith(collided_sprite.collider) then
 
         -- Translate to be on the other side of it
         self:moveTo(collided_position.x - self.collider.width - 1, self.shape.transform.position.y)
+
+        if input:heldAction(Actions.PLAYER_RIGHT) then
+            self.rigidbody.velocity = Vector.zero
+        else
+            self.rigidbody.velocity = -self.rigidbody.velocity
+        end
 
     else 
 
@@ -133,9 +146,6 @@ function Player:collideWithWall(collided_sprite)
     end
 
     -- Reverse Velocity
-
-
-    self.rigidbody.velocity = -self.rigidbody.velocity
 
 
 end
