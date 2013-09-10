@@ -24,6 +24,10 @@ function AssetManager:loadFont(key, font_name, font_size)
 	assert(key, "Missing argument: name of font")
 	assert(font_name, "Missing argument: font to register")
 
+	if self.fonts[key] then
+		return -- Don't double-load
+	end
+
 	if not font_size then
 		font_size = self.default_font_size
 	end
@@ -42,6 +46,10 @@ end
 function AssetManager:loadSound(key, sound_name)
 	assert(key, "Missing argument: name of sound")
 	assert(sound_name, "Missing argument: sound to register")
+
+	if self.sounds[key] then
+		return -- Don't double-load
+	end
 
 	local snd  = love.audio.newSource(self.sound_path .. sound_name, 'static')
 	

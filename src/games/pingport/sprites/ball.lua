@@ -10,6 +10,8 @@ Ball = class('Ball', Sprite)
 local default_x_vel = 200
 local default_y_vel = -425
 
+local paddle_english = 100
+
 function Ball:initialize(name, x, y, width, height)
 
 	sprite_and_collider_shape = RectangleShape(x, y, width, height)
@@ -50,7 +52,49 @@ function Ball:collideWithPaddle(paddle)
 
 	local new_y = paddle.shape.transform.position.y - self.shape.height
 	self:moveTo(self.shape.transform.position.x, new_y)
-	self.rigidbody.velocity.y = -self.rigidbody.velocity.y
+
+
+	-- Compare X with paddle x
+
+	local paddle_origin = paddle.shape.transform.position.x
+	local paddle_width = paddle.shape.width
+	local third_of_paddle = paddle_width / 3
+
+	local middle_ball = self.shape.transform.position.x + self.shape.width/2
+
+	local first_third = paddle_origin + third_of_paddle
+	local second_third = first_third + third_of_paddle
+	local third_third = paddle_origin + paddle_width
+
+	if middle_ball <= first_third then
+
+		-- Reverse y direction and hit to left
+		self.rigidbody.velocity.y = -self.rigidbody.velocity.y
+		self.rigidbody.velocity.x = self.rigidbody.velocity.x - paddle_english
+
+	elseif middle_ball > first_third and middle_ball < second_third then
+
+		-- Reverse y direction
+		self.rigidbody.velocity.y = -self.rigidbody.velocity.y
+
+		-- Slow x direction down
+		if self.rigidbody.velocity.x > 0 then
+
+			self.rigidbody.velocity.x = self.rigidbody.velocity.x - paddle_english/2
+
+		elseif self.rigidbody.velocity.x < 0 then
+
+			self.rigidbody.velocity.x = self.rigidbody.velocity.x + paddle_english/2
+
+		end
+
+	elseif middle_ball > second_third then
+
+		-- Reverse y direction and hit to right
+		self.rigidbody.velocity.y = -self.rigidbody.velocity.y
+		self.rigidbody.velocity.x = self.rigidbody.velocity.x + paddle_english
+
+	end	
 
 end
 

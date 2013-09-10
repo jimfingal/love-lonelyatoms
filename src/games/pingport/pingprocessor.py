@@ -9,6 +9,7 @@ import sys
 
 import echonest.audio as audio
 import string
+import os
 
 usage = """
 Usage: 
@@ -20,7 +21,12 @@ Example:
 """
 
 def main(input_filename):
-    
+
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    sound_dir = os.path.join(script_dir, 'assets', 'sounds')
+
+
     output_filename = input_filename.split('.')[0]
     
     output_filename = ''.join(c for c in output_filename if c.isalnum())
@@ -76,7 +82,10 @@ def main(input_filename):
         
         sounds.append((bar, relevent_segment, "%s" % this_filename))
         
-        # out.encode(this_filename) # Re-enable to output files
+
+        output_path = os.path.join(sound_dir, this_filename)
+
+        out.encode(output_path) # Re-enable to output files
         
         if counter > 200:
             break    
@@ -92,20 +101,30 @@ def main(input_filename):
             
     
     background_out = audio.getpieces(audiofile, extended_background)
-    # background_out.encode("%s_background.mp3" % output_filename) # Re-enable to output files
-    
+
+    background_output_path = os.path.join(sound_dir, output_filename + '_background.mp3')
+ 
+    background_out.encode(background_output_path) # Re-enable to output files
+       
     luacode_output(output_filename, sounds, audiofile, background_out)
 
 
 def luacode_output(output_filename, sounds, audiofile, background_out):
-    f = open("%s.lua" % output_filename, 'w')
-    
-    f.write('BrickConfig = { \n')
 
-    f.write('\tname = "%s")\n' % output_filename)
-    f.write('\tbackground_length = %s\n' % background_out.duration)
-    f.write('\tsong_length = %s\n' % audiofile.duration)
-    f.write('\tbackground_snd = "%s_background.mp3")\n' % output_filename)
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    source_dir = os.path.join(script_dir, 'assets', 'spritemaps')
+    path = os.path.join(source_dir, output_filename + '.lua')
+
+
+    f = open(path, 'w')
+    
+    f.write('local python_brick_config_output = { \n')
+
+    f.write('\tname = "%s",\n' % output_filename)
+    f.write('\tbackground_length = %s,\n' % background_out.duration)
+    f.write('\tsong_length = %s,\n' % audiofile.duration)
+    f.write('\tbackground_snd = "%s_background.mp3",\n' % output_filename)
 
 
     f.write('\tbricks = {\n')
@@ -249,42 +268,15 @@ def luacode_output(output_filename, sounds, audiofile, background_out):
             longrow = True
           
         
-    f.write("\t }\n")
+    f.write("\t },\n")
 
     
     speed = audiofile.analysis.tempo['value'] * audiofile.analysis.tempo['confidence'] 
 
     f.write("\t speed = %d \n" % speed)
 
-    '''    
-    default_x = 100
-    default_y = 475
-        
-    x = default_x + (speed - 110)
-    y = default_y  + (speed - 110)
-    
-    if x < 5:
-        x = 5
-    
-    if y < 10:
-        y = 10
-    
-    f.write('function load_state()\n')
-    f.write("\treturn { ball_x=%d, ball_y=%d}\n" % (x, y))
-    f.write("end\n")
-    f.write('function load_loop()\n')
-    f.write('\tbackground_snd = love.audio.newSource("/assets/sounds/%s_background.mp3", "static")\n' % output_filename)
-    f.write('\tbackground_snd:setVolume(0.25)\n')
-    f.write('\tbackground_snd:setLooping(true)\n')
-    f.write('\tbackground_length = %s\n' % background_out.duration)
-    f.write('\tsong_length = %s\n' % audiofile.duration)
-    f.write('\tlove.audio.play(background_snd)\n')
-    f.write('end\n')
-    '''
-
-    f.write('\t}\n')
     f.write('}\n')
-    f.write('return BrickConfig\n')
+    f.write('return python_brick_config_output\n')
 
     
 def dump(obj):

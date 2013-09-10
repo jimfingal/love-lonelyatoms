@@ -21,10 +21,11 @@ function MenuState:initialize(name, state_manager, asset_manager)
     
     self.menu:setFont(asset_manager:getFont(Assets.FONT_MEDIUM), 18)
 
-    -- TODO
-    self.menu:addMenuItem("Menu Item 1", function (state_manager) state_manager:changeState(States.PLAY) end)
-    self.menu:addMenuItem("Menu Item 2", function (state_manager) state_manager:changeState(States.PLAY) end)
-    self.menu:addMenuItem("Menu Item 3", function (state_manager) state_manager:changeState(States.PLAY) end)
+    -- TODO - don't hard code
+    self.menu:addMenuItem("LightningRiskedItAll", function (state_manager) state_manager:changeState(States.PLAY, 'LightningRiskedItAll') end)
+    self.menu:addMenuItem("ColorsShifting", function (state_manager) state_manager:changeState(States.PLAY, 'ColorsShifting') end)
+    self.menu:addMenuItem("AsFireSweptCleanTheEarth", function (state_manager) state_manager:changeState(States.PLAY, 'AsFireSweptCleanTheEarth') end)
+    self.menu:addMenuItem("CloudsForm", function (state_manager) state_manager:changeState(States.PLAY, 'CloudsForm') end)
 
 
     self.input = InputManager()

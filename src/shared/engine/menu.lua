@@ -52,7 +52,7 @@ function SimpleMenu:update(dt, state_manager)
 
 	if self.input:newAction(MENU_UP) then
 
-		self.selected_index = self.selected_index + 1
+		self.selected_index = self.selected_index - 1
 
 	elseif self.input:newAction(MENU_DOWN) then
 

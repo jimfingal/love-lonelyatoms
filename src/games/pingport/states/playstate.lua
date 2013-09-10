@@ -6,7 +6,7 @@ require 'sprites.ball'
 require 'sprites.tile'
 require 'collections.set'
 Input = require 'engine.input'
-require 'brickloader'
+require 'config.brickloader'
 require 'assets.assets'
 
 PlayState = class('Play', GameState)
@@ -74,14 +74,19 @@ function PlayState:enter(brick_input)
 
     -- Reset bricks
     self.world:remove(self.bricks)
-    self.bricks = BrickLoader.load_bricks(self.asset_manager, brick_input)
+    self.brick_config = BrickLoader:load_bricks(self.asset_manager, brick_input)
+
+    self.bricks = self.brick_config.bricks
+
     self.world:add(self.bricks)
 
-    local background = asset_manager:getSound(Assets.BACKGROUND_SOUND)
+    local background = self.brick_config.background_snd
+    
     love.audio.stop()
     background:setVolume(0.25)
     background:setLooping(true)
     love.audio.play(background)
+
 
     self.player:moveTo(350, 500)
     self.ball:die()
@@ -171,7 +176,7 @@ function PlayState:draw()
     if not self.ball.active then
         love.graphics.setColor(204,147,147)
         love.graphics.setFont(self:assetManager():getFont(Assets.FONT_MEDIUM))
-        love.graphics.print("Press Space to Lanch Ball", 200, 550)
+        love.graphics.print("Press Space to Launch Ball", 200, 550)
     end
 
 
