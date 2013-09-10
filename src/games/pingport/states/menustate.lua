@@ -5,7 +5,31 @@ require 'engine.menu'
 require 'assets.assets'
 
 
+ local stateChanger = function(song)
 
+        local state_function = function (state_manager) state_manager:changeState(States.PLAY, song) end
+        return state_function
+
+end
+
+local backgroundPlayer =  function(song)
+        -- Hack -- read from con
+
+        local filename = song .. "_background.mp3"
+        
+        local background_function = function()
+            
+            asset_manager:loadSound(filename, filename)
+
+            love.audio.stop()
+            local background = asset_manager:getSound(filename)
+            background:setVolume(0.25)
+            background:setLooping(true)
+            love.audio.play(background)
+        end
+
+        return background_function
+end
 
 MenuState = class('Menu', GameState)
 
@@ -22,16 +46,24 @@ function MenuState:initialize(name, state_manager, asset_manager)
     self.menu:setFont(asset_manager:getFont(Assets.FONT_MEDIUM), 18)
 
     -- TODO - don't hard code
-    self.menu:addMenuItem("LightningRiskedItAll", function (state_manager) state_manager:changeState(States.PLAY, 'LightningRiskedItAll') end)
-    self.menu:addMenuItem("ColorsShifting", function (state_manager) state_manager:changeState(States.PLAY, 'ColorsShifting') end)
-    self.menu:addMenuItem("AsFireSweptCleanTheEarth", function (state_manager) state_manager:changeState(States.PLAY, 'AsFireSweptCleanTheEarth') end)
-    self.menu:addMenuItem("CloudsForm", function (state_manager) state_manager:changeState(States.PLAY, 'CloudsForm') end)
+    self.menu:addMenuItem("CloudsForm", stateChanger("CloudsForm"), backgroundPlayer("CloudsForm"))
+    self.menu:addMenuItem("LightningRiskedItAll", stateChanger("LightningRiskedItAll"), backgroundPlayer("LightningRiskedItAll"))
+    self.menu:addMenuItem("ColorsShifting", stateChanger("ColorsShifting"), backgroundPlayer("ColorsShifting"))
+    self.menu:addMenuItem("AsFireSweptCleanTheEarth", stateChanger("AsFireSweptCleanTheEarth"), backgroundPlayer("AsFireSweptCleanTheEarth"))
 
 
     self.input = InputManager()
     self.input:registerInput('q', Actions.QUIT_GAME)
 
 end
+
+
+
+function MenuState:enter()
+    -- love.audio.stop()
+    self.menu:highlightMenuItem(self.menu.selected_index)
+end
+
 
 
 function MenuState:update(dt)

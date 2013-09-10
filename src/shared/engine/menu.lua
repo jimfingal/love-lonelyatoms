@@ -53,10 +53,14 @@ function SimpleMenu:update(dt, state_manager)
 	if self.input:newAction(MENU_UP) then
 
 		self.selected_index = self.selected_index - 1
+		self:loopSelectedIndex()
+		self:highlightMenuItem(self.selected_index)
 
 	elseif self.input:newAction(MENU_DOWN) then
 
 		self.selected_index = self.selected_index + 1
+		self:loopSelectedIndex()
+		self:highlightMenuItem(self.selected_index)
 
 	elseif self.input:newAction(MENU_SELECT) then
 
@@ -64,7 +68,6 @@ function SimpleMenu:update(dt, state_manager)
 
 	end
 
-	self:loopSelectedIndex()
 
 end
 
@@ -89,19 +92,28 @@ function SimpleMenu:setFont(font, line_height)
 end
 
 
-function SimpleMenu:addMenuItem(text, callback)
+function SimpleMenu:addMenuItem(text, select_callback, hightlight_callback)
 
-	local mi = SimpleMenuItem(text, callback)
-
+	local mi = SimpleMenuItem(text, select_callback, hightlight_callback)
 	self.menu_items:append(mi)
 
 end
 
 
+function SimpleMenu:highlightMenuItem(index)
+
+	local item = self.menu_items:memberAt(index)
+
+	if item.highlight_callback then 
+		item:highlight_callback()
+	end
+
+end
+
 function SimpleMenu:selectMenuItem(index, state_manager)
 
 	local item = self.menu_items:memberAt(index)
-	item.callback(state_manager)
+	item.select_callback(state_manager)
 
 end
 
@@ -130,7 +142,7 @@ function SimpleMenu:draw()
 
 	end
 
-	--love.graphics.print(self.selected_index, x_index, y_index)
+	love.graphics.print(self.selected_index, x_index, y_index)
 
 end
 
@@ -138,9 +150,10 @@ end
 
 SimpleMenuItem = class("SimpleMenuItem", GameObject)
 
-function SimpleMenuItem:initialize(text, callback)
+function SimpleMenuItem:initialize(text, select_callback, highlight_callback)
 
 	self.text = text
-	self.callback = callback
+	self.select_callback = select_callback
+	self.highlight_callback = highlight_callback
 
 end
