@@ -66,7 +66,7 @@ function Ball:collideWithWall(wall)
 	local collider_position = wall.collider.transform.position
 
 	-- Top wall
-	if collider_position.y <= 0 then
+	if collider_position.y < 0 then
 
 		self:moveTo(self.shape.transform.position.x, 1)
 		self:invertVerticalVelocity()

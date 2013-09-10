@@ -8,4 +8,7 @@ Actions.RESET_BALL = "reset"
 
 Actions.SKIP_SPLASH = "skip"
 
+Actions.QUIT_GAME = "quit"
+Actions.ESCAPE_TO_MENU = "escape"
+
 return

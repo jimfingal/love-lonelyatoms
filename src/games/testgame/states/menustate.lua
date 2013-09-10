@@ -21,16 +21,25 @@ function MenuState:initialize(name, state_manager, asset_manager)
     
     self.menu:setFont(asset_manager:getFont(Assets.FONT_MEDIUM), 18)
 
-
-
+    -- TODO
     self.menu:addMenuItem("Menu Item 1", function (state_manager) state_manager:changeState(States.PLAY) end)
     self.menu:addMenuItem("Menu Item 2", function (state_manager) state_manager:changeState(States.PLAY) end)
     self.menu:addMenuItem("Menu Item 3", function (state_manager) state_manager:changeState(States.PLAY) end)
+
+
+    self.input = InputManager()
+    self.input:registerInput('q', Actions.QUIT_GAME)
 
 end
 
 
 function MenuState:update(dt)
+
+
+    -- Quit
+    if self.input:newAction(Actions.QUIT_GAME) then
+        love.event.push("quit")
+    end
 
     self.menu:update(dt, state_manager)
 

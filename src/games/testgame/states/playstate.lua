@@ -27,8 +27,8 @@ function PlayState:initialize(name, state_manager, asset_manager)
 
     local top_tile = Tile('x' .. tostring(i), 0, -1 * TILE_SIZE, love.graphics.getWidth(), TILE_SIZE)
     local bottom_tile = Tile('x' .. tostring(i), 0, love.graphics.getHeight(), love.graphics.getWidth(), TILE_SIZE)
-    local left_tile = Tile('y' .. tostring(i), -1 * TILE_SIZE, TILE_SIZE, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE)
-    local right_tile = Tile('y' .. tostring(i), love.graphics.getWidth(), TILE_SIZE, TILE_SIZE, love.graphics.getHeight() - TILE_SIZE)
+    local left_tile = Tile('y' .. tostring(i), -1 * TILE_SIZE, 0, TILE_SIZE, love.graphics.getHeight())
+    local right_tile = Tile('y' .. tostring(i), love.graphics.getWidth(), 0, TILE_SIZE, love.graphics.getHeight())
 
     self.world:add(top_tile)
     self.world:add(bottom_tile)   
@@ -58,6 +58,8 @@ function PlayState:initialize(name, state_manager, asset_manager)
     self.input:registerInput('a', Actions.PLAYER_LEFT)
     self.input:registerInput('d', Actions.PLAYER_RIGHT)
     self.input:registerInput(' ', Actions.RESET_BALL)
+    self.input:registerInput('escape', Actions.ESCAPE_TO_MENU)
+    self.input:registerInput('q', Actions.QUIT_GAME)
 
     self.victory = false
 
@@ -79,9 +81,19 @@ function PlayState:update(dt)
 
     self.input:update(dt)
 
-    -- TODO
+    -- Reset Ball
     if self.input:newAction(Actions.RESET_BALL) then
         self.ball:reset(self.player)
+    end
+
+    -- Escape to Menu
+    if self.input:newAction(Actions.ESCAPE_TO_MENU) then
+        self.state_manager:changeState(States.MENU)
+    end
+
+    -- Quit
+    if self.input:newAction(Actions.QUIT_GAME) then
+        love.event.push("quit")
     end
 
 
