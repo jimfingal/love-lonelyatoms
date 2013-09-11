@@ -65,6 +65,9 @@ end
 function PlayState:enter(brick_input)
 
     self.input:clear()
+    self.player:stop()
+    self.player:moveTo(350, 500)
+    self.ball:die()
 
     self.victory = false
 
@@ -89,9 +92,7 @@ function PlayState:enter(brick_input)
     background:setLooping(true)
     love.audio.play(background)
 
-    self.player:stop()
-    self.player:moveTo(350, 500)
-    self.ball:die()
+ 
 end
 
 
@@ -106,6 +107,7 @@ function PlayState:update(dt)
 
     -- Escape to Menu
     if self.input:newAction(Actions.ESCAPE_TO_MENU) then
+        self.ball:die()
         self.state_manager:changeState(States.MENU)
     end
 
@@ -118,16 +120,23 @@ function PlayState:update(dt)
     -- TODO don't actually like this since it's unclear what is using input.
     self.world:processInput(dt, self.input)
     
-    -- I want to be able to check a collision between one item, another item or group, and call a callback that
-    -- handles the two items that collided if it happens
-    self.player:processCollision(self.world_edges, function (player, collided_tile) player:collideWithWall(collided_tile) end)
 
-    self.ball:processCollision(self.player, function(ball, paddle) ball:collideWithPaddle(paddle) end)
+    if self.player.active then
 
-    self.ball:processCollision(self.world_edges, function(ball, wall) ball:collideWithWall(wall) end)
+         -- I want to be able to check a collision between one item, another item or group, and call a callback that
+        -- handles the two items that collided if it happens
+        self.player:processCollision(self.world_edges, function (player, collided_tile) player:collideWithWall(collided_tile) end)
+    end
 
-    self.ball:processCollision(self.bricks, function(ball, brick) ball:collideWithBrick(brick) end)
+    if self.ball.active then
 
+        self.ball:processCollision(self.player, function(ball, paddle) ball:collideWithPaddle(paddle) end)
+
+        self.ball:processCollision(self.world_edges, function(ball, wall) ball:collideWithWall(wall) end)
+
+        self.ball:processCollision(self.bricks, function(ball, brick) ball:collideWithBrick(brick) end)
+
+    end
 
     -- TODO make more explicit what is happening in this phase?
     self.world:update(dt)

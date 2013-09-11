@@ -3,8 +3,10 @@ require 'external.middleclass'
 require 'collections.list'
 require 'engine.shapes'
 require 'engine.input'
+require 'engine.entity'
 
-SimpleMenu = class("SimpleMenu", GameObject)
+
+SimpleMenu = class("SimpleMenu", Entity)
 
 local MENU_UP = "up"
 local MENU_DOWN = "down"

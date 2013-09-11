@@ -89,8 +89,8 @@ function AutoGame:constrainActorsToWorld()
 
     if self.auto_player.shape.transform.position.x < 0 then
         self.auto_player.shape.transform.position.x = 0
-    elseif self.auto_player.shape.transform.position.x > love.graphics.getWidth() then
-        self.auto_player.shape.transform.position.x = love.graphics.getWidth()
+    elseif self.auto_player.shape.transform.position.x > love.graphics.getWidth() - self.auto_player.shape.width then
+        self.auto_player.shape.transform.position.x = love.graphics.getWidth() - self.auto_player.shape.width
     end
 
 end

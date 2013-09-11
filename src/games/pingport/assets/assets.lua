@@ -8,3 +8,5 @@ Assets.FONT_SMALL = "fontsmall"
 
 
 Assets.BACKGROUND_SOUND = "background"
+
+Assets.LETTER_SOUND = "letter"

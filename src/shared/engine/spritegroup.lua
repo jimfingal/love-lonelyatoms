@@ -17,7 +17,7 @@ require 'collections.list'
 -- Called once each frame like onUpdate, but guaranteed to fire after all others' onUpdate handlers.
 
 
-SpriteGroup = class('SpriteGroup', GameObject)
+SpriteGroup = class('SpriteGroup', Entity)
 
 function SpriteGroup:initialize(name, visible, active)
 

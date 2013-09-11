@@ -16,7 +16,17 @@ function SplashState:initialize(name, state_manager, asset_manager)
     self.input:registerInput(' ', Actions.SKIP_SPLASH)
     self.input:registerInput('return', Actions.SKIP_SPLASH)
 
-    self.splash_text = TextAnimation("E C H O B R E A K O U T", 0.125, false)
+    self.asset_manager:loadSound(Assets.LETTER_SOUND, "letter.wav")
+    local typing_sound = self.asset_manager:getSound(Assets.LETTER_SOUND)
+    
+    local play_sound = function() 
+        typing_sound:setVolume(0.5)
+        love.audio.play(typing_sound)
+        love.audio.rewind(typing_sound)
+    end
+
+
+    self.splash_text = TextAnimation("E C H O B R E A K O U T", 0.125, false, play_sound)
 
     -- self.timer = 5
 

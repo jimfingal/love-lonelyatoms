@@ -25,8 +25,7 @@ then
 fi
 
 # Clean up directories
-rm -rf ./$DISTRO_DIR
-mkdir $DISTRO_DIR
+rm ./$DISTRO_DIR/$GAME_NAME.love
 
 rm -rf ./$BUILD_DIR
 mkdir $BUILD_DIR

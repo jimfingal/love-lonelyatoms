@@ -84,7 +84,9 @@ function Animation:update(dt)
 
 	self.position = getFrameIndex(self.frame_borders, self.timer)
 
-
+	if self.afterUpdate then
+		self:afterUpdate(dt)
+	end
 
 end
 
@@ -109,6 +111,7 @@ function TextAnimation:initialize(text, letter_duration, loop, new_letter_callba
 
 	self.text = text
 	self.new_letter_callback = new_letter_callback
+	self.last_position = 1
 
 	local text_length = string.len(text)
 	local durations = {}
@@ -121,9 +124,20 @@ function TextAnimation:initialize(text, letter_duration, loop, new_letter_callba
 
 end
 
+function TextAnimation:afterUpdate(dt)
+
+	if self.position ~= self.last_position and self.new_letter_callback then
+		self:new_letter_callback()
+		self.last_position = self.position + 0
+	end
+
+end
+
 function TextAnimation:draw(x, y)
 
 	love.graphics.print(string.sub(self.text, 1, self.position), x, y)
+
+	-- love.graphics.print("p: " .. self.position .. " lp: " .. self.last_position, x, y + 200)
 
 end
 

@@ -1,11 +1,11 @@
 require 'external.middleclass'
-require 'engine.gameobject'
+require 'engine.entity'
 require 'engine.transform'
 require 'engine.spritegroup'
 require 'engine.color'
 
 
-Sprite = class('Sprite', GameObject)
+Sprite = class('Sprite', Entity)
 
 
 function Sprite:initialize(name, shape, collider)
