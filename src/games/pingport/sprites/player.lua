@@ -1,6 +1,5 @@
 require 'external.middleclass'
 require 'engine.sprite'
-require 'engine.rigidbody'
 require 'engine.vector'
 require 'states.actions'
 require 'engine.shapes'
@@ -24,10 +23,9 @@ function Player:initialize(x, y, width, height)
 
 	self:setColor(147,147,205)
 
-    self.rigidbody = RigidBody()
-    self.rigidbody:setMaxVelocity(800, 0)
-    self.rigidbody:setMinVelocity(-800, 0)
-    self.rigidbody:setDrag(800, 0)
+    self:setMaxVelocity(800, 0)
+    self:setMinVelocity(-800, 0)
+    self:setDrag(800, 0)
 
     self.speed_delta = Vector(1500, 0)
     self.base_speed = Vector(200, 0)
@@ -51,53 +49,53 @@ end
 
 function Player:stop()
 
-    self.rigidbody.velocity = Vector.zero
-    self.rigidbody.acceleration = Vector.zero
+    self.velocity = Vector.zero
+    self.acceleration = Vector.zero
 end
 
 function Player:accelerateRight(dt)
 
-    if self.rigidbody.velocity < Vector.zero then 
-        self.rigidbody.velocity = self.base_speed
+    if self.velocity < Vector.zero then 
+        self.velocity = self.base_speed
     end
 
-    self.rigidbody.velocity = self.rigidbody.velocity + (self.speed_delta * dt)
+    self.velocity = self.velocity + (self.speed_delta * dt)
 end
 
 
 function Player:accelerateLeft(dt)
 
-    if self.rigidbody.velocity > Vector.zero then 
-        self.rigidbody.velocity = -self.base_speed
+    if self.velocity > Vector.zero then 
+        self.velocity = -self.base_speed
     end
 
-    self.rigidbody.velocity = self.rigidbody.velocity - (self.speed_delta * dt)
+    self.velocity = self.velocity - (self.speed_delta * dt)
 end
 
 function Player:capVelocity()
-    if self.rigidbody.velocity > self.rigidbody.maxVelocity then
-        self.rigidbody.velocity = self.rigidbody.maxVelocity
-    elseif self.rigidbody.velocity < self.rigidbody.minVelocity then
-        self.rigidbody.velocity = self.rigidbody.minVelocity
+    if self.velocity > self.maxVelocity then
+        self.velocity = self.maxVelocity
+    elseif self.velocity < self.minVelocity then
+        self.velocity = self.minVelocity
     end
 end
 
 function Player:applyDrag(dt)
 
-    if self.rigidbody.velocity > Vector.zero then
+    if self.velocity > Vector.zero then
         
-        self.rigidbody.velocity = self.rigidbody.velocity - (self.rigidbody.drag * dt)
+        self.velocity = self.velocity - (self.drag * dt)
 
-        if self.rigidbody.velocity < Vector.zero then
-            self.rigidbody.velocity = Vector.zero
+        if self.velocity < Vector.zero then
+            self.velocity = Vector.zero
         end
 
-    elseif self.rigidbody.velocity < Vector.zero then
+    elseif self.velocity < Vector.zero then
 
-        self.rigidbody.velocity = self.rigidbody.velocity + (self.rigidbody.drag * dt)
+        self.velocity = self.velocity + (self.drag * dt)
 
-        if self.rigidbody.velocity > Vector.zero then
-            self.rigidbody.velocity = Vector.zero
+        if self.velocity > Vector.zero then
+            self.velocity = Vector.zero
         end
 
     end
@@ -140,9 +138,9 @@ function Player:collideWithWall(collided_sprite)
         self:moveTo(new_x, self.position.y)
 
         if self.current_action == Actions.PLAYER_LEFT then
-            self.rigidbody.velocity = Vector.zero
+            self.velocity = Vector.zero
         else
-            self.rigidbody.velocity = -self.rigidbody.velocity
+            self.velocity = -self.velocity
         end
 
 
@@ -152,9 +150,9 @@ function Player:collideWithWall(collided_sprite)
         self:moveTo(collided_position.x - self.hitbox.width - 1, self.position.y)
 
         if self.current_action == Actions.PLAYER_RIGHT then
-            self.rigidbody.velocity = Vector.zero
+            self.velocity = Vector.zero
         else
-            self.rigidbody.velocity = -self.rigidbody.velocity
+            self.velocity = -self.velocity
         end
 
     else 
@@ -174,7 +172,7 @@ function Player:update(dt)
 
 
     -- assert(false, "inspecting transform: " .. tostring(self.shape.transform))
-    local new_position = self.position + (self.rigidbody.velocity * dt) 
+    local new_position = self.position + (self.velocity * dt) 
 
     self:moveTo(new_position.x, new_position.y)
 

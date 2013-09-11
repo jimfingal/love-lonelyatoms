@@ -1,6 +1,5 @@
 require 'external.middleclass'
 require 'engine.sprite'
-require 'engine.rigidbody'
 require 'engine.vector'
 require 'engine.shapes'
 require 'states.actions'
@@ -20,11 +19,9 @@ function Ball:initialize(x, y, width, height)
 
 	self:setColor(220,220,204)
 
-	self.rigidbody = RigidBody()
-    self.rigidbody:setMaxVelocity(600, 400)
-    self.rigidbody:setMinVelocity(-600, -400)
-
-    self.rigidbody:setVelocity(default_x_vel, default_y_vel)
+    self:setMaxVelocity(600, 400)
+    self:setMinVelocity(-600, -400)
+    self:setVelocity(default_x_vel, default_y_vel)
 
 end
 
@@ -32,7 +29,7 @@ function Ball:reset(player)
 
 	self:die()
     self:moveTo(player.position.x + player.shape.width / 2, player.position.y - self.shape.height)
-    self.rigidbody:setVelocity(default_x_vel, default_y_vel)
+    self:setVelocity(default_x_vel, default_y_vel)
     self:revive()
 
 end
@@ -58,41 +55,41 @@ function Ball:collideWithPaddle(paddle)
 	if middle_ball <= first_third then
 
 		-- Reverse y direction and hit to left
-		self.rigidbody.velocity.y = -self.rigidbody.velocity.y
-		self.rigidbody.velocity.x = self.rigidbody.velocity.x - paddle_english
+		self.velocity.y = -self.velocity.y
+		self.velocity.x = self.velocity.x - paddle_english
 
 	elseif middle_ball > first_third and middle_ball < second_third then
 
 		-- Reverse y direction
-		self.rigidbody.velocity.y = -self.rigidbody.velocity.y
+		self.velocity.y = -self.velocity.y
 
 		-- Slow x direction down
-		if self.rigidbody.velocity.x > 0 then
+		if self.velocity.x > 0 then
 
-			self.rigidbody.velocity.x = self.rigidbody.velocity.x - paddle_english/2
+			self.velocity.x = self.velocity.x - paddle_english/2
 
-		elseif self.rigidbody.velocity.x < 0 then
+		elseif self.velocity.x < 0 then
 
-			self.rigidbody.velocity.x = self.rigidbody.velocity.x + paddle_english/2
+			self.velocity.x = self.velocity.x + paddle_english/2
 
 		end
 
 	elseif middle_ball > second_third then
 
 		-- Reverse y direction and hit to right
-		self.rigidbody.velocity.y = -self.rigidbody.velocity.y
-		self.rigidbody.velocity.x = self.rigidbody.velocity.x + paddle_english
+		self.velocity.y = -self.velocity.y
+		self.velocity.x = self.velocity.x + paddle_english
 
 	end	
 
 end
 
 function Ball:invertVerticalVelocity()
-	self.rigidbody.velocity.y = -self.rigidbody.velocity.y
+	self.velocity.y = -self.velocity.y
 end
 
 function Ball:invertHorizontalVelocity()
-	self.rigidbody.velocity.x = -self.rigidbody.velocity.x
+	self.velocity.x = -self.velocity.x
 end
 
 function Ball:collideWithWall(wall)
@@ -149,7 +146,7 @@ function Ball:update(dt)
 
 
     -- assert(false, "inspecting transform: " .. tostring(self.shape.transform))
-    local new_position = self.position + (self.rigidbody.velocity * dt) 
+    local new_position = self.position + (self.velocity * dt) 
 
     self:moveTo(new_position.x, new_position.y)
 

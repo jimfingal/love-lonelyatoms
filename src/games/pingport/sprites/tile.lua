@@ -1,7 +1,5 @@
 require 'external.middleclass'
 require 'engine.sprite'
-require 'engine.rigidbody'
-require 'engine.vector'
 require 'engine.shapes'
 
 Tile = class('Tile', Sprite)
