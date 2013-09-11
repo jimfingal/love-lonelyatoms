@@ -1,6 +1,6 @@
 require 'external.middleclass'
 require 'engine.gamestate'
-require 'engine.spritegroup'
+require 'engine.group'
 require 'sprites.player'
 require 'sprites.ball'
 require 'sprites.tile'
@@ -15,38 +15,23 @@ function PlayState:initialize(name, state_manager, asset_manager)
 
     GameState.initialize(self, name, state_manager, asset_manager)
 
-    self.world = SpriteGroup('allsprites', true, true)
-    self.world_edges = SpriteGroup('tiles', false, false)
-
-    self.bricks = SpriteGroup('bricks', true, true)
-    self.world:add(self.bricks)
+    self.world_edges = Group()
+    self.bricks = Group()
 
     local TILE_SIZE = 50
 
-    local top_tile = Tile('x' .. tostring(i), 0, -1 * TILE_SIZE, love.graphics.getWidth(), TILE_SIZE)
-    local bottom_tile = Tile('x' .. tostring(i), 0, love.graphics.getHeight(), love.graphics.getWidth(), TILE_SIZE)
-    local left_tile = Tile('y' .. tostring(i), -1 * TILE_SIZE, 0, TILE_SIZE, love.graphics.getHeight())
-    local right_tile = Tile('y' .. tostring(i), love.graphics.getWidth(), 0, TILE_SIZE, love.graphics.getHeight())
-
-    self.world:add(top_tile)
-    self.world:add(bottom_tile)   
-    self.world:add(left_tile)
-    self.world:add(right_tile)
+    local top_tile = Tile(0, -1 * TILE_SIZE, love.graphics.getWidth(), TILE_SIZE)
+    local bottom_tile = Tile(0, love.graphics.getHeight(), love.graphics.getWidth(), TILE_SIZE)
+    local left_tile = Tile(-1 * TILE_SIZE, 0, TILE_SIZE, love.graphics.getHeight())
+    local right_tile = Tile(love.graphics.getWidth(), 0, TILE_SIZE, love.graphics.getHeight())
 
     self.world_edges:add(top_tile)
     self.world_edges:add(bottom_tile)   
     self.world_edges:add(left_tile)
     self.world_edges:add(right_tile)
 
-
-    self.player = Player('player', 350, 500, 100, 20)
-    self.world:add(self.player)
-
-    self.ball = Ball('ball', 395, 500 - 15, 15, 15)
-    self.world:add(self.ball)
-
-    self.debug = false
-
+    self.player = Player(350, 500, 100, 20)    
+    self.ball = Ball(395, 500 - 15, 15, 15)
 
     self.input = InputManager()
 
@@ -78,12 +63,9 @@ function PlayState:enter(brick_input)
     love.graphics.print("Loading...", 200, 550)
 
     -- Reset bricks
-    self.world:remove(self.bricks)
     self.brick_config = BrickLoader:load_bricks(self.asset_manager, brick_input)
 
     self.bricks = self.brick_config.bricks
-
-    self.world:add(self.bricks)
 
     local background = self.brick_config.background_snd
     
@@ -116,10 +98,7 @@ function PlayState:update(dt)
         love.event.push("quit")
     end
 
-
-    -- TODO don't actually like this since it's unclear what is using input.
-    self.world:processInput(dt, self.input)
-    
+    self.player:processInput(dt, self.input)    
 
     if self.player.active then
 
@@ -139,11 +118,8 @@ function PlayState:update(dt)
     end
 
     -- TODO make more explicit what is happening in this phase?
-    self.world:update(dt)
-
-    -- TODO make more explicit what is happening in this phase?
-    self.world:endFrame(dt)
-
+    self.player:update(dt)
+    self.ball:update(dt)
 
     self.victory = true
     for _, brick in self.bricks:members() do
@@ -162,7 +138,9 @@ function PlayState:draw()
 
     love.graphics.setBackgroundColor(63, 63, 63, 255)
 
-    self.world:draw()
+    self.bricks:draw()
+    self.player:draw()
+    self.ball:draw()
 
     if self.victory then
         love.graphics.setColor(204,147,147)
@@ -180,12 +158,12 @@ function PlayState:draw()
 
     local debugstart = 300
 
-	if self.debug then
+	if DEBUG then
 
         love.graphics.setFont(self:assetManager():getFont(Assets.FONT_SMALL))
         love.graphics.print(love.timer.getFPS(), 50, debugstart)
-        love.graphics.print("Ball x: " .. self.ball.shape.upper_left.x, 50, debugstart + 20)
-        love.graphics.print("Ball y: " .. self.ball.shape.upper_left.y, 50, debugstart + 40)
+        love.graphics.print("Ball x: " .. self.ball.position.x, 50, debugstart + 20)
+        love.graphics.print("Ball y: " .. self.ball.position.y, 50, debugstart + 40)
 
     end
 

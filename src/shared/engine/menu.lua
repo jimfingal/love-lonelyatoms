@@ -4,6 +4,8 @@ require 'collections.list'
 require 'engine.shapes'
 require 'engine.input'
 require 'engine.entity'
+require 'engine.color'
+
 
 
 SimpleMenu = class("SimpleMenu", Entity)
@@ -16,7 +18,8 @@ function SimpleMenu:initialize(x, y, width, height)
 
 	self.menu_items = List()
 
-	self.background = RectangleShape(x, y, width, height)
+	local background_shape = RectangleShape(width, height)
+	self.background = Sprite(x, y, background_shape)
 
 	self.line_height = 0
 	self.line_spacing = 0
@@ -24,7 +27,6 @@ function SimpleMenu:initialize(x, y, width, height)
 	self.selected_index = 1
 
 	self.font = nil
-	self.background_color = nil
 	self.text_color = nil
 	self.highlight_color = nil
 
@@ -37,7 +39,7 @@ function SimpleMenu:initialize(x, y, width, height)
 end
 
 function SimpleMenu:setBackgroundColor(r, g, b, a)
-	self.background_color = Color(r, g, b, a)
+	self.background:setColor(r, g, b, a)
 end
 
 function SimpleMenu:setTextColor(r, g, b, a)
@@ -122,13 +124,12 @@ end
 
 function SimpleMenu:draw()
 
-	love.graphics.setColor(self.background_color:unpack())
-	self.background:draw('fill')
+	self.background:draw()
 
 	love.graphics.setFont(self.font)
 
-	local x_index = self.background.upper_left.x
-	local y_index = self.background.upper_left.y
+	local x_index = self.background.position.x
+	local y_index = self.background.position.y
 
 	for i, item in self.menu_items:members() do
 

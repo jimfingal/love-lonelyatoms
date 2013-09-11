@@ -12,16 +12,13 @@ local default_y_vel = -425
 
 local paddle_english = 100
 
-function Ball:initialize(name, x, y, width, height)
+function Ball:initialize(x, y, width, height)
 
-	sprite_and_collider_shape = RectangleShape(x, y, width, height)
+	sprite_and_collider_shape = RectangleShape(width, height)
 
-	Sprite.initialize(self, name, sprite_and_collider_shape, sprite_and_collider_shape)
+	Sprite.initialize(self, x, y, sprite_and_collider_shape)
 
-	self.active = true
-	self.visible = true
-
-	self:setFill(220,220,204)
+	self:setColor(220,220,204)
 
 	self.rigidbody = RigidBody()
     self.rigidbody:setMaxVelocity(600, 400)
@@ -31,18 +28,10 @@ function Ball:initialize(name, x, y, width, height)
 
 end
 
-function Ball:moveTo(x, y)
-
-    self.shape:moveTo(x, y)
-    self.collider:moveTo(x, y)
-
-end
-
-
 function Ball:reset(player)
 
 	self:die()
-    self:moveTo(player.shape.transform.position.x + player.shape.width / 2, player.shape.transform.position.y - self.shape.height)
+    self:moveTo(player.position.x + player.shape.width / 2, player.position.y - self.shape.height)
     self.rigidbody:setVelocity(default_x_vel, default_y_vel)
     self:revive()
 
@@ -50,17 +39,17 @@ end
 
 function Ball:collideWithPaddle(paddle)
 
-	local new_y = paddle.shape.transform.position.y - self.shape.height
-	self:moveTo(self.shape.transform.position.x, new_y)
+	local new_y = paddle.position.y - self.shape.height
+	self:moveTo(self.position.x, new_y)
 
 
 	-- Compare X with paddle x
 
-	local paddle_origin = paddle.shape.transform.position.x
+	local paddle_origin = paddle.position.x
 	local paddle_width = paddle.shape.width
 	local third_of_paddle = paddle_width / 3
 
-	local middle_ball = self.shape.transform.position.x + self.shape.width/2
+	local middle_ball = self.position.x + self.shape.width/2
 
 	local first_third = paddle_origin + third_of_paddle
 	local second_third = first_third + third_of_paddle
@@ -108,12 +97,12 @@ end
 
 function Ball:collideWithWall(wall)
 
-	local collider_position = wall.collider.transform.position
+	local collider_position = wall.position
 
 	-- Top wall
 	if collider_position.y < 0 then
 
-		self:moveTo(self.shape.transform.position.x, 1)
+		self:moveTo(self.position.x, 1)
 		self:invertVerticalVelocity()
 
 	-- Bottom wall
@@ -124,11 +113,11 @@ function Ball:collideWithWall(wall)
 
 	elseif collider_position.x <= love.graphics.getHeight() then
 
-		self:moveTo(1, self.shape.transform.position.y)
+		self:moveTo(1, self.position.y)
 		self:invertHorizontalVelocity()
 
 	else
-		self:moveTo(love.graphics.getWidth() - self.shape.width, self.shape.transform.position.y)
+		self:moveTo(love.graphics.getWidth() - self.shape.width, self.position.y)
 		self:invertHorizontalVelocity()
 	end
 
@@ -143,8 +132,8 @@ function Ball:collideWithBrick(brick)
 	-- TODO handle bullet shit
 
 	-- Colliding from the left or right
-	if self.shape.transform.position.x < brick.shape.transform.position.x or
-	   self.shape.transform.position.x > brick.shape.transform.position.x + brick.shape.width then
+	if self.position.x < brick.position.x or
+	   self.position.x > brick.position.x + brick.shape.width then
 		self:invertHorizontalVelocity()
 	else
 		self:invertVerticalVelocity()
@@ -160,7 +149,7 @@ function Ball:update(dt)
 
 
     -- assert(false, "inspecting transform: " .. tostring(self.shape.transform))
-    local new_position = self.shape.transform:vector() + (self.rigidbody.velocity * dt) 
+    local new_position = self.position + (self.rigidbody.velocity * dt) 
 
     self:moveTo(new_position.x, new_position.y)
 

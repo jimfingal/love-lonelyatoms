@@ -12,6 +12,9 @@ require 'states.autogame'
 
 require 'assets.assets'
 
+
+DEBUG = false
+
 function love.load()
 
   window = { width = love.graphics.getWidth(),
@@ -39,8 +42,11 @@ function love.load()
   state_manager:registerState(menu_state)
 
   -- Play State
+
+  
   local game_state = PlayState(States.PLAY, state_manager, asset_manager)
   state_manager:registerState(game_state)
+  
 
   -- Initialize
   state_manager:changeState(States.SPLASH)

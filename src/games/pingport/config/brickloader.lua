@@ -1,6 +1,6 @@
 require 'external.middleclass'
 require 'config.brickconfig'
-require 'engine.spritegroup'
+require 'engine.group'
 require 'collections.list'
 require 'engine.color'
 require 'sprites.brick'
@@ -36,7 +36,7 @@ end
 
 function BrickLoaderClass:load_bricks(asset_manager, brick_source)
 	
-	local bricks = SpriteGroup('bricks', true, true)
+	local bricks = Group(true, true)
 
 	if not brick_source then 
 
@@ -82,8 +82,7 @@ function BrickLoaderClass:load_bricks(asset_manager, brick_source)
 
 			asset_manager:loadSound(brickinfo.snd, brickinfo.snd)
 
-			local brick = Brick(brickinfo.x .. brickinfo.y, 
-								brickinfo.x, 
+			local brick = Brick(brickinfo.x, 
 								brickinfo.y, 
 								brickinfo.width, 
 								brickinfo.height, 

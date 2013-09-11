@@ -8,19 +8,21 @@ require 'engine.shapes'
 Player = class('Player', Sprite)
 
 
-function Player:initialize(name, x, y, width, height)
+function Player:initialize(x, y, width, height)
 
-	sprite_and_collider_shape = RectangleShape(x, y, width, height)
+	sprite_and_collider_shape = RectangleShape(width, height)
 
-    Sprite.initialize(self, name, sprite_and_collider_shape, sprite_and_collider_shape)
+    Sprite.initialize(self, x, y, sprite_and_collider_shape)
 
-    self.leftEdge = RectangleShape(x, y, width / 2, height)
-    self.rightEdge = RectangleShape(x + width - 1, y, width / 2, height)
+
+    local half_rectangle = RectangleShape(width / 2, height)
+    self.leftEdge = Sprite(x, y, half_rectangle)
+    self.rightEdge = Sprite(x + width - 1, y, half_rectangle)
 
 	self.active = true
 	self.visible = true
 
-	self:setFill(147,147,205)
+	self:setColor(147,147,205)
 
     self.rigidbody = RigidBody()
     self.rigidbody:setMaxVelocity(800, 0)
@@ -37,10 +39,13 @@ end
 
 function Player:moveTo(x, y)
 
-    self.shape:moveTo(x, y)
-    self.collider:moveTo(x, y)
+    -- TODO refactor
+    self.position.x = x;
+    self.position.y = y;
+
     self.leftEdge:moveTo(x, y)
     self.rightEdge:moveTo(x + (self.shape.width/2), y)
+
 end
 
 
@@ -120,19 +125,19 @@ end
 
 function Player:collideWithWall(collided_sprite)
 
-    assert(instanceOf(RectangleShape, collided_sprite.collider), "Can only be applied to rectangles")
+    assert(instanceOf(RectangleShape, collided_sprite.hitbox), "Can only be applied to rectangles")
 
-    local collided_position = collided_sprite.collider.transform.position
+    local collided_position = collided_sprite.position
 
 
     -- If something is immovable, then I could only collide with it in the direction I'm going
-    if self.leftEdge:collidesWith(collided_sprite.collider) then
+    if self.leftEdge:collidesWith(collided_sprite) then
 
         -- Translate to be on the other side of it
 
-        local new_x = collided_position.x + collided_sprite.collider.width + 1
+        local new_x = collided_position.x + collided_sprite.hitbox.width + 1
 
-        self:moveTo(new_x, self.shape.transform.position.y)
+        self:moveTo(new_x, self.position.y)
 
         if self.current_action == Actions.PLAYER_LEFT then
             self.rigidbody.velocity = Vector.zero
@@ -141,10 +146,10 @@ function Player:collideWithWall(collided_sprite)
         end
 
 
-    elseif self.rightEdge:collidesWith(collided_sprite.collider) then
+    elseif self.rightEdge:collidesWith(collided_sprite) then
 
         -- Translate to be on the other side of it
-        self:moveTo(collided_position.x - self.collider.width - 1, self.shape.transform.position.y)
+        self:moveTo(collided_position.x - self.hitbox.width - 1, self.position.y)
 
         if self.current_action == Actions.PLAYER_RIGHT then
             self.rigidbody.velocity = Vector.zero
@@ -154,7 +159,7 @@ function Player:collideWithWall(collided_sprite)
 
     else 
 
-        assert(false, "Collided but didn't detect right or left edge collision " .. tostring(self.shape) .. tostring(self.rightEdge) .. tostring(collided_sprite.collider))
+        assert(false, "Collided but didn't detect right or left edge collision " .. tostring(self.shape) .. tostring(self.rightEdge) .. tostring(collided_sprite.hitbox))
 
     end
 
@@ -169,7 +174,7 @@ function Player:update(dt)
 
 
     -- assert(false, "inspecting transform: " .. tostring(self.shape.transform))
-    local new_position = self.shape.transform:vector() + (self.rigidbody.velocity * dt) 
+    local new_position = self.position + (self.rigidbody.velocity * dt) 
 
     self:moveTo(new_position.x, new_position.y)
 
@@ -178,11 +183,11 @@ end
 
 function Player:processAI(dt, ball)
 
-    local paddle_origin = self.shape.transform.position.x
+    local paddle_origin = self.position.x
     local paddle_width = self.shape.width
     local third_of_paddle = paddle_width / 3
 
-    local middle_ball = ball.shape.transform.position.x + self.shape.width/2
+    local middle_ball = ball.position.x + self.shape.width/2
 
     local first_third = paddle_origin + third_of_paddle
     local second_third = first_third + third_of_paddle

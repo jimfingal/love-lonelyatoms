@@ -26,11 +26,9 @@ function SplashState:initialize(name, state_manager, asset_manager)
     end
 
 
-    self.splash_text = TextAnimation("E C H O B R E A K O U T", 0.125, false, play_sound)
+    self.splash_text = TextAnimation("E C H O B R E A K O U T", 0.125, false, nil)
 
     -- self.timer = 5
-
-    self.debug = false
 
     self.splash_text:play()
 end
@@ -64,10 +62,8 @@ function SplashState:draw()
 
     self.splash_text:draw(25, 100)
 
-  
 
-
-    if self.debug then
+    if DEBUG then
 
         --[[
         menu_str = "STARTING IN " .. tostring(self.timer)
