@@ -1,9 +1,9 @@
 require 'external.middleclass'
-require 'engine.gamestate'
+require 'core.gamestate'
 require 'assets.assets'
-require 'engine.input'
+require 'core.input'
 require 'states.actions'
-require 'engine.animation'
+require 'core.animation'
 
 SplashState = class('Splash', GameState)
 

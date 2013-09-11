@@ -1,7 +1,7 @@
 require 'external.middleclass'
-require 'engine.gamestate'
-require 'engine.input'
-require 'engine.menu'
+require 'core.gamestate'
+require 'core.input'
+require 'core.menu'
 require 'assets.assets'
 
 

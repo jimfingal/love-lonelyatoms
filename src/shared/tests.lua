@@ -1,4 +1,4 @@
-require 'engine.animation'
+require 'core.animation'
 
 foo = Animation({1, 2, 1}, false)
 

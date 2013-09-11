@@ -1,8 +1,8 @@
 require 'external.middleclass'
-require 'engine.entity'
-require 'engine.mixins.movable'
-require 'engine.mixins.visible'
-require 'engine.mixins.collidable'
+require 'core.entity'
+require 'core.mixins.movable'
+require 'core.mixins.visible'
+require 'core.mixins.collidable'
 
 Sprite = class('Sprite', Entity)
 

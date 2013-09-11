@@ -1,5 +1,5 @@
 require 'collections.list'
-require 'engine.input'
+require 'core.input'
 
 
 messages = List()

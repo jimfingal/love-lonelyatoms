@@ -1,7 +1,7 @@
 require 'external.middleclass'
-require 'engine.entity'
+require 'core.entity'
 require 'collections.list'
-require 'engine.mixins.visible'
+require 'core.mixins.visible'
 
 
 -- Class: Sprite

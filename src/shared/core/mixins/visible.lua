@@ -1,6 +1,6 @@
 require 'external.middleclass'
-require 'engine.color'
-require 'engine.mixins.movable'
+require 'core.color'
+require 'core.mixins.movable'
 
 Visible = {}
 

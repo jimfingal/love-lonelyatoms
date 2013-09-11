@@ -1,10 +1,10 @@
 
 require 'external.middleclass'
 require 'collections.list'
-require 'engine.shapes'
-require 'engine.input'
-require 'engine.entity'
-require 'engine.color'
+require 'core.shapes'
+require 'core.input'
+require 'core.entity'
+require 'core.color'
 
 
 

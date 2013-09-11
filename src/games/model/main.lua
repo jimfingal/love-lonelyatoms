@@ -1,6 +1,6 @@
-require "engine.gamestatemanager"
-require "engine.gamestate"
-require 'engine.assetmanager'
+require "core.gamestatemanager"
+require "core.gamestate"
+require 'core.assetmanager'
 require 'gameconstants'
 
 function love.load()

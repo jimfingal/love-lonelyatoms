@@ -1,5 +1,5 @@
-require 'engine.sprite'
-require 'engine.shapes'
+require 'core.sprite'
+require 'core.shapes'
 
 require 'collections.list'
 Timer = require 'external.timer'

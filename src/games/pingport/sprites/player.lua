@@ -1,8 +1,8 @@
 require 'external.middleclass'
-require 'engine.sprite'
-require 'engine.vector'
+require 'core.sprite'
+require 'core.vector'
 require 'states.actions'
-require 'engine.shapes'
+require 'core.shapes'
 
 Player = class('Player', Sprite)
 

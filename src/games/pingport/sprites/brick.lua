@@ -1,6 +1,6 @@
 require 'external.middleclass'
-require 'engine.sprite'
-require 'engine.shapes'
+require 'core.sprite'
+require 'core.shapes'
 
 Brick = class('Brick', Sprite)
 

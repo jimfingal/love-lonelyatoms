@@ -1,12 +1,12 @@
-require "engine.gamestatemanager"
-require "engine.gamestate"
-require 'engine.assetmanager'
+require "core.gamestatemanager"
+require "core.gamestate"
+require 'core.assetmanager'
 require 'states.states'
 require 'states.splashstate'
 require 'states.menustate'
 require 'states.playstate'
 require 'states.actions'
-require 'engine.input'
+require 'core.input'
 
 require 'states.autogame'
 

@@ -1,4 +1,4 @@
-require 'engine.vector'
+require 'core.vector'
 require 'external.middleclass'
 
 Shape = class('Shape')
