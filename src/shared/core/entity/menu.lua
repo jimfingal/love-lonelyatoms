@@ -3,7 +3,7 @@ require 'external.middleclass'
 require 'collections.list'
 require 'core.shapes'
 require 'core.input'
-require 'core.entity'
+require 'core.entity.entity'
 require 'core.color'
 
 

@@ -1,5 +1,5 @@
 require 'external.middleclass'
-require 'core.entity'
+require 'core.entity.entity'
 require 'collections.list'
 require 'core.mixins.visible'
 

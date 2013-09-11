@@ -1,7 +1,7 @@
 require 'external.middleclass'
 require 'core.gamestate'
 require 'core.input'
-require 'core.menu'
+require 'core.entity.menu'
 require 'assets.assets'
 
 

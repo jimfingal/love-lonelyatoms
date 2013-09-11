@@ -1,5 +1,5 @@
 require 'external.middleclass'
-require 'core.sprite'
+require 'core.entity.sprite'
 require 'core.vector'
 require 'core.shapes'
 require 'states.actions'

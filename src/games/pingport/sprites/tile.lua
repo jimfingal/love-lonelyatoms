@@ -1,5 +1,5 @@
 require 'external.middleclass'
-require 'core.sprite'
+require 'core.entity.sprite'
 require 'core.shapes'
 
 Tile = class('Tile', Sprite)

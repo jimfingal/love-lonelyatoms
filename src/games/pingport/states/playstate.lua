@@ -1,6 +1,6 @@
 require 'external.middleclass'
 require 'core.gamestate'
-require 'core.group'
+require 'core.entity.group'
 require 'sprites.player'
 require 'sprites.ball'
 require 'sprites.tile'

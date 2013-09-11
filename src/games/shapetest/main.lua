@@ -1,4 +1,4 @@
-require 'core.sprite'
+require 'core.entity.sprite'
 require 'core.shapes'
 
 require 'collections.list'

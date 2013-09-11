@@ -1,5 +1,5 @@
 require 'external.middleclass'
-require 'core.entity'
+require 'core.entity.entity'
 require 'core.mixins.movable'
 require 'core.mixins.visible'
 require 'core.mixins.collidable'
