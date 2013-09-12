@@ -3,7 +3,6 @@ require 'core.entity.camera'
 require 'core.entity.group'
 require 'core.input'
 
-
 -- Actions
 Actions = {}
 
@@ -63,7 +62,6 @@ function love.load()
     move_speed = 100
     scale_speed = 2
     rotate_speed = 1
-
 
 end
 

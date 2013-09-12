@@ -22,7 +22,6 @@ function love.load()
 
     Tweener:addTween(5, rectangle.position, {x = 300, y = 500}, Easing.outInElastic)
 
-
     time = 0
 
 end

@@ -1,5 +1,4 @@
 require 'external.middleclass'
-require 'core.registry'
 require 'collections.list'
 
 
