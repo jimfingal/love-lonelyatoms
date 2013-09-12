@@ -1,4 +1,4 @@
--- States
+-- Actions
 Actions = {}
 
 Actions.PLAYER_LEFT = "left"

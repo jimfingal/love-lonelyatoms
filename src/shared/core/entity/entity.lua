@@ -12,11 +12,11 @@ function Entity:initialize(x, y)
 
 end
 
-function Entity:die()
+function Entity:deactivate()
 	self.active = false
 end
 
-function Entity:revive()
+function Entity:activate()
 	self.active = true
 end
 

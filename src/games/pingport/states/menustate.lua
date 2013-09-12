@@ -114,7 +114,6 @@ function MenuState:draw()
     -- Don't want to overwrite auto-game
     love.graphics.setBackgroundColor(63, 63, 63, 255)
 
-
     self.title:draw()
 
     self.menu:draw()

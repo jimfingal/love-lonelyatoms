@@ -4,10 +4,6 @@ Movable = {}
 
 function Movable.movableInit(self)
 
-	-- Property: rotation
-	-- Rotation of drawn sprite in radians.
-	self.rotation = 0
-
 	-- Property: velocity
 	-- Motion either along the x or y axes, in pixels per second.
 	self.velocity = Vector(0, 0)
