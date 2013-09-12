@@ -1,16 +1,13 @@
 require 'external.middleclass'
-require 'core.entity.sprite'
-require 'core.shapes'
+require 'core.entity.shapes'
 
-Brick = class('Brick', Sprite)
+Brick = class('Brick', CollidableRectangle)
 
 local DEATH_SOUND = "death"
 
 function Brick:initialize(x, y, width, height, r, g, b, sound)
 
-	sprite_and_collider_shape = RectangleShape(width, height)
-
-	Sprite.initialize(self, x, y, sprite_and_collider_shape)
+	CollidableRectangle.initialize(self, x, y, width, height)
 
 	self:setColor(r, g, b)
 

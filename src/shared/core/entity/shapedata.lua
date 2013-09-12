@@ -4,14 +4,15 @@ require 'external.middleclass'
 Shape = class('Shape')
 
 function Shape:initialize()
-
+	self:movableInit()
 end
 
 -- Circles
 
-CircleShape = class('CircleShape', Shape)
+CircleShape = class('CircleShape', ShapeData)
 
 function CircleShape:initialize(radius)
+	Shape.initialize()
 	self.radius = radius
 end
 
@@ -31,10 +32,10 @@ end
 
 -- Points
 
-PointShape = class('PointShape', Shape)
+PointShape = class('PointShape', ShapeData)
 
 function PointShape:initialize()
-
+	Shape.initialize(x, y)
 end
 
 function PointShape:draw(position)
@@ -43,7 +44,7 @@ end
 
 -- Rectangles
 
-RectangleShape = class('RectangleShape', Shape)
+RectangleShape = class('RectangleShape', ShapeData)
 
 -- X and Y are point in upper left hand corner
 function RectangleShape:initialize(width, height)

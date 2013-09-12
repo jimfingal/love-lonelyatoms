@@ -1,5 +1,5 @@
-require 'core.entity.sprite'
-require 'core.shapes'
+require 'core.entity.shapes'
+require 'core.mixins.collidable'
 
 require 'collections.list'
 Timer = require 'external.timer'
@@ -8,34 +8,21 @@ require 'external.middleclass'
 function love.load()
     -- initialize library
 
-    cs = CircleShape(50)
-    circle = Sprite(100, 100, cs)
+    circle = CollidableCircle(100, 100, 50)
     circle:setColor(205,147,176)
 
-
-    rs = RectangleShape(100, 50)
-    rectangle = Sprite(300, 100, rs)
+    rectangle = CollidableRectangle(300, 100, 100, 50)
     rectangle:setColor(205,147,147)
 
-
-    ps = PointShape()
-    point = Sprite(500, 100, ps)
+    point = CollidablePoint(500, 100)
     point:setColor(147,147,205)
-
-
 
 
     mouse_shapes = List()
 
-    mcs = CircleShape(50)
-    mc = Sprite(300, 300, mcs)
-
-    mrs = RectangleShape(50, 25)
-    mr = Sprite(300, 100, mrs)
-
-    mps = PointShape()
-    mp = Sprite(500, 100, mps)
-
+    mc = CollidableCircle(300, 300, 50)
+    mr = CollidableRectangle(300, 100, 50, 25)
+    mp = CollidablePoint(500, 100)
 
     mc:setColor(147,176,205)
     mr:setColor(147,176,205)
@@ -104,7 +91,7 @@ function love.draw()
 
      if (mouse:collidesWith(point)) then
 
-        if instanceOf(PointShape, mouse.hitbox) then
+        if instanceOf(PointShape, mouse) then
             love.graphics.setBackgroundColor(50, 50, 50, 255)
         end
         

@@ -4,9 +4,9 @@ require 'collections.list'
 require 'core.mixins.visible'
 
 
--- Class: Sprite
--- A group is a set of sprites. Groups can be used to
--- implement layers or keep categories of sprites together.
+-- Class: Group
+-- A group is a set of entities. Groups can be used to
+-- implement layers or keep categories of entities together.
 
 -- Event: onUpdate
 -- Called once each frame, with the elapsed time since the last frame in seconds.
@@ -23,32 +23,32 @@ Group = class('Group', Entity)
 function Group:initialize()
 
 	Entity.initialize(self)
-	self.sprites = List()
+	self.entities = List()
 end
 
 
-function Group:add(sprite)
-	assert(sprite, 'asked to add nil to a group')
-	assert(sprite ~= self, "can't add a group to itself")
-	self.sprites:append(sprite)
+function Group:add(entity)
+	assert(entity, 'asked to add nil to a group')
+	assert(entity ~= self, "can't add a group to itself")
+	self.entities:append(entity)
 end
 
-function Group:remove(sprite)
-	assert(sprite, 'asked to remove nil to a group')
-	self.sprites:removeFirst(sprite)
+function Group:remove(entity)
+	assert(entity, 'asked to remove nil to a group')
+	self.entities:removeFirst(entity)
 end
 
 function Group:members()
-	return self.sprites:members()
+	return self.entities:members()
 end
 
 function Group:processInput(elapsed, input)
 
 	if not self.active then return end
 
-	for i, sprite in self:members() do
-		if sprite.active then
-			sprite:processInput(elapsed, input)
+	for i, entity in self:members() do
+		if entity.active then
+			entity:processInput(elapsed, input)
 		end
 	end
 
@@ -60,9 +60,9 @@ function Group:update(elapsed)
 
 	if not self.active then return end
 
-	for i, sprite in self:members() do
-		if sprite.active then
-			sprite:update(elapsed)
+	for i, entity in self:members() do
+		if entity.active then
+			entity:update(elapsed)
 		end
 	end
 
@@ -70,15 +70,15 @@ function Group:update(elapsed)
 
 end
 
--- passes endFrame events to member sprites
+-- passes endFrame events to member entities
 
 function Group:endFrame(elapsed)
 	
 	if not self.active then return end
 
-	for i, sprite in self:members() do
-		if sprite.active then
-			sprite:endFrame(elapsed)
+	for i, entity in self:members() do
+		if entity.active then
+			entity:endFrame(elapsed)
 		end
 	end
 
@@ -89,13 +89,13 @@ end
 
 
 -- Method: draw
--- Draws all visible member sprites onscreen.
+-- Draws all visible member entities onscreen.
 
 function Group:draw()
 
-	for i, sprite in self:members() do
-		if includes(Visible, sprite.class) then
-			sprite:draw()
+	for i, entity in self:members() do
+		if includes(Visible, entity.class) then
+			entity:draw()
 		end
 	end
 end

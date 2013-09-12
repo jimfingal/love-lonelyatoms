@@ -1,22 +1,16 @@
 require 'external.middleclass'
-require 'core.entity.sprite'
 require 'core.vector'
 require 'states.actions'
-require 'core.shapes'
+require 'core.entity.shapes'
 
-Player = class('Player', Sprite)
-
+Player = class('Player', CollidableRectangle)
 
 function Player:initialize(x, y, width, height)
 
-	sprite_and_collider_shape = RectangleShape(width, height)
+    CollidableRectangle.initialize(self, x, y, width, height)
 
-    Sprite.initialize(self, x, y, sprite_and_collider_shape)
-
-
-    local half_rectangle = RectangleShape(width / 2, height)
-    self.leftEdge = Sprite(x, y, half_rectangle)
-    self.rightEdge = Sprite(x + width - 1, y, half_rectangle)
+    self.leftEdge = CollidableRectangle(x, y, width / 2, height)
+    self.rightEdge = CollidableRectangle(x + width - 1, y, width / 2, height)
 
 	self.active = true
 	self.visible = true
@@ -42,7 +36,7 @@ function Player:moveTo(x, y)
     self.position.y = y;
 
     self.leftEdge:moveTo(x, y)
-    self.rightEdge:moveTo(x + (self.shape.width/2), y)
+    self.rightEdge:moveTo(x + (self.width/2), y)
 
 end
 
@@ -72,13 +66,7 @@ function Player:accelerateLeft(dt)
     self.velocity = self.velocity - (self.speed_delta * dt)
 end
 
-function Player:capVelocity()
-    if self.velocity > self.maxVelocity then
-        self.velocity = self.maxVelocity
-    elseif self.velocity < self.minVelocity then
-        self.velocity = self.minVelocity
-    end
-end
+
 
 function Player:applyDrag(dt)
 
@@ -123,7 +111,7 @@ end
 
 function Player:collideWithWall(collided_sprite)
 
-    assert(instanceOf(RectangleShape, collided_sprite.hitbox), "Can only be applied to rectangles")
+    assert(instanceOf(RectangleShape, collided_sprite), "Can only be applied to rectangles")
 
     local collided_position = collided_sprite.position
 
@@ -133,7 +121,7 @@ function Player:collideWithWall(collided_sprite)
 
         -- Translate to be on the other side of it
 
-        local new_x = collided_position.x + collided_sprite.hitbox.width + 1
+        local new_x = collided_position.x + collided_sprite.width + 1
 
         self:moveTo(new_x, self.position.y)
 
@@ -147,7 +135,7 @@ function Player:collideWithWall(collided_sprite)
     elseif self.rightEdge:collidesWith(collided_sprite) then
 
         -- Translate to be on the other side of it
-        self:moveTo(collided_position.x - self.hitbox.width - 1, self.position.y)
+        self:moveTo(collided_position.x - self.width - 1, self.position.y)
 
         if self.current_action == Actions.PLAYER_RIGHT then
             self.velocity = Vector.zero
@@ -157,7 +145,7 @@ function Player:collideWithWall(collided_sprite)
 
     else 
 
-        assert(false, "Collided but didn't detect right or left edge collision " .. tostring(self.shape) .. tostring(self.rightEdge) .. tostring(collided_sprite.hitbox))
+        assert(false, "Collided but didn't detect right or left edge collision " .. tostring(self) .. tostring(self.rightEdge) .. tostring(collided_sprite))
 
     end
 
@@ -166,12 +154,11 @@ function Player:collideWithWall(collided_sprite)
 
 end
 
+-- TODO: this should be a function of movable
 function Player:update(dt)
 
     self:capVelocity()
 
-
-    -- assert(false, "inspecting transform: " .. tostring(self.shape.transform))
     local new_position = self.position + (self.velocity * dt) 
 
     self:moveTo(new_position.x, new_position.y)
@@ -182,10 +169,10 @@ end
 function Player:processAI(dt, ball)
 
     local paddle_origin = self.position.x
-    local paddle_width = self.shape.width
+    local paddle_width = self.width
     local third_of_paddle = paddle_width / 3
 
-    local middle_ball = ball.position.x + self.shape.width/2
+    local middle_ball = ball.position.x + self.width/2
 
     local first_third = paddle_origin + third_of_paddle
     local second_third = first_third + third_of_paddle

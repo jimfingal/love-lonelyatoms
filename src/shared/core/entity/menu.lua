@@ -1,9 +1,9 @@
 
 require 'external.middleclass'
 require 'collections.list'
-require 'core.shapes'
 require 'core.input'
 require 'core.entity.entity'
+require 'core.entity.shapes'
 require 'core.color'
 
 
@@ -16,10 +16,11 @@ local MENU_SELECT = "select"
 
 function SimpleMenu:initialize(x, y, width, height)
 
+	Entity.initialize(self, x, y)
+
 	self.menu_items = List()
 
-	local background_shape = RectangleShape(width, height)
-	self.background = Sprite(x, y, background_shape)
+	self.background = RectangleShape(x, y, width, height)
 
 	self.line_height = 0
 	self.line_spacing = 0

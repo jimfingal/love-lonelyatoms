@@ -1,15 +1,12 @@
 require 'external.middleclass'
-require 'core.entity.sprite'
-require 'core.shapes'
+require 'core.entity.shapes'
 
-Tile = class('Tile', Sprite)
+Tile = class('Tile', CollidableRectangle)
 
 
 function Tile:initialize(x, y, width, height)
 
-	sprite_and_collider_shape = RectangleShape(width, height)
-
-	Sprite.initialize(self, x, y, sprite_and_collider_shape)
+	CollidableRectangle.initialize(self, x, y, width, height)
 
 	self:setColor(220,220,204)
 

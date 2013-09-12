@@ -2,13 +2,7 @@ require 'core.vector'
 
 Movable = {}
 
-function Movable.movableInit(self, x, y)
-
-	-- Property: Position. 
-	-- x == 0 is the left edge of the window.
-	-- y == 0 is the top edge of the window.
-
-	self.position = Vector(x or 0, y or 0)
+function Movable.movableInit(self)
 
 	-- Property: rotation
 	-- Rotation of drawn sprite in radians.
@@ -97,4 +91,13 @@ end
 function Movable.setDrag(self, x, y)
 	self.drag.x = x
 	self.drag.y = y
+end
+
+
+function Movable.capVelocity(self)
+    if self.velocity > self.maxVelocity then
+        self.velocity = self.maxVelocity
+    elseif self.velocity < self.minVelocity then
+        self.velocity = self.minVelocity
+    end
 end

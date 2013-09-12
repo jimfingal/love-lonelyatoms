@@ -1,10 +1,9 @@
 require 'external.middleclass'
-require 'core.entity.sprite'
+require 'core.entity.shapes'
 require 'core.vector'
-require 'core.shapes'
 require 'states.actions'
 
-Ball = class('Ball', Sprite)
+Ball = class('Ball', CollidableRectangle)
 
 local default_x_vel = 200
 local default_y_vel = -425
@@ -13,9 +12,8 @@ local paddle_english = 100
 
 function Ball:initialize(x, y, width, height)
 
-	sprite_and_collider_shape = RectangleShape(width, height)
 
-	Sprite.initialize(self, x, y, sprite_and_collider_shape)
+	CollidableRectangle.initialize(self, x, y, width, height)
 
 	self:setColor(220,220,204)
 
@@ -28,7 +26,7 @@ end
 function Ball:reset(player)
 
 	self:die()
-    self:moveTo(player.position.x + player.shape.width / 2, player.position.y - self.shape.height)
+    self:moveTo(player.position.x + player.width / 2, player.position.y - self.height)
     self:setVelocity(default_x_vel, default_y_vel)
     self:revive()
 
@@ -36,17 +34,17 @@ end
 
 function Ball:collideWithPaddle(paddle)
 
-	local new_y = paddle.position.y - self.shape.height
+	local new_y = paddle.position.y - self.height
 	self:moveTo(self.position.x, new_y)
 
 
 	-- Compare X with paddle x
 
 	local paddle_origin = paddle.position.x
-	local paddle_width = paddle.shape.width
+	local paddle_width = paddle.width
 	local third_of_paddle = paddle_width / 3
 
-	local middle_ball = self.position.x + self.shape.width/2
+	local middle_ball = self.position.x + self.width/2
 
 	local first_third = paddle_origin + third_of_paddle
 	local second_third = first_third + third_of_paddle
@@ -114,7 +112,7 @@ function Ball:collideWithWall(wall)
 		self:invertHorizontalVelocity()
 
 	else
-		self:moveTo(love.graphics.getWidth() - self.shape.width, self.position.y)
+		self:moveTo(love.graphics.getWidth() - self.width, self.position.y)
 		self:invertHorizontalVelocity()
 	end
 
@@ -130,7 +128,7 @@ function Ball:collideWithBrick(brick)
 
 	-- Colliding from the left or right
 	if self.position.x < brick.position.x or
-	   self.position.x > brick.position.x + brick.shape.width then
+	   self.position.x > brick.position.x + brick.width then
 		self:invertHorizontalVelocity()
 	else
 		self:invertVerticalVelocity()
@@ -142,10 +140,8 @@ end
 
 function Ball:update(dt)
 
-    -- self:capVelocity()
+    self:capVelocity()
 
-
-    -- assert(false, "inspecting transform: " .. tostring(self.shape.transform))
     local new_position = self.position + (self.velocity * dt) 
 
     self:moveTo(new_position.x, new_position.y)

@@ -4,12 +4,9 @@ require 'core.mixins.movable'
 
 Visible = {}
 
-function Visible.visibleInit(self, shape)
-
+function Visible.visibleInit(self)
 	--assert(includes(Movable, self), "Must be a Movable to be able to be visible")
-
 	self.visible = true
-	self.shape = shape
 	self.img = nil
 	self.color = Color(0, 0, 0, 255)
 	self.fill_mode = 'fill'
@@ -36,7 +33,8 @@ function Visible.draw(self)
 
 		love.graphics.setColor(self.color:unpack())
 
-		self.shape:draw(self.position, self.fill_mode) -- requires moveable
+		-- TODO -- special-case images
+		self:render(self.fill_mode)
 
 		love.graphics.setColor(r, g, b, a)
 	end
