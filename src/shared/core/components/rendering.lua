@@ -7,10 +7,11 @@ Rendering = class('Rendering', Component)
 
 function Rendering:initialize()
 
+	Component.initialize(self, 'Rendering')
+
 	self.visible = true
 	self.img = nil
 	self.color = Color(0, 0, 0, 255)
-	self.background_color = Color(0, 0, 0, 255)
 	self.fill_mode = 'fill'
 	
 	-- TODO: this should be a group of things that have color or background
@@ -23,6 +24,14 @@ function Rendering:setShape(shape_data)
 	self.shape_data = shape_data
 end
 
+function Rendering:getShape()
+	return self.shape_data
+end
+
+function Rendering:getImg()
+	return self.img
+end
+
 function Rendering:setImg(img)
 	self.img = img
 end
@@ -31,12 +40,16 @@ function Rendering:setColor(r, g, b, a)
 	self.color = Color(r, g, b, a)
 end
 
-function Rendering:setBackgroundColor(r, g, b, a)
-	self.background_color = Color(r, g, b, a)
+function Rendering:getColor()
+	return self.color
 end
 
-function Rendering:setFillMode(self, fm)
+function Rendering:setFillMode(fm)
 	self.fill_mode = fm
+end
+
+function Rendering:getFillMode()
+	return self.fill_mode
 end
 
 function Rendering:enable()

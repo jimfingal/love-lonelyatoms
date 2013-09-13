@@ -6,6 +6,8 @@ Motion = class('Motion', Component)
 
 function Motion:initialize()
 
+	Component.initialize(self, 'Motion')
+
 	-- Property: velocity
 	-- Motion either along the x or y axes, in pixels per second.
 	self.velocity = Vector(0, 0)

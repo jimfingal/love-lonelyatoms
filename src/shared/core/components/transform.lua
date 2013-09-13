@@ -5,11 +5,13 @@ require 'core.vector'
 
 Transform = class('Transform', Component)
 
-function Transform:initialize()
+function Transform:initialize(x, y)
+
+	Component.initialize(self, 'Transform')
 
 	self.position = Vector(x or 0, y or 0)
 	self.rotation = 0 -- Rotation in Radians
-	self.scale = Vector(x or 1, y or 1)
+	self.scale = Vector(1, 1)
 
 end
 
