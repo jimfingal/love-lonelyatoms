@@ -26,7 +26,7 @@ function Visible.draw(self)
 
 	-- Leave no trace
 
-	if self.active then
+	if self.visible then
 		local r, g, b, a = love.graphics.getColor()
 		
 		assert(instanceOf(Color, self.color), "color must be a Color class, instead is " .. tostring(self.color))

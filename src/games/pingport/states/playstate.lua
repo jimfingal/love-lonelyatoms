@@ -8,6 +8,8 @@ require 'collections.set'
 Input = require 'core.input'
 require 'config.brickloader'
 require 'assets.assets'
+require 'core.tween'
+
 
 PlayState = class('Play', GameState)
 
@@ -52,7 +54,7 @@ function PlayState:enter(brick_input)
     self.input:clear()
     self.player:stop()
     self.player:moveTo(350, 500)
-    self.ball:die()
+    self.ball:disable()
 
     self.victory = false
 
@@ -81,6 +83,7 @@ end
 function PlayState:update(dt)
 
     self.input:update(dt)
+    Tweener:update(dt)
 
     -- Reset Ball
     if self.input:newAction(Actions.RESET_BALL) and not self.victory then
@@ -89,7 +92,7 @@ function PlayState:update(dt)
 
     -- Escape to Menu
     if self.input:newAction(Actions.ESCAPE_TO_MENU) then
-        self.ball:die()
+        self.ball:disable()
         self.state_manager:changeState(States.MENU)
     end
 
@@ -146,7 +149,7 @@ function PlayState:draw()
         love.graphics.setColor(204,147,147)
         love.graphics.setFont(self:assetManager():getFont(Assets.FONT_LARGE))
         love.graphics.print("YOU WIN!!!", 200, 200)
-        self.ball:die()
+        self.ball:disable()
 
     elseif not self.ball.active then
 

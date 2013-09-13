@@ -3,6 +3,9 @@ require 'core.entity.shapes'
 require 'core.vector'
 require 'states.actions'
 
+require 'core.tween'
+Easing = require 'external.easing'
+
 Ball = class('Ball', CollidableRectangle)
 
 local default_x_vel = 200
@@ -25,10 +28,10 @@ end
 
 function Ball:reset(player)
 
-	self:die()
+	self:disable()
     self:moveTo(player.position.x + player.width / 2, player.position.y - self.height)
     self:setVelocity(default_x_vel, default_y_vel)
-    self:revive()
+    self:enable()
 
 end
 
@@ -104,7 +107,7 @@ function Ball:collideWithWall(wall)
 
 	elseif collider_position.y >= love.graphics.getHeight() then
 
-		self:die()
+		self:disable()
 
 	elseif collider_position.x <= love.graphics.getHeight() then
 
@@ -122,7 +125,13 @@ end
 function Ball:collideWithBrick(brick)
 
 	brick:playDeathSound()
-	brick:die()
+	brick.active = false
+	-- death animation
+
+	Tweener:addTween(1, brick, {width = 0, height = 0}, Easing.linear)
+	Tweener:addTween(1, brick.position, {x = brick.position.x + brick.width/2, y = brick.position.y + brick.height/2}, Easing.linear)
+
+
 
 	-- TODO handle bullet shit
 
@@ -147,4 +156,6 @@ function Ball:update(dt)
     self:moveTo(new_position.x, new_position.y)
 
 end
+
+
 

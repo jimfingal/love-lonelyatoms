@@ -12,6 +12,7 @@ function Entity:initialize(x, y)
 
 end
 
+--[[ 
 function Entity:deactivate()
 	self.active = false
 end
@@ -19,6 +20,7 @@ end
 function Entity:activate()
 	self.active = true
 end
+]]
 
 
 --[[

@@ -17,6 +17,17 @@ function Shape:initialize(x, y)
 	self:visibleInit()
 end
 
+function Shape:disable()
+	self.active = false
+	self.visible = false
+end
+
+function Shape:enable()
+	self.active = true
+	self.visible = true
+end
+
+
 -- Circles
 
 CircleShape = class('CircleShape', Shape)
