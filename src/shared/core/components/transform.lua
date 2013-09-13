@@ -20,11 +20,13 @@ end
 function Transform:moveTo(x, y)
 	self.position.x = x;
 	self.position.y = y;
+	return self
 end
 
 function Transform:move(dx, dy)
 	self.position.x = self.position.x + dx;
 	self.position.y = self.position.y + dy;
+	return self
 end
 
 function Transform:getPosition()
@@ -40,10 +42,12 @@ end
 
 function Transform:rotate(phi)
 	self.rotation = self.rotation + phi
+	return self
 end
 
 function Transform:rotateTo(phi)
 	self.rotation = phi
+	return self
 end
 
 function Transform:getRotation()
@@ -57,16 +61,19 @@ end
 function Transform:scaleTo(sx, sy)
 	self.scale.x = sx
 	self.scale.y = sy or sx
+	return self
 end
 
 -- If one input, sets both the same
 function Transform:addScale(dsx, dsy)
 	self.scale.x = self.scale.x + dsx
 	self.scale.y = self.scale.y + (dsy or dsx)
+	return self
 end
 
 function Transform:multiplyScale(multiplier)
 	self.scale = self.scale * multiplier
+	return self
 end
 
 function Transform:getScale()

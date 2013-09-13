@@ -10,19 +10,13 @@ function love.load()
     rendering_system = RenderingSystem()
 
     circle_transform = Transform(100, 100)
-    circle_rendering = Rendering()
-    circle_rendering:setColor(205,147,176)
-    circle_rendering:setShape(CircleShape:new(50))
+    circle_rendering = Rendering():setColor(205,147,176):setShape(CircleShape:new(50))
 
     rectangle_transform = Transform(300, 100)
-    rectangle_rendering = Rendering()
-    rectangle_rendering:setColor(205,147,147)
-    rectangle_rendering:setShape(RectangleShape:new(100, 50))
+    rectangle_rendering = Rendering():setColor(205,147,147):setShape(RectangleShape:new(100, 50))
 
     point_transform = Transform(500, 100)
-    point_rendering = Rendering()
-    point_rendering:setColor(147,147,205)
-    point_rendering:setShape(PointShape:new())
+    point_rendering = Rendering():setColor(147,147,205):setShape(PointShape:new())
 
 --[[
     mouse_shapes = List()

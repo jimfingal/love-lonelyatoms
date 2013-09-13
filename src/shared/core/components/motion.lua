@@ -45,37 +45,44 @@ end
 function Motion:setVelocity(x, y)
 	self.velocity.x = x
 	self.velocity.y = y
+	return self
 end
 
 function Motion:setMinVelocity(x, y)
 	self.minVelocity.x = x
 	self.minVelocity.y = y
+	return self
 end
 
 function Motion:setMaxVelocity(x, y)
 	self.maxVelocity.x = x
 	self.maxVelocity.y = y
+	return self
 end
 
 function Motion:setAcceleration(x, y)
 	self.acceleration.x = x
 	self.acceleration.y = y
+	return self
 end
 
 
 function Motion:setMinAcceleration(x, y)
 	self.minAcceleration.x = x
 	self.minAcceleration.y = y
+	return self
 end
 
 function Motion:setMaxAcceleration(x, y)
 	self.maxAcceleration.x = x
 	self.maxAcceleration.y = y
+	return self
 end
 
 function Motion:setDrag(x, y)
 	self.drag.x = x
 	self.drag.y = y
+	return self
 end
 
 
@@ -85,9 +92,11 @@ function Motion:capVelocity()
     elseif self.velocity < self.minVelocity then
         self.velocity = self.minVelocity
     end
+   	return self
 end
 
 function Motion:stop()
 	self.velocity = Vector.ZERO
 	self.acceleration = Vector.ZERO
+	return self
 end

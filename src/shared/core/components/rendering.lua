@@ -22,22 +22,26 @@ end
 
 function Rendering:setShape(shape_data)
 	self.shape_data = shape_data
+	return self
 end
 
 function Rendering:getShape()
 	return self.shape_data
 end
 
+function Rendering:setImg(img)
+	self.img = img
+	return self
+end
+
 function Rendering:getImg()
 	return self.img
 end
 
-function Rendering:setImg(img)
-	self.img = img
-end
 
 function Rendering:setColor(r, g, b, a)
 	self.color = Color(r, g, b, a)
+	return self
 end
 
 function Rendering:getColor()
@@ -46,16 +50,23 @@ end
 
 function Rendering:setFillMode(fm)
 	self.fill_mode = fm
+	return self
 end
 
 function Rendering:getFillMode()
 	return self.fill_mode
 end
 
+function Rendering:isVisible()
+	return self.visible
+end
+
 function Rendering:enable()
 	self.visible = true
+	return self
 end
 
 function Rendering:disable()
 	self.visible = false
+	return self
 end

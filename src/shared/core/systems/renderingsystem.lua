@@ -12,7 +12,7 @@ end
 
 function RenderingSystem:draw(transform, rendering)
 
-	if rendering.visible then
+	if rendering:isVisible() then
 		
 		-- Check the previous color settings
 		local r, g, b, a = love.graphics.getColor()
