@@ -14,6 +14,11 @@ function RenderingSystem:draw(transform, rendering)
 
 	if rendering:isVisible() then
 		
+		local img = rendering:getImg()
+		local shape = rendering:getShape()
+
+		assert(img or shape, "Must have either an image or shape to be drawn")
+
 		-- Check the previous color settings
 		local r, g, b, a = love.graphics.getColor()
 		
@@ -21,12 +26,9 @@ function RenderingSystem:draw(transform, rendering)
 
 		love.graphics.setColor(color:unpack())
 
-		
-		if rendering:getImg() then -- Render image
+		if img then -- Render image
 			
 		else -- Render shape
-			
-			local shape = rendering:getShape()
 			
 			local pos = transform:getPosition() + shape:offset()
 
