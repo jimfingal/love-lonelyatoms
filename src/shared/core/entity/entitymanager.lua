@@ -1,5 +1,6 @@
 
 require 'external.middleclass'
+require 'collections.set'
 
 local uuid = require('external.uuid')
 
@@ -9,7 +10,7 @@ EntityManager = class('EntityManager')
 
 function EntityManager:initialize()
 
-	self.all_entities = {}
+	self.all_entities = Set()
 	self.entity_names = {}
 	self.component_stores = {}
 
@@ -21,7 +22,7 @@ function EntityManager:createEntity(name)
 	local uuid = uuid()
 
 	-- Fast lookup
-	self.all_entities[uuid] = true
+	self.all_entities:add(uuid)
 
 	if name then
 		self:setEntityName(uuid, name)
@@ -125,13 +126,13 @@ function EntityManager:getAllComponentsOfType(component_class)
 
 	assert(component_class, "Must have a component class parameter")
 
-	local components = {}
+	local components = Set()
 
 	local store = self.component_stores[component_class]
 
 	if store then
 		for entity, component in pairs(store) do
-			table.insert(components, component)
+			components:add(component)
 		end
 	end
 
@@ -144,14 +145,14 @@ function EntityManager:getAllComponentsOnEntity(uuid)
 
 	assert(uuid, "Must have a uuid parameter")
 
-	local components = {}
+	local components = Set()
 
 	for class, store in pairs(self.component_stores) do
 
 		local component = store[uuid]
 
 		if component then
-			table.insert(components, component)
+			components:add(component)
 		end
 
 	end
@@ -160,23 +161,63 @@ function EntityManager:getAllComponentsOnEntity(uuid)
 
 end
 
+-- Returns a set
 function EntityManager:getAllEntitiesContainingComponent(component_class)
 
 	assert(component_class, "Must have a component class parameter")
 
-	local entities = {}
+	local entities = Set()
 
 	local store = self.component_stores[component_class]
 
 	if store then
 		for entity, component in pairs(store) do
-			table.insert(entities, entity)
+			entities:add(entity)
 		end
 	end
 
 	return entities
 
 end
+
+-- Returns a set
+function EntityManager:getAllEntitiesContainingComponents(first, ...)
+
+	local entities = Set()
+
+	-- Make slightly more efficient
+
+	if not first then
+		return entities
+	elseif not args then
+		return self:getAllEntitiesContainingComponent(first)
+	else
+
+		local entities = self:getAllEntitiesContainingComponent(first)
+
+		-- Continually narrow down to do intersection. If we get to the point of
+		-- No overlap, return empty set.
+
+		for _, class in ipairs(args) do
+
+			local other_entities = self:getAllEntitiesContainingComponent(class)
+
+			entities = entities:intersection(other_entities)
+
+			if entities:size() == 0 then
+				return entities
+			end
+
+		end
+
+	end
+
+	return entities
+
+
+end
+
+
 
 function EntityManager:killEntity(uuid)
 
@@ -187,7 +228,7 @@ function EntityManager:killEntity(uuid)
 	end
 
 	self:setEntityName(uuid, nil)
-	self.all_entities[uuid] = nil
+	self.all_entities:remove(uuid)
 
 end
 

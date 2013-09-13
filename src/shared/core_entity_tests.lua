@@ -1,5 +1,6 @@
 require 'core.entity.entitymanager'
 require 'core.entity.component'
+require 'external.middleclass'
 
 local em = EntityManager()
 
@@ -51,7 +52,7 @@ print("Validating we get back our component when we ask for all components of it
 
 local stored_components = em:getAllComponentsOfType(dummy_component.class)
 
-assert(stored_components[1] == dummy_component, "We should get our dummy component back as first item in list")
+assert(stored_components:contains(dummy_component), "We should get our dummy component back as first item in list")
 
 -- getAllComponentsOnEntity
 
@@ -59,7 +60,7 @@ print("Validating we get back our component when we ask for all components on en
 
 local entity_components = em:getAllComponentsOnEntity(entity)
 
-assert(entity_components[1] == dummy_component, "We should get our dummy component back as first item in list")
+assert(entity_components:contains(dummy_component), "We should get our dummy component back as first item in list")
 
 -- getAllEntitiesContainingComponent
 
@@ -67,7 +68,7 @@ print("Validating we get back our entity when we ask for all entities containing
 
 local entities = em:getAllEntitiesContainingComponent(dummy_component.class)
 
-assert(entities[1] == entity, "We should get our entity back as first item in list")
+assert(entities:contains(entity), "We should get our entity back as first item in list")
 
 -- removeComponent
 
@@ -76,19 +77,38 @@ print("Validating once we remove this component that it is no longer stored")
 em:removeComponent(entity, dummy_component.class)
 
 assert(not em:hasComponent(entity, dummy_component.class), "Should not show up that we have this component")
-assert(#em:getAllComponentsOfType(dummy_component.class) == 0, "Component shoud no longer be in store")
-assert(#em:getAllComponentsOnEntity(entity) == 0, "No components should be on entity")
-assert(#em:getAllEntitiesContainingComponent(dummy_component.class) == 0, "No entities should have this component")
+assert(em:getAllComponentsOfType(dummy_component.class):size() == 0, "Component shoud no longer be in store")
+assert(em:getAllComponentsOnEntity(entity):size() == 0, "No components should be on entity")
+assert(em:getAllEntitiesContainingComponent(dummy_component.class):size() == 0, "No entities should have this component")
 
 			
+-- Dummy Component 2
+
+print("Validating our ability to do intersection on components")
+
+local DummyComponentClass2 = class("Dummy Component 2", Component)
+local dummy_component2 = DummyComponentClass2("DC2")
+
+local entity2 = em:createEntity(entity_name)
+
+
+em:addComponent(entity, dummy_component)
+em:addComponent(entity, dummy_component2)
+em:addComponent(entity2, dummy_component)
+
+local shared_entries = em:getAllEntitiesContainingComponents(dummy_component.class, dummy_component2.class)
+assert(shared_entries:contains(entity), "Should contain the first entity")
+assert(shared_entries:contains(entity2), "Should not contain the second entity")
+
+
 -- killEntity
 print("Validating once we kill entity it is removed from everything")
 em:addComponent(entity, dummy_component)
 em:killEntity(entity)
 
 assert(not em:hasComponent(entity, dummy_component.class), "Should not show up that we have this component")
-assert(#em:getAllComponentsOfType(dummy_component.class) == 0, "Component shoud no longer be in store")
-assert(#em:getAllComponentsOnEntity(entity) == 0, "No components should be on entity")
-assert(#em:getAllEntitiesContainingComponent(dummy_component.class) == 0, "No entities should have this component")
+assert(em:getAllComponentsOfType(dummy_component.class):size() == 0, "Component shoud no longer be in store")
+assert(em:getAllComponentsOnEntity(entity):size() == 0, "No components should be on entity")
+assert(em:getAllEntitiesContainingComponent(dummy_component.class):size() == 0, "No entities should have this component")
 assert(not em:getEntityName(entity), "Entity should no longer have a stored name")
-assert(#em:getAllEntities() == 0, "Entity should not be in all entity table")
+assert(em:getAllEntities():size() == 0, "Entity should not be in all entity table")
