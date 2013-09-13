@@ -1,5 +1,5 @@
 require 'external.middleclass'
-require 'core.entity.shapes'
+require 'core.oldentity.shapes'
 
 Brick = class('Brick', CollidableRectangle)
 

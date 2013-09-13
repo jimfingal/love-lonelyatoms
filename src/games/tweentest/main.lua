@@ -1,6 +1,6 @@
 
 require 'core.tween'
-require 'core.entity.shapes'
+require 'core.oldentity.shapes'
 Easing = require 'external.easing'
 
 function love.load()

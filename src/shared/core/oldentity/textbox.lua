@@ -1,6 +1,6 @@
 require 'external.middleclass'
-require 'core.entity.entity'
-require 'core.entity.shapes'
+require 'core.oldentity.entity'
+require 'core.oldentity.shapes'
 require 'core.color'
 require 'core.mixins.movable'
 require 'core.mixins.visible'

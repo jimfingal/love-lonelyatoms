@@ -1,6 +1,6 @@
-require 'core.entity.shapes'
-require 'core.entity.camera'
-require 'core.entity.group'
+require 'core.oldentity.shapes'
+require 'core.oldentity.camera'
+require 'core.oldentity.group'
 require 'core.input'
 
 require 'core.tween'

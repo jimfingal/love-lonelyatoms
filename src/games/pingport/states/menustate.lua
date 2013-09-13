@@ -1,9 +1,9 @@
 require 'external.middleclass'
 require 'core.gamestate'
 require 'core.input'
-require 'core.entity.menu'
+require 'core.oldentity.menu'
 require 'assets.assets'
-require 'core.entity.textbox'
+require 'core.oldentity.textbox'
 
 
  local stateChanger = function(song)

@@ -9,7 +9,7 @@ function Vector:initialize(x, y)
 	self.y = y or 0
 end
 
-Vector.zero = Vector(0,0)
+Vector.ZERO = Vector(0,0)
 
 
 function Vector.isvector(a)

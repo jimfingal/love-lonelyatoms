@@ -1,4 +1,4 @@
-require 'core.entity.shapes'
+require 'core.oldentity.shapes'
 require 'core.mixins.collidable'
 
 require 'collections.list'

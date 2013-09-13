@@ -1,7 +1,7 @@
 require 'external.middleclass'
 require 'core.vector'
 require 'states.actions'
-require 'core.entity.shapes'
+require 'core.oldentity.shapes'
 
 Player = class('Player', CollidableRectangle)
 
@@ -43,13 +43,13 @@ end
 
 function Player:stop()
 
-    self.velocity = Vector.zero
-    self.acceleration = Vector.zero
+    self.velocity = Vector.ZERO
+    self.acceleration = Vector.ZERO
 end
 
 function Player:accelerateRight(dt)
 
-    if self.velocity < Vector.zero then 
+    if self.velocity < Vector.ZERO then 
         self.velocity = self.base_speed
     end
 
@@ -59,7 +59,7 @@ end
 
 function Player:accelerateLeft(dt)
 
-    if self.velocity > Vector.zero then 
+    if self.velocity > Vector.ZERO then 
         self.velocity = -self.base_speed
     end
 
@@ -70,20 +70,20 @@ end
 
 function Player:applyDrag(dt)
 
-    if self.velocity > Vector.zero then
+    if self.velocity > Vector.ZERO then
         
         self.velocity = self.velocity - (self.drag * dt)
 
-        if self.velocity < Vector.zero then
-            self.velocity = Vector.zero
+        if self.velocity < Vector.ZERO then
+            self.velocity = Vector.ZERO
         end
 
-    elseif self.velocity < Vector.zero then
+    elseif self.velocity < Vector.ZERO then
 
         self.velocity = self.velocity + (self.drag * dt)
 
-        if self.velocity > Vector.zero then
-            self.velocity = Vector.zero
+        if self.velocity > Vector.ZERO then
+            self.velocity = Vector.ZERO
         end
 
     end
@@ -126,7 +126,7 @@ function Player:collideWithWall(collided_sprite)
         self:moveTo(new_x, self.position.y)
 
         if self.current_action == Actions.PLAYER_LEFT then
-            self.velocity = Vector.zero
+            self.velocity = Vector.ZERO
         else
             self.velocity = -self.velocity
         end
@@ -138,7 +138,7 @@ function Player:collideWithWall(collided_sprite)
         self:moveTo(collided_position.x - self.width - 1, self.position.y)
 
         if self.current_action == Actions.PLAYER_RIGHT then
-            self.velocity = Vector.zero
+            self.velocity = Vector.ZERO
         else
             self.velocity = -self.velocity
         end

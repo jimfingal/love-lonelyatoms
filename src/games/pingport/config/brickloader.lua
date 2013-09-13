@@ -1,6 +1,6 @@
 require 'external.middleclass'
 require 'config.brickconfig'
-require 'core.entity.group'
+require 'core.oldentity.group'
 require 'collections.list'
 require 'core.color'
 require 'sprites.brick'

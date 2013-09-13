@@ -1,5 +1,5 @@
 require 'external.middleclass'
-require 'core.entity.group'
+require 'core.oldentity.group'
 require 'sprites.player'
 require 'sprites.ball'
 require 'sprites.tile'

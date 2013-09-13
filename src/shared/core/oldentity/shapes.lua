@@ -1,5 +1,5 @@
 require 'core.vector'
-require 'core.entity.entity'
+require 'core.oldentity.entity'
 require 'core.mixins.movable'
 require 'core.mixins.visible'
 require 'core.mixins.collidable'

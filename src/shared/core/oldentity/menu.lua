@@ -2,8 +2,8 @@
 require 'external.middleclass'
 require 'collections.list'
 require 'core.input'
-require 'core.entity.entity'
-require 'core.entity.shapes'
+require 'core.oldentity.entity'
+require 'core.oldentity.shapes'
 require 'core.color'
 
 
