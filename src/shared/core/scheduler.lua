@@ -22,19 +22,22 @@ function Scheduler:update(dt)
 	-- self.time = self.time + dt
 
 	-- Ongoing
-	for entry, remaining in pairs(self.running) do
+	for re, remaining in pairs(self.running) do
 		
-		remaining = remaining - dt
+		local remaining = remaining - dt
 
 		if remaining < 0 then
 
-			self.expired[entry] = true
-			entry.func_after()
+			self.expired[re] = true
+
+			if re.func_after then
+				re.func_after()
+			end
 
 		else
 
-			entry.func(dt)
-			self.running[entry] = remaining
+			re.func(dt)
+			self.running[re] = remaining
 
 		end
 
@@ -43,21 +46,23 @@ function Scheduler:update(dt)
 	-- Scheduled to run once
 	for entry, remaining_until in pairs(self.delayed) do
 		
-		remaining = remaining - dt
+		remaining_until = remaining_until - dt
 
 		if remaining_until < 0 then
-
-			entry.func(dt)
+			entry.func()
 			self.expired[entry] = true
 
+		else
+			self.delayed[entry] = remaining_until
 		end
 			
 	end
 
 	-- Periodic
+
 	for entry, remaining_until in pairs(self.periodic) do
 		
-		remaining = remaining - dt
+		local remaining_until = remaining_until - dt
 
 		if remaining_until < 0 then
 
@@ -65,6 +70,9 @@ function Scheduler:update(dt)
 			
 			-- If we go slightly over account for that next time
 			self.periodic[entry] = entry.duration + remaining_until
+
+		else
+			self.periodic[entry] = remaining_until
 
 		end
 			
