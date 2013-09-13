@@ -129,7 +129,8 @@ function Ball:collideWithBrick(brick)
 	-- death animation
 
 	Tweener:addTween(1, brick, {width = 0, height = 0}, Easing.linear)
-	Tweener:addTween(1, brick.position, {x = brick.position.x + brick.width/2, y = brick.position.y + brick.height/2}, Easing.linear)
+	Tweener:addTween(1, brick.position, {x = brick.position.x + 100, y = brick.position.y + 300}, Easing.inBack)
+	Tweener:addTween(1, brick.color, {alpha = 0}, Easing.inCubic)
 
 
 
