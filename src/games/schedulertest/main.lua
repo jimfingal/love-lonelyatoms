@@ -51,10 +51,10 @@ function love.load()
         camera:move(math.random(-intensity, intensity), math.random(-intensity, intensity))
     end
 
-    scheduler:do_for(0.5, 
+    scheduler:do_for(5, 
         jitter,
         function()
-            Tweener:addTween(0.5, camera.position, {x = prev_x, y = prev_y}, Easing.linear)
+            Tweener:addTween(1, camera.position, {x = prev_x, y = prev_y}, Easing.linear)
         end
     )
 
@@ -68,9 +68,9 @@ function love.load()
         dd2 = dd2 + 1
     end
 
-    scheduler:do_after(2, 
+    scheduler:do_after(5, 
         function()
-            scheduler:do_for(1, display_debug) 
+            scheduler:do_for(4, display_debug) 
         end
     )
 

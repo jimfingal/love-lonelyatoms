@@ -88,7 +88,6 @@ function love.draw()
 
     love.graphics.setBackgroundColor(63, 63, 63, 255)
 
-
      if (mouse:collidesWith(point)) then
 
         if instanceOf(PointShape, mouse) then

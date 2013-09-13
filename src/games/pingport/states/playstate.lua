@@ -47,6 +47,8 @@ function PlayState:initialize(name, state_manager, asset_manager)
 
     self.victory = false
 
+    
+
 end
 
 function PlayState:enter(brick_input)
