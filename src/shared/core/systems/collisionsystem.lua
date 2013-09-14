@@ -1,5 +1,8 @@
 require 'external.middleclass'
 require 'core.entity.system'
+require 'core.components.transform'
+require 'core.components.collider'
+require 'helpers.mathhelpers'
 
 
 
@@ -62,7 +65,7 @@ function CollisionSystem:processCollision(a, b, callback)
 
 			if self:checkCollision(a, b) then
 
-				callback(self, other)
+				callback(a, b)
 			end
 		end
 
@@ -80,23 +83,30 @@ function CollisionSystem:checkCollision(entity_a, entity_b)
 
 	local em = world:getEntityManager()
 
-	-- Get transform a
-	-- Get collider b
-	-- Get transform a
-	-- Get collider b
+	-- Transform and Collider
+	at = em:getComponent(entity_a, Transform)
+    ac = em:getComponent(entity_a, Collider)
+
+    -- Transform and coollider
+	bt = em:getComponent(entity_b, Transform)
+    bc = em:getComponent(entity_b, Collider)
+
+    if not ac:isActive() or not bc:isActive() then
+    	return false
+    end
 
 
-	if instanceOf(CircleShape, a) then
+	if instanceOf(CircleShape, ac:hitbox()) then
 
-		return self:circleCollision(a, b)
+		return self:circleCollision(at, ac, bt, bc)
 
-	elseif instanceOf(RectangleShape, a) then
+	elseif instanceOf(RectangleShape, ac:hitbox()) then
 
-		return self:rectangleCollision(a, b)
+		return self:rectangleCollision(at, ac, bt, bc)
 
-	elseif instanceOf(PointShape, a) then
+	elseif instanceOf(PointShape, ac:hitbox()) then
 		
-		return self:pointCollision(b, b)
+		return self:pointCollision(at, ac, bt, bc)
 
 	end
 
@@ -105,96 +115,120 @@ function CollisionSystem:checkCollision(entity_a, entity_b)
 end
 
 
-function CollisionSystem:checkCircleCollision(a, b)
+function CollisionSystem:circleCollision(at, ac, bt, bc)
 	
-	-- TODO
+	local a_circle = ac:hitbox()
 
-	local center = a:center()
+	local a_center = a_circle:center(at:getPosition())
 
-	if instanceOf(CircleShape, b) then
+	if instanceOf(CircleShape, bc:hitbox()) then
 
-		added_radii = a.radius + b.radius
+		local b_circle = bc:hitbox()
+		local b_center = b_circle:center(bt:getPosition())
+
+		local added_radii = a_circle.radius + b_circle.radius
+
+		return Vector.dist(a_center, b_center) < added_radii	
 
 
-		return Vector.dist(center, b:center()) < added_radii	
+	elseif instanceOf(PointShape, bc:hitbox()) then
 
+		return self:pointCollision(bt, bc, at, ac)
 
-	elseif instanceOf(PointShape, b) then
-
-		return b:collidesWith(a)
-
-	elseif instanceOf(RectangleShape, b) then
+	elseif instanceOf(RectangleShape, bc:hitbox()) then
 
 		-- From: http://stackoverflow.com/a/1879223
 
+		local b_rectangle = bc:hitbox()
+		local b_upper_left = bt:getPosition() + b_rectangle:offset()
+
 		-- Find closest point
-		local closestX = clamp(center.x, b.position.x, b.position.x + b.width)
-		local closestY = clamp(center.y, b.position.y, b.position.y + b.height)
+		local closestX = clamp(a_center.x, b_upper_left.x, b_upper_left.x + b_rectangle.width)
+		local closestY = clamp(a_center.y, b_upper_left.y, b_upper_left.y + b_rectangle.height)
 
 		local closest_point = Vector(closestX, closestY)
 
 		-- Check to see if this point is within circle
-		return Vector.dist(center, closest_point) < a.radius
+		return Vector.dist(a_center, closest_point) < a_circle.radius
 
 	end
 
 end
 
 
-function Collidable.pointCollision(self, other)
+function CollisionSystem:pointCollision(at, ac, bt, bc)
 
 
-	if instanceOf(CircleShape, other) then
+	local a_point = at:getPosition() + ac:hitbox():offset()
+
+	if instanceOf(CircleShape, bc:hitbox()) then
+
+		local b_circle = bc:hitbox()
+		local b_center = b_circle:center(bt:getPosition())
 
 		-- Distance from point to center of circle < radius
-		return Vector.dist(self.position, other:center()) < other.radius
+		return Vector.dist(a_point, b_center) < b_circle.radius
 
-	elseif instanceOf(PointShape, other) then
+	elseif instanceOf(PointShape, bc:hitbox()) then
 
 		-- Same point
+		local b_point = bt:getPosition() + bc:hitbox():offset()
 
-		return self.position == other.position
+		return a_point == b_point
 
-	elseif instanceOf(RectangleShape, other) then
+	elseif instanceOf(RectangleShape, bc:hitbox()) then
+
+
+		local b_rectangle = bc:hitbox()
+		local b_upper_left = bt:getPosition() + b_rectangle:offset()
 
 		-- Lies within bounds
 
-		return self.position.x > other.position.x and
-				self.position.x < other.position.x + other.width and
-				self.position.y > other.position.y and
-				self.position.y < other.position.y + other.height
+		return a_point.x > b_upper_left.x and
+				a_point.x < b_upper_left.x + b_rectangle.width and
+				a_point.y > b_upper_left.y and
+				a_point.y < b_upper_left.y + b_rectangle.height
 
 	end
 
 end
 
 
-function Collidable.rectangleCollision(self, other)
+function CollisionSystem:rectangleCollision(at, ac, bt, bc)
 	
 
-	if instanceOf(CircleShape, other) then
+	if instanceOf(CircleShape, bc:hitbox()) then
 
-		return other:collidesWith(self)
+		return self:circleCollision(bt, bc, at, ac)
 
-	elseif instanceOf(PointShape, other) then
+	elseif instanceOf(PointShape, bc:hitbox()) then
 
-		return other:collidesWith(self)
+		return self:pointCollision(bt, bc, at, ac)
 
-	elseif instanceOf(RectangleShape, other) then
+	elseif instanceOf(RectangleShape, bc:hitbox()) then
+
+
+		local a_rectangle = ac:hitbox()
+		local a_upper_left = at:getPosition() + a_rectangle:offset()
+
+		local b_rectangle = bc:hitbox()
+		local b_upper_left = bt:getPosition() + b_rectangle:offset()
+
+
 
 		-- If any of these are true, then they don't intersect, so return "not" of that.
 		-- 0, 0 is in upper left hand corner.
 		return not (
 			 		-- the X coord of my upper right is less than x coord of other upper left
-					self.position.x + self.width < other.position.x or
+					a_upper_left.x + a_rectangle.width < b_upper_left.x or
 					-- the X coord of other's upper right is less than x coord of my upper left
-					other.position.x + other.width < self.position.x or
+					b_upper_left.x + b_rectangle.width < a_upper_left.x or
 
 					-- the Y coord of my upper right is less than Y coord of other upper left
-					self.position.y + self.height < other.position.y or 
+					a_upper_left.y + a_rectangle.height < b_upper_left.y or 
 
 					-- the Y coord of other's upper right is less than than Y coord of my upper left
-					other.position.y + other.height < self.position.y
+					b_upper_left.y + b_rectangle.height < a_upper_left.y
 				)
 	end
 

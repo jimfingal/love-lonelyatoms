@@ -30,6 +30,15 @@ function CircleShape:draw(position, mode)
 	love.graphics.circle(mode or 'line', position.x + half_radius, position.y + half_radius, self.radius)
 end
 
+function CircleShape:center(transform_position)
+
+	local new_position = transform_position + self.position_offset
+	local half_radius = self.radius / 2
+	return Vector(new_position.x + half_radius, new_position.y + half_radius)
+
+end
+
+
 
 -- [[ Points ]] 
 

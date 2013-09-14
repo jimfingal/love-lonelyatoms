@@ -11,12 +11,12 @@ function Collider:initialize()
 
 end
 
-function Collider:setShape(shape_data)
+function Collider:setHitbox(shape_data)
 	self.shape_data = shape_data
 	return self
 end
 
-function Collider:getShape()
+function Collider:hitbox()
 	return self.shape_data
 end
 
