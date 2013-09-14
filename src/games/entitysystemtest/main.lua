@@ -2,6 +2,8 @@ require 'core.components.transform'
 require 'core.components.rendering'
 require 'core.systems.renderingsystem'
 require 'core.shapedata'
+require 'core.entity.entitymanager'
+
 Timer = require 'external.timer'
 
 
@@ -9,18 +11,28 @@ function love.load()
 
 
     rendering_system = RenderingSystem()
+    em = EntityManager()
 
-    circle_transform = Transform(100, 100)
-    circle_rendering = Rendering():setColor(205,147,176):setShape(CircleShape:new(50))
+    circle = em:createEntity('circle')
+    em:addComponent(circle, Transform(100, 100))
+    em:addComponent(circle, Rendering():setColor(205,147,176):setShape(CircleShape:new(50)))
 
-    rectangle_transform = Transform(300, 100)
-    rectangle_rendering = Rendering():setColor(205,147,147):setShape(RectangleShape:new(100, 50))
 
-    point_transform = Transform(500, 100)
-    point_rendering = Rendering():setColor(147,147,205):setShape(PointShape:new())
+    rectangle = em:createEntity('rectangle')
+    em:addComponent(rectangle, Transform(300, 100))
+    em:addComponent(rectangle, Rendering():setColor(205,147,147):setShape(RectangleShape:new(100, 50)))
 
+    point = em:createEntity('point')
+    em:addComponent(point, Transform(500, 100))
+    em:addComponent(point, Rendering():setColor(147,147,205):setShape(PointShape:new()))
+
+
+    mouse = em:createEntity('mouse')
     mouse_transform = Transform(100, 100)
     mouse_rendering = Rendering():setColor(147,176,205):setShape(CircleShape:new(50))
+
+    em:addComponent(mouse, mouse_transform)
+    em:addComponent(mouse, mouse_rendering)
 
     periodic = 1
 
@@ -71,10 +83,13 @@ function love.draw()
 
     love.graphics.setBackgroundColor(63, 63, 63, 255)
 
-    rendering_system:draw(circle_transform, circle_rendering)
-    rendering_system:draw(rectangle_transform, rectangle_rendering)
-    rendering_system:draw(point_transform, point_rendering)
+    for entity in em:getAllEntitiesContainingComponents(Transform, Rendering):members() do
 
-    rendering_system:draw(mouse_transform, mouse_rendering)
+        t = em:getComponent(entity, Transform)
+        r = em:getComponent(entity, Rendering)
+        rendering_system:draw(t, r)
+    
+    end
+
 
 end
