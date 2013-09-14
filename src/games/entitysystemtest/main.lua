@@ -2,7 +2,7 @@ require 'core.components.transform'
 require 'core.components.rendering'
 require 'core.systems.renderingsystem'
 require 'core.shapedata'
-require 'core.entity.entitymanager'
+require 'core.entity.world'
 
 Timer = require 'external.timer'
 
@@ -10,24 +10,29 @@ Timer = require 'external.timer'
 function love.load()
 
 
-    rendering_system = RenderingSystem()
-    em = EntityManager()
+    world = World()
 
-    circle = em:createEntity('circle')
+    local rendering_system = RenderingSystem()
+
+    world:setSystem(rendering_system)
+
+    local em = world:getEntityManager()
+
+    local circle = em:createEntity('circle')
     em:addComponent(circle, Transform(100, 100))
     em:addComponent(circle, Rendering():setColor(205,147,176):setShape(CircleShape:new(50)))
 
 
-    rectangle = em:createEntity('rectangle')
+    local rectangle = em:createEntity('rectangle')
     em:addComponent(rectangle, Transform(300, 100))
     em:addComponent(rectangle, Rendering():setColor(205,147,147):setShape(RectangleShape:new(100, 50)))
 
-    point = em:createEntity('point')
+    local point = em:createEntity('point')
     em:addComponent(point, Transform(500, 100))
     em:addComponent(point, Rendering():setColor(147,147,205):setShape(PointShape:new()))
 
 
-    mouse = em:createEntity('mouse')
+   local  mouse = em:createEntity('mouse')
     mouse_transform = Transform(100, 100)
     mouse_rendering = Rendering():setColor(147,176,205):setShape(CircleShape:new(50))
 
@@ -82,6 +87,10 @@ end
 function love.draw()
 
     love.graphics.setBackgroundColor(63, 63, 63, 255)
+
+    local em = world:getEntityManager()
+    local rendering_system = world:getSystem(RenderingSystem)
+
 
     for entity in em:getAllEntitiesContainingComponents(Transform, Rendering):members() do
 

@@ -10,12 +10,13 @@ uuid.randomseed(os.time())
 
 EntityManager = class('EntityManager')
 
-function EntityManager:initialize()
+function EntityManager:initialize(world)
 
 	self.all_entities = Set()
 	self.entity_names = {}
 	self.component_stores = {}
-
+	self.world = world
+	
 end
 
 -- Creates a UUID and registers it to our list of entities
