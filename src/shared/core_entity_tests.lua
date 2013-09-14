@@ -1,24 +1,31 @@
 require 'core.entity.entitymanager'
 require 'core.entity.component'
+require 'core.entity.metaentity'
 require 'external.middleclass'
 
 local em = EntityManager()
 
 
+-- [[ Entity Manager ]]
 
 -- Test: Create Entity
 local entity_name = 'Foo!'
 local entity = em:createEntity(entity_name)
 
+local meta_entity = em:getMetaEntity(entity)
+
 assert(entity, "We should get back a uuid from createEntity")
 
 print(entity)
+print(meta_entity)
 
 -- Test: getEntityName
 
 local retrieved_name = em:getEntityName(entity)
 print(retrieved_name)
 assert(retrieved_name == entity_name, "We should get back the name we set")
+print(meta_entity)
+
 
 -- Test: setEntityName
 
@@ -28,6 +35,7 @@ em:setEntityName(entity, entity_name2)
 retrieved_name = em:getEntityName(entity)
 print(retrieved_name)
 assert(retrieved_name == entity_name2, "We should get back the new name we set")
+print(meta_entity)
 
 -- addComponent, getComponent
 local dummy_component = Component("Dummy Component")

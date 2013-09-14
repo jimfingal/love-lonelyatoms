@@ -1,6 +1,8 @@
 
 require 'external.middleclass'
 require 'collections.set'
+require 'core.entity.metaentity'
+
 
 local uuid = require('external.uuid')
 
@@ -31,6 +33,10 @@ function EntityManager:createEntity(name)
 	return uuid
 end
 
+
+function EntityManager:getMetaEntity(uuid)
+	return MetaEntity(uuid, self)
+end
 
 function EntityManager:setEntityName(uuid, name)
 	self.entity_names[uuid] = name
