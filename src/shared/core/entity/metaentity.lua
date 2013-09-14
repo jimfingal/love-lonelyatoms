@@ -3,18 +3,19 @@ require 'external.middleclass'
 MetaEntity = class('MetaEntity')
 
 -- Convenience Object for Entity, to be able to simulate object actions on it
-
-MetaEntity.default_entity_manager = nil
-
-function MetaEntity:initialize(entity_id, parent_entity_manager)
+function MetaEntity:initialize(entity_id, world)
 
 	assert(entity_id, "To call this constructor we must have a entity_id")
-	assert(MetaEntity.default_entity_manager or parent_entity_manager, 
-				"To call this constructor we must either have a parent_entity_manager or a default one")
+	assert(world, "Must be associated with a world")
 
 	self.entity_id = entity_id
-	self.parent_entity_manager = parent_entity_manager or MetaEntity.default_entity_manager
+	self.world = world
+	self.parent_entity_manager = world:getEntityManager()
 	
+end
+
+function MetaEntity:getId()
+	return self.entity_id
 end
 
 function MetaEntity:getName()
@@ -24,6 +25,10 @@ end
 function MetaEntity:setName()
 	self.parent_entity_manager:setEntityName(self.entity_id)
 	return self
+end
+
+function MetaEntity:getWorld()
+	return self.world
 end
 
 function MetaEntity:addComponent(component)

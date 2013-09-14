@@ -28,16 +28,16 @@ function love.load()
     local em = world:getEntityManager()
 
     player = em:createEntity('player')
-    em:addComponent(player, Transform(350, 500))
-    em:addComponent(player, Rendering():setColor(147,147,205):setShape(RectangleShape:new(100, 20)))
-    em:addComponent(player, Collider():setHitbox(RectangleShape:new(100, 20)))
-    em:addComponent(player, Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
+    player:addComponent(Transform(350, 500))
+    player:addComponent(Rendering():setColor(147,147,205):setShape(RectangleShape:new(100, 20)))
+    player:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
+    player:addComponent(Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
 
     ball = em:createEntity('ball')
-    em:addComponent(ball, Transform(395, 485))
-    em:addComponent(ball, Rendering():setColor(220,220,204):setShape(RectangleShape:new(15, 15)))
-    em:addComponent(ball, Collider():setHitbox(RectangleShape:new(100, 20)))
-    em:addComponent(ball, Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
+    ball:addComponent(Transform(395, 485))
+    ball:addComponent(Rendering():setColor(220,220,204):setShape(RectangleShape:new(15, 15)))
+    ball:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
+    ball:addComponent(Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
 
     auto_world_edges = Group()
 
@@ -45,20 +45,20 @@ function love.load()
     local TILE_SIZE = 20
 
     local top_tile = em:createEntity('top_tile')
-    em:addComponent(top_tile, Transform(0, -1 * TILE_SIZE))
-    em:addComponent(top_tile, Collider():setHitbox(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
+    top_tile:addComponent(Transform(0, -1 * TILE_SIZE))
+    top_tile:addComponent(Collider():setHitbox(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
 
     local bottom_tile = em:createEntity('bottom_tile')
-    em:addComponent(bottom_tile, Transform(0, love.graphics.getHeight()))
-    em:addComponent(bottom_tile, Collider():setHitbox(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
+    bottom_tile:addComponent(Transform(0, love.graphics.getHeight()))
+    bottom_tile:addComponent(Collider():setHitbox(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
 
     local left_tile = em:createEntity('left_tile')
-    em:addComponent(left_tile, Transform(-1 * TILE_SIZE, 0))
-    em:addComponent(left_tile, Collider():setHitbox(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
+    left_tile:addComponent(Transform(-1 * TILE_SIZE, 0))
+    left_tile:addComponent(Collider():setHitbox(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
 
     local right_tile = em:createEntity('right_tile')
-    em:addComponent(right_tile, Transform(love.graphics.getWidth(), 0))
-    em:addComponent(right_tile, Collider():setHitbox(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
+    right_tile:addComponent(Transform(love.graphics.getWidth(), 0))
+    right_tile:addComponent(Collider():setHitbox(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
 
     auto_world_edges:add(top_tile)
     auto_world_edges:add(bottom_tile)   
@@ -90,8 +90,9 @@ function love.update(dt)
 
     for entity in em:getAllEntitiesContainingComponents(Transform, Motion):members() do
 
-        t = em:getComponent(entity, Transform)
-        m = em:getComponent(entity, Motion)
+        t = entity:getComponent(Transform)
+        m = entity:getComponent(Motion)
+
         movement_system:update(t, m, dt)
 
     end
@@ -119,8 +120,8 @@ function love.draw()
 
     for entity in em:getAllEntitiesContainingComponents(Transform, Rendering):members() do
 
-        t = em:getComponent(entity, Transform)
-        r = em:getComponent(entity, Rendering)
+        t = entity:getComponent(Transform)
+        r = entity:getComponent(Rendering)
         rendering_system:draw(t, r)
         
     end
@@ -129,8 +130,8 @@ function love.draw()
 
     if DEBUG then
 
-        local player_transform = em:getComponent(player, Transform)
-        local ball_transform = em:getComponent(ball, Transform)
+        local player_transform = player:getComponent(Transform)
+        local ball_transform = ball:getComponent(Transform)
 
         love.graphics.print("Ball x: " .. ball_transform.position.x, 50, debugstart + 20)
         love.graphics.print("Ball y: " .. ball_transform.position.y, 50, debugstart + 40)
@@ -147,10 +148,10 @@ function constrainActorsToWorld()
 
     local em = world:getEntityManager()
 
-    local player_transform = em:getComponent(player, Transform)
-    local player_collider = em:getComponent(player, Collider)
+    local player_transform = player:getComponent(Transform)
+    local player_collider = player:getComponent(Collider)
 
-    local ball_transform = em:getComponent(ball, Transform)
+    local ball_transform = ball:getComponent(Transform)
 
 
     if ball_transform.position.x < 0 then

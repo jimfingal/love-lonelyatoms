@@ -12,7 +12,7 @@ EntityManager = class('EntityManager')
 
 function EntityManager:initialize(world)
 
-	self.all_entities = Set()
+	self.all_entities = {}
 	self.entity_names = {}
 	self.component_stores = {}
 	self.world = world
@@ -24,20 +24,18 @@ function EntityManager:createEntity(name)
 
 	local uuid = uuid()
 
+	local entity = MetaEntity(uuid, self.world)
+
 	-- Fast lookup
-	self.all_entities:add(uuid)
+	self.all_entities[uuid] = entity
 
 	if name then
 		self:setEntityName(uuid, name)
 	end
 
-	return uuid
+	return entity
 end
 
-
-function EntityManager:getMetaEntity(uuid)
-	return MetaEntity(uuid, self)
-end
 
 function EntityManager:setEntityName(uuid, name)
 	self.entity_names[uuid] = name
@@ -138,7 +136,7 @@ function EntityManager:getAllComponentsOfType(component_class)
 	local store = self.component_stores[component_class]
 
 	if store then
-		for entity, component in pairs(store) do
+		for uuid, component in pairs(store) do
 			components:add(component)
 		end
 	end
@@ -178,8 +176,8 @@ function EntityManager:getAllEntitiesContainingComponent(component_class)
 	local store = self.component_stores[component_class]
 
 	if store then
-		for entity, component in pairs(store) do
-			entities:add(entity)
+		for uuid, component in pairs(store) do
+			entities:add(self.all_entities[uuid])
 		end
 	end
 
@@ -239,7 +237,7 @@ function EntityManager:killEntity(uuid)
 	end
 
 	self:setEntityName(uuid, nil)
-	self.all_entities:remove(uuid)
+	self.all_entities[uuid] = nil
 
 end
 
