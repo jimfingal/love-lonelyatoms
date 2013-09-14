@@ -42,7 +42,7 @@ function CollisionSystem:processCollision(a, b, callback)
 	-- If A is not active and B is not active
 
 
-	if instanceOf(Group, a) then
+	if instanceOf(Set, a) then
 		
 		-- Should work whether or not other is a group
 		-- TODO inconsistent method of iterating
@@ -52,7 +52,7 @@ function CollisionSystem:processCollision(a, b, callback)
 	
 	else
 
-		if instanceOf(Group, b) then
+		if instanceOf(Set, b) then
 
 			for _, member in b:members() do
 

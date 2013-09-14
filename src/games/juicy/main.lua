@@ -13,6 +13,12 @@ require 'core.shapedata'
 
 DEBUG = false
 
+Tags = {}
+
+Tags.PLAYER = "player"
+Tags.BALL = "ball"
+Tags.WALL_GROUP = "walls"
+
 function love.load()
  
     world = World()
@@ -27,19 +33,21 @@ function love.load()
 
     local em = world:getEntityManager()
 
-    player = em:createEntity('player')
+    local player = em:createEntity('player')
     player:addComponent(Transform(350, 500))
     player:addComponent(Rendering():setColor(147,147,205):setShape(RectangleShape:new(100, 20)))
     player:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
     player:addComponent(Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
 
-    ball = em:createEntity('ball')
+    world:tagEntity(Tags.PLAYER, player)
+
+    local ball = em:createEntity('ball')
     ball:addComponent(Transform(395, 485))
     ball:addComponent(Rendering():setColor(220,220,204):setShape(RectangleShape:new(15, 15)))
     ball:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
     ball:addComponent(Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
 
-    auto_world_edges = Group()
+    world:tagEntity(Tags.BALL, ball)
 
     -- Tends to fall off world
     local TILE_SIZE = 20
@@ -60,11 +68,11 @@ function love.load()
     right_tile:addComponent(Transform(love.graphics.getWidth(), 0))
     right_tile:addComponent(Collider():setHitbox(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
 
-    auto_world_edges:add(top_tile)
-    auto_world_edges:add(bottom_tile)   
-    auto_world_edges:add(left_tile)
-    auto_world_edges:add(right_tile)
 
+    world:addEntityToGroup(Tags.WALL_GROUP, top_tile)
+    world:addEntityToGroup(Tags.WALL_GROUP, bottom_tile)
+    world:addEntityToGroup(Tags.WALL_GROUP, left_tile)
+    world:addEntityToGroup(Tags.WALL_GROUP, right_tile)
 
 
     --[[
@@ -130,8 +138,8 @@ function love.draw()
 
     if DEBUG then
 
-        local player_transform = player:getComponent(Transform)
-        local ball_transform = ball:getComponent(Transform)
+        local player_transform =  world:getTaggedEntity(Tags.PLAYER):getComponent(Transform)
+        local ball_transform = world:getTaggedEntity(Tags.BALL):getComponent(Transform)
 
         love.graphics.print("Ball x: " .. ball_transform.position.x, 50, debugstart + 20)
         love.graphics.print("Ball y: " .. ball_transform.position.y, 50, debugstart + 40)
@@ -148,10 +156,10 @@ function constrainActorsToWorld()
 
     local em = world:getEntityManager()
 
-    local player_transform = player:getComponent(Transform)
-    local player_collider = player:getComponent(Collider)
+    local player_transform =  world:getTaggedEntity(Tags.PLAYER):getComponent(Transform)
+    local player_collider = world:getTaggedEntity(Tags.PLAYER):getComponent(Collider)
 
-    local ball_transform = ball:getComponent(Transform)
+    local ball_transform = world:getTaggedEntity(Tags.BALL):getComponent(Transform)
 
 
     if ball_transform.position.x < 0 then
