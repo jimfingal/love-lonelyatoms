@@ -102,6 +102,9 @@ local entity2 = em:createEntity(entity_name)
 
 em:addComponent(entity, dummy_component)
 em:addComponent(entity, dummy_component2)
+
+print(meta_entity)
+
 em:addComponent(entity2, dummy_component)
 
 local shared_entries = em:getAllEntitiesContainingComponents(dummy_component.class, dummy_component2.class)

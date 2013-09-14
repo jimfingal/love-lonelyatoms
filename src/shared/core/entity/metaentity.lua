@@ -45,7 +45,7 @@ function MetaEntity:removeComponent(component_class)
 end
 
 function MetaEntity:removeAllComponents()
-	for _, component in ipairs(self:getAllComponents()) do
+	for component in self:getAllComponents():members() do
 		self:removeComponent(component.class)
 	end
 	return self
@@ -60,7 +60,7 @@ function MetaEntity:__tostring()
 
 	local s = ""
 
-	for _, component in ipairs(self:getAllComponents()) do
+	for component in self:getAllComponents():members() do
 
 		if string.len(s) > 0 then
 			s = s .. ', '
@@ -70,5 +70,5 @@ function MetaEntity:__tostring()
 
 	end
 
-	return "Entity(".. self.entity_id .. " :: " .. tostring(self:getName()) .."),".. s
+	return "Entity(".. self.entity_id .. " :: " .. tostring(self:getName()) ..") Components: [".. s .. "]"
 end
