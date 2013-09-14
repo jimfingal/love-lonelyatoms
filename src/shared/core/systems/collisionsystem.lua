@@ -17,9 +17,9 @@ function CollisionSystem:initialize(world)
 
 end
 
-function CollisionSystem:watchCollision(a, b, callback)
+function CollisionSystem:watchCollision(a, b)
 
-	local config = CollisionConfig(a, b, callback)
+	local config = CollisionConfig(a, b)
 	self.collisions_to_watch:add(config)
 	return config
 
@@ -29,47 +29,64 @@ function CollisionSystem:stopWatchingCollision(config)
 	self.collisions_to_watch:remove(config)
 end
 
-function CollisionSystem:processCollisions()
+function CollisionSystem:getCollisions()
+
+	local collisions = Set()
 
 	for config in self.collisions_to_watch:members() do
-		self:processCollision(config.a, config.b, config.callback)
+	
+		-- Could be empty
+		local collision_events = self:getCollisionEvents(config.a, config.b)		
+		collisions:addSet(collision_events)
+
 	end
+
+	return collisions
 
 end
 
-function CollisionSystem:processCollision(a, b, callback)
+-- 
+function CollisionSystem:getCollisionEvents(a, b)
 
 	-- If A is not active and B is not active
 
+	local collision_events = Set()
 
 	if instanceOf(Set, a) then
 		
 		-- Should work whether or not other is a group
 		-- TODO inconsistent method of iterating
-		for _, member in a:members() do
-			processCollision(member, b, callback)
+		for member in a:members() do
+
+			local child_collisions = self:getCollisionEvents(member, b)
+			collision_events:addSet(child_collisions)
+	 
 		end
 	
 	else
 
 		if instanceOf(Set, b) then
 
-			for _, member in b:members() do
+			for member in b:members() do
 
-				processCollision(a, member, callback)
+				local child_collisions = self:getCollisionEvents(a, member)
+				collision_events:addSet(child_collisions)
 
 			end
 
 		else
 			-- If collision occurs
 
-			if self:checkCollision(a, b) then
+			local collision_event = self:checkCollision(a, b)
 
-				callback(a, b)
+			if collision_event then
+				collision_events:add(collision_event)
 			end
 		end
 
 	end
+
+	return collision_events
 
 end
 
@@ -77,37 +94,52 @@ end
 
 function CollisionSystem:checkCollision(entity_a, entity_b)
 
+	assert(entity_a, "Must have an 'A' entity")
+	assert(entity_b, "Must have a 'B' entity... " .. tostring(entity_a))
+
 	if entity_a == entity_b then
-		return false
+		return nil
 	end
 
 	local em = world:getEntityManager()
 
 	-- Transform and Collider
-	at = em:getComponent(entity_a, Transform)
-    ac = em:getComponent(entity_a, Collider)
+	at = entity_a:getComponent(Transform)
+    ac = entity_a:getComponent(Collider)
 
     -- Transform and coollider
-	bt = em:getComponent(entity_b, Transform)
-    bc = em:getComponent(entity_b, Collider)
+	bt = entity_b:getComponent(Transform)
+    bc = entity_b:getComponent(Collider)
 
     if not ac:isActive() or not bc:isActive() then
-    	return false
+    	return nil
     end
 
+    -- TODO: Shape Helpers that resolve offset
 
 	if instanceOf(CircleShape, ac:hitbox()) then
 
-		return self:circleCollision(at, ac, bt, bc)
+		if self:circleCollision(at, ac, bt, bc) then
+			return CollisionEvent(entity_a, entity_b)
+		else
+			return nil
+		end
 
 	elseif instanceOf(RectangleShape, ac:hitbox()) then
 
-		return self:rectangleCollision(at, ac, bt, bc)
+		if self:rectangleCollision(at, ac, bt, bc) then
+			return CollisionEvent(entity_a, entity_b)
+		else
+			return nil
+		end
 
 	elseif instanceOf(PointShape, ac:hitbox()) then
 		
-		return self:pointCollision(at, ac, bt, bc)
-
+		if self:pointCollision(at, ac, bt, bc) then 
+			return CollisionEvent(entity_a, entity_b)
+		else
+			return nil
+		end
 	end
 
 	assert(false, "My shape is not a legal shape: " .. self)
@@ -237,14 +269,13 @@ end
 
 
 --[[ Helper Structs ]]
+
 CollisionConfig = class('CollisionConfig')
 
-function CollisionConfig:initialize(a, b, callback)
+function CollisionConfig:initialize(a, b)
 	self.a = a
 	self.b = b
-	self.callback = callback
 end
-
 
 CollisionEvent = class('CollisionEvent')
 

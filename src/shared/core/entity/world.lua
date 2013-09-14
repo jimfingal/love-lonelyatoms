@@ -38,13 +38,12 @@ function World:addEntityToGroup(group, entity)
 end
 
 function World:getEntitiesInGroup(group)
-	self.group_manager:getEntitiesInGroup(group)
+	return self.group_manager:getEntitiesInGroup(group)
 
 end
 
 function World:getGroupsContainingEntity(entity)
-	self.group_manager:getEntitiesInGroup(entity)
-
+	return self.group_manager:getGroupsContainingEntity(entity)
 end
 
 -- Tags

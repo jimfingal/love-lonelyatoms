@@ -75,12 +75,9 @@ function love.load()
     world:addEntityToGroup(Tags.WALL_GROUP, right_tile)
 
 
-    --[[
-    collision_system:watchCollision(player, auto_world_edges, collidePlayerWithWall)
-    collision_system:watchCollision(ball, player, collideBallWithPaddle)
-    collision_system:watchCollision(ball, auto_world_edges, collideBallWithWall)
-    ]]
-
+    collision_system:watchCollision(player, world:getEntitiesInGroup(Tags.WALL_GROUP))
+    collision_system:watchCollision(ball, player)
+    collision_system:watchCollision(ball, world:getEntitiesInGroup(Tags.WALL_GROUP))
 
 
 end
@@ -105,7 +102,28 @@ function love.update(dt)
 
     end
 
-    collision_system:processCollisions()
+    for collision_event in collision_system:getCollisions():members() do
+
+        if collision_event.a == world:getTaggedEntity(Tags.PLAYER) and
+           world:getGroupsContainingEntity(collision_event.b):contains(Tags.WALL_GROUP) then
+
+           assert(false, "Player collided with wall")
+
+        elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
+           world:getGroupsContainingEntity(collision_event.b):contains(Tags.WALL_GROUP) then
+
+
+           assert(false, "Ball collided with wall")
+
+
+        elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
+           collision_event.a == world:getTaggedEntity(Tags.PLAYER) then
+
+           assert(false, "Ball collided with Player")
+
+        end
+
+    end
 
     --[[
     if auto_ball.active == false then

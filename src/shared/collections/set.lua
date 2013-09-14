@@ -16,6 +16,12 @@ function Set:add(element)
 	self.set[element] = true
 end
 
+function Set:addSet(other_set)
+	for element in other_set:members() do 
+		self:add(element) 
+	end
+end
+
 function Set:remove(element)
 	self.set[element] = nil
 end
@@ -59,5 +65,5 @@ function Set:__tostring()
 	for e in pairs(self.set) do
 		l[#l + 1] = e
 	end
-	return "{" .. table.concat(l, ", ") .. "}"
+	return "SET [" .. table.concat(l, ", ") .. "]"
 end
