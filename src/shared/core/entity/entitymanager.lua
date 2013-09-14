@@ -195,9 +195,13 @@ function EntityManager:getAllEntitiesContainingComponents(first, ...)
 	-- Make slightly more efficient
 
 	if not first then
+		
 		return entities
-	elseif not args then
+
+	elseif not arg then
+		
 		return self:getAllEntitiesContainingComponent(first)
+
 	else
 
 		local entities = self:getAllEntitiesContainingComponent(first)
@@ -205,7 +209,7 @@ function EntityManager:getAllEntitiesContainingComponents(first, ...)
 		-- Continually narrow down to do intersection. If we get to the point of
 		-- No overlap, return empty set.
 
-		for _, class in ipairs(args) do
+		for _, class in ipairs(arg) do
 
 			local other_entities = self:getAllEntitiesContainingComponent(class)
 

@@ -48,6 +48,17 @@ function Motion:setVelocity(x, y)
 	return self
 end
 
+
+function Motion:invertVerticalVelocity()
+	self.velocity.y = -self.velocity.y
+	return self
+end
+
+function Motion:invertHorizontalVelocity()
+	self.velocity.x = -self.velocity.x
+	return self
+end
+
 function Motion:setMinVelocity(x, y)
 	self.minVelocity.x = x
 	self.minVelocity.y = y
