@@ -4,13 +4,16 @@ MetaEntity = class('MetaEntity')
 
 -- Convenience Object for Entity, to be able to simulate object actions on it
 
+MetaEntity.default_entity_manager = nil
+
 function MetaEntity:initialize(entity_id, parent_entity_manager)
 
 	assert(entity_id, "To call this constructor we must have a entity_id")
-	assert(parent_entity_manager, "To call this constructor we must have a parent_entity_manager")
+	assert(MetaEntity.default_entity_manager or parent_entity_manager, 
+				"To call this constructor we must either have a parent_entity_manager or a default one")
 
 	self.entity_id = entity_id
-	self.parent_entity_manager = parent_entity_manager
+	self.parent_entity_manager = parent_entity_manager or MetaEntity.default_entity_manager
 	
 end
 

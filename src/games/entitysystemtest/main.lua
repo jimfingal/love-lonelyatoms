@@ -2,6 +2,7 @@ require 'core.components.transform'
 require 'core.components.rendering'
 require 'core.systems.renderingsystem'
 require 'core.shapedata'
+Timer = require 'external.timer'
 
 
 function love.load()
@@ -18,33 +19,51 @@ function love.load()
     point_transform = Transform(500, 100)
     point_rendering = Rendering():setColor(147,147,205):setShape(PointShape:new())
 
---[[
-    mouse_shapes = List()
-
-    mc = CollidableCircle(300, 300, 50)
-    mr = CollidableRectangle(300, 100, 50, 25)
-    mp = CollidablePoint(500, 100)
-
-    mc:setColor(147,176,205)
-    mr:setColor(147,176,205)
-    mp:setColor(147,176,205)
-
-    mouse_shapes:append(mc)
-    mouse_shapes:append(mr)
-    mouse_shapes:append(mp)
+    mouse_transform = Transform(100, 100)
+    mouse_rendering = Rendering():setColor(147,176,205):setShape(CircleShape:new(50))
 
     periodic = 1
 
-    mouse = mouse_shapes:memberAt(periodic)
-
-    mouse:moveTo(love.mouse.getPosition())
+    mouse_transform:moveTo(love.mouse.getPosition())
 
     input_disabled = false
---]]
+
 
 end
 
 function love.update(dt)
+
+    Timer.update(dt)
+
+   if love.keyboard.isDown(" ") then
+
+     if not input_disabled then
+
+            periodic = periodic + 1
+           
+            if periodic > 3 then
+                periodic = 1
+            end
+
+            if periodic == 1 then
+                mouse_rendering:setShape(CircleShape:new(50))
+            elseif periodic == 2 then
+                mouse_rendering:setShape(RectangleShape:new(100, 50))
+            elseif periodic == 3 then
+                mouse_rendering:setShape(PointShape:new())
+            end
+
+            input_disabled = true
+
+            Timer.add(0.2, function() input_disabled = false end)
+
+       end
+    end
+
+
+    mouse_transform:moveTo(love.mouse.getPosition())
+
+  
 
 end
 
@@ -55,5 +74,7 @@ function love.draw()
     rendering_system:draw(circle_transform, circle_rendering)
     rendering_system:draw(rectangle_transform, rectangle_rendering)
     rendering_system:draw(point_transform, point_rendering)
+
+    rendering_system:draw(mouse_transform, mouse_rendering)
 
 end
