@@ -2,7 +2,6 @@ require 'external.middleclass'
 require 'collections.list'
 
 
-
 Tween = class("Tween")
 
 function Tween:initialize(initial_value, final_value, duration, easing_func)

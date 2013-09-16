@@ -6,6 +6,7 @@ require 'core.systems.movementsystem'
 require 'core.systems.behaviorsystem'
 require 'core.systems.camerasystem'
 require 'core.systems.inputsystem'
+require 'core.systems.tweensystem'
 require 'core.entity.world'
 require 'core.components.transform'
 require 'core.components.rendering'
@@ -58,6 +59,7 @@ function love.load()
     local input_system = InputSystem()
 
     local camera_system = CameraSystem()
+    local tween_system = TweenSystem()
 
     rendering_system:setCamera(camera_system)
 
@@ -67,6 +69,8 @@ function love.load()
     world:setSystem(behavior_system)
     world:setSystem(input_system)
     world:setSystem(camera_system)
+    world:setSystem(tween_system)
+
 
 
     input_system:registerInput('right', Actions.PLAYER_RIGHT)
@@ -147,7 +151,7 @@ function love.load()
                 local this_color = colors:memberAt(random)
 
                 local brick = em:createEntity('brick' .. y .. x)
-                brick:addComponent(Transform(x, y))
+                brick:addComponent(Transform(x, y):setLayerOrder(2))
                 brick:addComponent(Rendering():setColor(this_color:unpack()):setShape(RectangleShape:new(100, 20)))
                 brick:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
 
@@ -205,6 +209,9 @@ function love.update(dt)
     local movement_system = world:getSystem(MovementSystem)
     local behavior_system = world:getSystem(BehaviorSystem)
     local input_system = world:getSystem(InputSystem)
+    local tween_system = world:getSystem(TweenSystem)
+
+    tween_system:update(dt)
 
 
     input_system:processInputResponses(em:getAllEntitiesContainingComponent(InputResponse), dt)

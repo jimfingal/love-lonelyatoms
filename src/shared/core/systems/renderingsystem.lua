@@ -9,6 +9,7 @@ function RenderingSystem:initialize()
 
 	System.initialize(self, 'Rendering System')
 	self.camera_system = nil
+
 end
 
 function RenderingSystem:setCamera(camera)
@@ -26,14 +27,46 @@ function RenderingSystem:renderDrawables(entities)
 		self.camera_system:attach()
 	end
 
+	local layers = {}
+
+	local min = math.huge
+	local max = 1
+
 	for entity in entities:members() do
 
-        t = entity:getComponent(Transform)
-        r = entity:getComponent(Rendering)
-       
-        self:draw(t, r)
-        
+		local layer_num = entity:getComponent(Transform):getLayerOrder()
+		local layer_set = layers[layer_num]
+
+		if not layer_set then
+			layer_set = Set()
+			layers[layer_num] = layer_set
+		end
+
+		layer_set:add(entity)
+
+		if layer_num < min then
+			min = layer_num
+		elseif layer_num > max then
+			max = layer_num
+		end
+
     end
+
+    if #layers then
+	    for i = max, min, -1 do
+
+	    	local layer_set = layers[i]
+
+	    	if layer_set then
+	    		for entity in layer_set:members() do
+			        t = entity:getComponent(Transform)
+			        r = entity:getComponent(Rendering)
+			       
+			        self:draw(t, r)
+	    		end
+	    	end
+	    end
+	end
 	
 
 	if self.camera_system then

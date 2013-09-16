@@ -2,6 +2,7 @@ require 'core.components.transform'
 require 'core.components.rendering'
 require 'core.components.collider'
 require 'core.components.motion'
+Easing = require 'external.easing'
 
 
 function collideBallWithPaddle(ball, paddle)
@@ -122,24 +123,23 @@ function collideBallWithBrick(ball, brick)
     local ball_collider = ball:getComponent(Collider)
     local ball_rendering = ball:getComponent(Rendering)
 
+	local brick_transform = brick:getComponent(Transform)
 	local brick_position = brick:getComponent(Transform):getPosition()
     local brick_collider = brick:getComponent(Collider)
     local brick_rendering = brick:getComponent(Rendering)
 
     brick_collider:disable()
-    brick_rendering:disable()
-
-
-	--brick:playDeathSound()
-	--brick.active = false
 	
 	-- death animation
 
-	--[[
-	Tweener:addTween(1, brick, {width = 0, height = 0}, Easing.linear)
-	Tweener:addTween(1, brick.position, {x = brick.position.x + 100, y = brick.position.y + 300}, Easing.inBack)
-	Tweener:addTween(1, brick.color, {alpha = 0}, Easing.inCubic)
-	]]
+	local tween_system = brick:getWorld():getSystem(TweenSystem)
+
+	brick_transform:setLayerOrder(brick_transform:getLayerOrder() + 1)
+	tween_system:addTween(1, brick_rendering:getShape(), {width = 0, height = 0}, Easing.linear)
+	tween_system:addTween(1, brick_position, {x = brick_position.x + 100, y = brick_position.y + 300}, Easing.inBack)
+	tween_system:addTween(1, brick_rendering.color, {alpha = 0}, Easing.inCubic)
+
+
 
 	-- TODO handle bullet shit
 

@@ -11,7 +11,12 @@ function Transform:initialize(x, y)
 
 	self.position = Vector(x or 0, y or 0)
 	self.rotation = 0 -- Rotation in Radians
+	-- Used for layer rendering
+	self.z = 1
+
 	self.scale = Vector(1, 1)
+
+
 
 end
 
@@ -35,6 +40,15 @@ end
 
 function Transform:unpackPosition()
 	return self.position.x, self.position.y
+end
+
+function Transform:setLayerOrder(z)
+	self.z = z;
+	return self
+end
+
+function Transform:getLayerOrder()
+	return self.z;
 end
 
 
