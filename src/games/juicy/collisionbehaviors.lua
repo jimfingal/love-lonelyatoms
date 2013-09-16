@@ -11,7 +11,7 @@ function collideBallWithPaddle(ball, paddle)
     local ball_hitbox = ball:getComponent(Collider):hitbox()
 
     local paddle_transform = paddle:getComponent(Transform)
-    local paddle_hitbox = paddle:getComponent(Collider)
+    local paddle_hitbox = paddle:getComponent(Collider):hitbox()
 
 	local new_y = paddle_transform:getPosition().y - ball_hitbox.height
 
@@ -22,7 +22,7 @@ function collideBallWithPaddle(ball, paddle)
 
 	local paddle_origin = paddle_transform:getPosition().x
 	local paddle_width = paddle_hitbox.width
-	local third_of_paddle = paddle_hitbox / 3
+	local third_of_paddle = paddle_hitbox.width / 3
 
 	local middle_ball = ball_transform:getPosition().x + ball_hitbox.width/2
 
@@ -81,7 +81,6 @@ function collideBallWithWall(ball, wall)
 	-- Top wall
 	if ball_transform:getPosition().y < 5 then
 
-		assert(false, "collided with top wall")
 		ball_transform:moveTo(ball_transform:getPosition().x, 1)
 		ball_movement:invertVerticalVelocity()
 

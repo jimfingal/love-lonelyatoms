@@ -43,7 +43,7 @@ function love.load()
     player:addComponent(Rendering():setColor(147,147,205):setShape(RectangleShape:new(100, 20)))
     player:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
     player:addComponent(Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
-    -- player:addComponent(Behavior():addUpdateFunction(playerAI))
+    player:addComponent(Behavior():addUpdateFunction(playerAI))
 
     world:tagEntity(Tags.PLAYER, player)
 
@@ -52,7 +52,7 @@ function love.load()
     ball:addComponent(Rendering():setColor(220,220,204):setShape(RectangleShape:new(15, 15)))
     ball:addComponent(Collider():setHitbox(RectangleShape:new(15, 15)))
     ball:addComponent(Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
-    -- ball:addComponent(Behavior():addUpdateFunction(ballAutoResetOnNonexistence))
+    ball:addComponent(Behavior():addUpdateFunction(ballAutoResetOnNonexistence))
 
     world:tagEntity(Tags.BALL, ball)
 
@@ -86,7 +86,6 @@ function love.load()
     world:addEntityToGroup(Tags.WALL_GROUP, left_tile)
     world:addEntityToGroup(Tags.WALL_GROUP, right_tile)
 
-
     collision_system:watchCollision(player, world:getEntitiesInGroup(Tags.WALL_GROUP))
     collision_system:watchCollision(ball, player)
     collision_system:watchCollision(ball, world:getEntitiesInGroup(Tags.WALL_GROUP))
@@ -103,9 +102,8 @@ function love.update(dt)
     local movement_system = world:getSystem(MovementSystem)
     local behavior_system = world:getSystem(BehaviorSystem)
 
-    --[[
-    behavior_system:processBehaviors(em:getAllEntitiesContainingComponent(Behavior), dt)
-    ]]
+    
+    behavior_system:processBehaviors(em:getAllEntitiesContainingComponent(Behavior), dt) 
 
     for entity in em:getAllEntitiesContainingComponents(Transform, Motion):members() do
 
@@ -129,9 +127,9 @@ function love.update(dt)
           collideBallWithWall(collision_event.a, collision_event.b)
 
         elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
-           collision_event.a == world:getTaggedEntity(Tags.PLAYER) then
+           collision_event.b == world:getTaggedEntity(Tags.PLAYER) then
 
-          collideBallWithPaddle(collision_event.a, collision_event.b)
+           collideBallWithPaddle(collision_event.a, collision_event.b)
 
 
         end

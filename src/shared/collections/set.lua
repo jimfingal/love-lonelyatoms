@@ -63,7 +63,7 @@ end
 function Set:__tostring()
 	local l = {} -- List of elements
 	for e in pairs(self.set) do
-		l[#l + 1] = e
+		l[#l + 1] = tostring(e)
 	end
 	return "SET [" .. table.concat(l, ", ") .. "]"
 end
