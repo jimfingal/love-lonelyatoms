@@ -20,7 +20,6 @@ function ballAutoResetOnNonexistence(ball, dt)
 
    if ball_collider.active == false then
 
-		ball_transform:moveTo(395, 485)		
    		ball_collider:enable()
    		ball_rendering:enable()
    		ball_movement:setVelocity(200, -425)
@@ -42,6 +41,7 @@ function playerAI(player, dt)
 
     local ball_position = player:getWorld():getTaggedEntity(Tags.BALL):getComponent(Transform):getPosition()
     local ball_shape = player:getWorld():getTaggedEntity(Tags.BALL):getComponent(Rendering):getShape()
+    local ball_movement = player:getWorld():getTaggedEntity(Tags.BALL):getComponent(Motion)
 
 
    	local paddle_origin = player_position.x
@@ -59,7 +59,7 @@ function playerAI(player, dt)
     local base_speed = Vector(200, 0)
 
 
-    if middle_ball < first_third then
+    if middle_ball < first_third or ball_movement.velocity.x == 0 then
 
     	-- TODO
         -- player_movement:accelerateLeft(dt)

@@ -21,6 +21,8 @@ Tags = {}
 Tags.PLAYER = "player"
 Tags.BALL = "ball"
 Tags.WALL_GROUP = "walls"
+Tags.BRICK_GROUP = "bricks"
+
 
 function love.load()
  
@@ -56,6 +58,53 @@ function love.load()
 
     world:tagEntity(Tags.BALL, ball)
 
+
+    -- Bricks
+    local c1 = 205
+    local c2 = 147
+    local c3 = 176
+        
+    local colors = List()
+
+    colors:append(Color:new(c1, c2, c2))
+    colors:append(Color:new(c1, c2, c3))
+    colors:append(Color:new(c1, c2, c1))
+    colors:append(Color:new(c3, c2, c1))
+    colors:append(Color:new(c2, c2, c1))
+    colors:append(Color:new(c2, c3, c1))
+    colors:append(Color:new(c2, c1, c1))
+    colors:append(Color:new(c2, c1, c3))
+    colors:append(Color:new(c2, c1, c2))
+    colors:append(Color:new(c3, c1, c2))
+
+    for y = 0, 60, 20 do
+
+            local x_start = 0
+            local x_end = 700
+
+            if y > 0 and y % 40 == 20 then 
+                x_start = 50
+                x_end = 650
+            end
+
+            for x=x_start, x_end, 100 do
+
+                local random = math.random(1, colors:size())
+
+                local this_color = colors:memberAt(random)
+
+                local brick = em:createEntity('brick' .. y .. x)
+                brick:addComponent(Transform(x, y))
+                brick:addComponent(Rendering():setColor(this_color:unpack()):setShape(RectangleShape:new(100, 20)))
+                brick:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
+
+                world:addEntityToGroup(Tags.BRICK_GROUP, brick)
+
+            end
+        end
+
+
+
     -- Tends to fall off world
     local TILE_SIZE = 20
 
@@ -89,6 +138,7 @@ function love.load()
     collision_system:watchCollision(player, world:getEntitiesInGroup(Tags.WALL_GROUP))
     collision_system:watchCollision(ball, player)
     collision_system:watchCollision(ball, world:getEntitiesInGroup(Tags.WALL_GROUP))
+    collision_system:watchCollision(ball, world:getEntitiesInGroup(Tags.BRICK_GROUP))
 
 
 end
@@ -130,7 +180,11 @@ function love.update(dt)
            collision_event.b == world:getTaggedEntity(Tags.PLAYER) then
 
            collideBallWithPaddle(collision_event.a, collision_event.b)
+      
+        elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
+           world:getGroupsContainingEntity(collision_event.b):contains(Tags.BRICK_GROUP) then
 
+          collideBallWithBrick(collision_event.a, collision_event.b)
 
         end
 

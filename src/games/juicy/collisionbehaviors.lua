@@ -77,7 +77,6 @@ function collideBallWithWall(ball, wall)
 
     local wall_position = wall:getComponent(Transform):getPosition()
 
-
 	-- Top wall
 	if ball_transform:getPosition().y < 5 then
 
@@ -130,6 +129,7 @@ function collideBallWithBrick(ball, brick)
     brick_collider:disable()
     brick_rendering:disable()
 
+
 	--brick:playDeathSound()
 	--brick.active = false
 	
@@ -146,6 +146,7 @@ function collideBallWithBrick(ball, brick)
 	-- Colliding from the left or right
 	if ball_position.x < brick_position.x or
 	   ball_position.x > brick_position.x + brick_collider:hitbox().width then
+
 		ball_movement:invertHorizontalVelocity()
 	else
 		ball_movement:invertVerticalVelocity()
