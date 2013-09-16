@@ -14,6 +14,7 @@ require 'core.components.collider'
 require 'core.components.motion'
 require 'core.components.behavior'
 require 'core.components.inputresponse'
+require 'core.components.soundcomponent'
 require 'core.shapedata'
 require 'collisionbehaviors'
 require 'entitybehaviors'
@@ -46,6 +47,11 @@ Actions.CAMERA_UP = "cup"
 Actions.CAMERA_DOWN = "cdown" 
 Actions.CAMERA_SCALE_UP = "cscaleup"
 Actions.CAMERA_SCALE_DOWN = "cscaledown"
+
+Assets = {}
+
+Assets.BACKGROUND_SOUND = "background"
+Assets.BRICK_SOUND = "brick"
 
 
 function love.load()
@@ -116,6 +122,26 @@ function love.load()
     world:tagEntity(Tags.BALL, ball)
 
 
+    local bsnd = "background.mp3"
+
+    
+    local asset_manager = world:getAssetManager()
+
+    asset_manager:loadSound(Assets.BACKGROUND_SOUND, bsnd)
+
+    local this_sound = asset_manager:getSound(Assets.BACKGROUND_SOUND)
+    this_sound:setVolume(0.25)
+    this_sound:setLooping(true)
+
+    local background_sound_entity = em:createEntity('background_sound')
+    background_sound_entity:addComponent(SoundComponent():addSound(Assets.BACKGROUND_SOUND, this_sound))
+
+    local sound_component = background_sound_entity:getComponent(SoundComponent)
+
+    local retrieved_sound = sound_component:getSound(Assets.BACKGROUND_SOUND)
+    love.audio.play(retrieved_sound)
+
+
     -- Bricks
     local c1 = 205
     local c2 = 147
@@ -133,6 +159,12 @@ function love.load()
     colors:append(Color:new(c2, c1, c3))
     colors:append(Color:new(c2, c1, c2))
     colors:append(Color:new(c3, c1, c2))
+
+
+    local brick_snd = "brick.mp3"
+   
+    asset_manager:loadSound(Assets.BRICK_SOUND, brick_snd)
+
 
     for y = 0, 60, 20 do
 
@@ -154,6 +186,7 @@ function love.load()
                 brick:addComponent(Transform(x, y):setLayerOrder(2))
                 brick:addComponent(Rendering():setColor(this_color:unpack()):setShape(RectangleShape:new(100, 20)))
                 brick:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
+                brick:addComponent(SoundComponent():addSound(Assets.BRICK_SOUND, asset_manager:getSound(Assets.BRICK_SOUND)))
 
                 world:addEntityToGroup(Tags.BRICK_GROUP, brick)
 
@@ -196,6 +229,10 @@ function love.load()
     collision_system:watchCollision(ball, player)
     collision_system:watchCollision(ball, world:getEntitiesInGroup(Tags.WALL_GROUP))
     collision_system:watchCollision(ball, world:getEntitiesInGroup(Tags.BRICK_GROUP))
+
+    
+
+   
 
 
 end

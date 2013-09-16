@@ -134,6 +134,14 @@ function collideBallWithBrick(ball, brick)
 
 	local tween_system = brick:getWorld():getSystem(TweenSystem)
 
+
+
+    local sound_component = brick:getComponent(SoundComponent)
+
+    local retrieved_sound = sound_component:getSound(Assets.BRICK_SOUND)
+    love.audio.play(retrieved_sound)
+
+
 	brick_transform:setLayerOrder(brick_transform:getLayerOrder() + 1)
 	tween_system:addTween(1, brick_rendering:getShape(), {width = 0, height = 0}, Easing.linear)
 	tween_system:addTween(1, brick_position, {x = brick_position.x + 100, y = brick_position.y + 300}, Easing.inBack)

@@ -5,7 +5,6 @@ require 'core.components.collider'
 require 'helpers.mathhelpers'
 
 
-
 CollisionSystem = class('CollisionSystem', System)
 
 function CollisionSystem:initialize(world)
