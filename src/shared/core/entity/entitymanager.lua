@@ -97,7 +97,7 @@ end
 
 function EntityManager:getComponent(uuid, component_class)
 
-	assert(uuid and component_class, "Must have a uuid and component class parameter")
+	assert(uuid and component_class, "Must have a uuid and component class parameter; given: " .. uuid .. " and " .. tostring(component_class))
 
 	local store, component = self:getStoreAndComponentWithValidation(uuid, component_class)
 

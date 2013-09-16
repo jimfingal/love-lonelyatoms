@@ -83,3 +83,9 @@ end
 function Transform:unpackScale()
 	return self.scale.x, self.scale.y
 end
+
+function Transform:__tostring()
+	return "Transform: [ position = " .. tostring(self.position) .. 
+					   ", rotation = " .. tostring(self.rotation) .. 
+					   ", scale = " .. tostring(self.scale) .."]" 
+end

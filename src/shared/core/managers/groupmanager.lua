@@ -39,10 +39,22 @@ end
 
 function GroupManager:getEntitiesInGroup(group)
 	assert(group, "Must have a group parameter")
-	return self.entities_by_group[group]
+
+	if self.entities_by_group[group] then
+		return self.entities_by_group[group]
+	else
+		return Set:new()
+	end
+
 end
 
 function GroupManager:getGroupsContainingEntity(entity)
 	assert(entity, "Must have an entity parameter")
-	return self.groups_by_entity[entity]
+
+	if self.groups_by_entity[entity] then
+		return self.groups_by_entity[entity]
+	else
+		return Set:new()
+	end
+
 end

@@ -34,3 +34,8 @@ function Collider:disable()
 	self.active = false
 	return self
 end
+
+
+function Collider:__tostring()
+	return "Collider: [ active = " .. tostring(self.active) .. ", shape = " .. tostring(self.shape_data) .. "]" 
+end

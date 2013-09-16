@@ -3,13 +3,16 @@ require 'core.oldentity.group'
 require 'core.systems.renderingsystem'
 require 'core.systems.collisionsystem'
 require 'core.systems.movementsystem'
+require 'core.systems.behaviorsystem'
 require 'core.entity.world'
 require 'core.components.transform'
 require 'core.components.rendering'
 require 'core.components.collider'
 require 'core.components.motion'
+require 'core.components.behavior'
 require 'core.shapedata'
-
+require 'collisionbehaviors'
+require 'entitybehaviors'
 
 DEBUG = false
 
@@ -26,10 +29,12 @@ function love.load()
     local rendering_system = RenderingSystem()
     local collision_system = CollisionSystem(world)
     local movement_system = MovementSystem()
+    local behavior_system = BehaviorSystem()
 
     world:setSystem(rendering_system)
     world:setSystem(collision_system)
     world:setSystem(movement_system)
+    world:setSystem(behavior_system)
 
     local em = world:getEntityManager()
 
@@ -38,14 +43,16 @@ function love.load()
     player:addComponent(Rendering():setColor(147,147,205):setShape(RectangleShape:new(100, 20)))
     player:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
     player:addComponent(Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
+    -- player:addComponent(Behavior():addUpdateFunction(playerAI))
 
     world:tagEntity(Tags.PLAYER, player)
 
     local ball = em:createEntity('ball')
     ball:addComponent(Transform(395, 485))
     ball:addComponent(Rendering():setColor(220,220,204):setShape(RectangleShape:new(15, 15)))
-    ball:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
+    ball:addComponent(Collider():setHitbox(RectangleShape:new(15, 15)))
     ball:addComponent(Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
+    -- ball:addComponent(Behavior():addUpdateFunction(ballAutoResetOnNonexistence))
 
     world:tagEntity(Tags.BALL, ball)
 
@@ -53,20 +60,25 @@ function love.load()
     local TILE_SIZE = 20
 
     local top_tile = em:createEntity('top_tile')
-    top_tile:addComponent(Transform(0, -1 * TILE_SIZE))
+    top_tile:addComponent(Transform(0, -1 * TILE_SIZE + 1))
     top_tile:addComponent(Collider():setHitbox(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
+    top_tile:addComponent(Rendering():setColor(147,147,205):setShape(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
+
 
     local bottom_tile = em:createEntity('bottom_tile')
-    bottom_tile:addComponent(Transform(0, love.graphics.getHeight()))
+    bottom_tile:addComponent(Transform(0, love.graphics.getHeight() - 1))
     bottom_tile:addComponent(Collider():setHitbox(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
+    bottom_tile:addComponent(Rendering():setColor(147,147,205):setShape(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
 
     local left_tile = em:createEntity('left_tile')
-    left_tile:addComponent(Transform(-1 * TILE_SIZE, 0))
+    left_tile:addComponent(Transform(-1 * TILE_SIZE + 1, 0))
     left_tile:addComponent(Collider():setHitbox(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
+    left_tile:addComponent(Rendering():setColor(147,147,205):setShape(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
 
     local right_tile = em:createEntity('right_tile')
-    right_tile:addComponent(Transform(love.graphics.getWidth(), 0))
+    right_tile:addComponent(Transform(love.graphics.getWidth() - 1, 0))
     right_tile:addComponent(Collider():setHitbox(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
+    right_tile:addComponent(Rendering():setColor(147,147,205):setShape(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
 
 
     world:addEntityToGroup(Tags.WALL_GROUP, top_tile)
@@ -85,13 +97,15 @@ end
 -- Perform computations, etc. between screen refreshes.
 function love.update(dt)
 
-  
-   -- TODO 
-    -- auto_player:processAI(dt, auto_ball)
+    local em = world:getEntityManager()
 
     local collision_system = world:getSystem(CollisionSystem)
     local movement_system = world:getSystem(MovementSystem)
-    local em = world:getEntityManager()
+    local behavior_system = world:getSystem(BehaviorSystem)
+
+    --[[
+    behavior_system:processBehaviors(em:getAllEntitiesContainingComponent(Behavior), dt)
+    ]]
 
     for entity in em:getAllEntitiesContainingComponents(Transform, Motion):members() do
 
@@ -107,19 +121,18 @@ function love.update(dt)
         if collision_event.a == world:getTaggedEntity(Tags.PLAYER) and
            world:getGroupsContainingEntity(collision_event.b):contains(Tags.WALL_GROUP) then
 
-           assert(false, "Player collided with wall")
+           collidePlayerWithWall(collision_event.a, collision_event.b)
 
         elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
            world:getGroupsContainingEntity(collision_event.b):contains(Tags.WALL_GROUP) then
 
-
-           assert(false, "Ball collided with wall")
-
+          collideBallWithWall(collision_event.a, collision_event.b)
 
         elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
            collision_event.a == world:getTaggedEntity(Tags.PLAYER) then
 
-           assert(false, "Ball collided with Player")
+          collideBallWithPaddle(collision_event.a, collision_event.b)
+
 
         end
 
@@ -131,7 +144,7 @@ function love.update(dt)
     end
     ]]
 
-    constrainActorsToWorld()
+    -- constrainActorsToWorld()
 
 
 end
@@ -182,8 +195,8 @@ function constrainActorsToWorld()
 
     if ball_transform.position.x < 0 then
         ball_transform.position.x = 0
-    elseif ball_transform.position.x > love.graphics.getWidth() - 50 then
-        ball_transform.position.x = love.graphics.getWidth() - 50
+    elseif ball_transform.position.x > love.graphics.getWidth() then
+        ball_transform.position.x = love.graphics.getWidth()
     end
 
     if ball_transform.position.y < 0 then

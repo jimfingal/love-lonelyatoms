@@ -111,3 +111,18 @@ function Motion:stop()
 	self.acceleration = Vector.ZERO
 	return self
 end
+
+
+function Motion:__tostring()
+	return "Motion: [ velocity = " .. tostring(self.velocity) .. 
+					   ", minVelocity = " .. tostring(self.minVelocity) .. 
+					   ", maxVelocity = " .. tostring(self.maxVelocity) .. 
+					   ", acceleration = " .. tostring(self.acceleration) .. 
+					   ", minAcceleration = " .. tostring(self.minAcceleration) .. 
+					   ", maxAcceleration = " .. tostring(self.maxAcceleration) .. 
+					   ", drag = " .. tostring(self.drag) .."]" 
+
+end
+
+
+

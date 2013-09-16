@@ -38,6 +38,10 @@ function CircleShape:center(transform_position)
 
 end
 
+function CircleShape:__tostring()
+	return "Circle: [ radius = " .. self.radius .. ", offset = " .. tostring(self.position_offset) .. "]"
+end
+
 
 
 -- [[ Points ]] 
@@ -66,4 +70,11 @@ end
 
 function RectangleShape:draw(position, mode)
 	love.graphics.rectangle(mode or "line", position.x, position.y, self.width, self.height)
+end
+
+
+function RectangleShape:__tostring()
+	return "Rectangle: [ width = " .. self.width .. 
+				", height = " .. self.height ..
+				", offset = " .. tostring(self.position_offset) .. "]"
 end
