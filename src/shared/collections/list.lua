@@ -66,5 +66,11 @@ function List:size()
 end
 
 function List:__tostring()
-	return "{" .. table.concat(self.list, ", ") .. "}"
+
+	local l = {} -- List of elements
+	for _, e in pairs(self.list) do
+		l[#l + 1] = tostring(e)
+	end
+	return "LIST [" .. table.concat(l, ", ") .. "]"
+
 end

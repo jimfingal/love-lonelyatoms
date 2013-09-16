@@ -4,12 +4,14 @@ require 'core.systems.renderingsystem'
 require 'core.systems.collisionsystem'
 require 'core.systems.movementsystem'
 require 'core.systems.behaviorsystem'
+require 'core.systems.inputsystem'
 require 'core.entity.world'
 require 'core.components.transform'
 require 'core.components.rendering'
 require 'core.components.collider'
 require 'core.components.motion'
 require 'core.components.behavior'
+require 'core.components.inputresponse'
 require 'core.shapedata'
 require 'collisionbehaviors'
 require 'entitybehaviors'
@@ -23,6 +25,18 @@ Tags.BALL = "ball"
 Tags.WALL_GROUP = "walls"
 Tags.BRICK_GROUP = "bricks"
 
+Actions = {}
+
+Actions.PLAYER_LEFT = "left"
+Actions.PLAYER_RIGHT = "right" 
+
+Actions.RESET_BALL = "reset"
+
+Actions.SKIP_SPLASH = "skip"
+
+Actions.QUIT_GAME = "quit"
+Actions.ESCAPE_TO_MENU = "escape"
+
 
 function love.load()
  
@@ -32,20 +46,39 @@ function love.load()
     local collision_system = CollisionSystem(world)
     local movement_system = MovementSystem()
     local behavior_system = BehaviorSystem()
+    local input_system = InputSystem()
+
 
     world:setSystem(rendering_system)
     world:setSystem(collision_system)
     world:setSystem(movement_system)
     world:setSystem(behavior_system)
+    world:setSystem(input_system)
+
+
+    input_system:registerInput('right', Actions.PLAYER_RIGHT)
+    input_system:registerInput('left', Actions.PLAYER_LEFT)
+    input_system:registerInput('a', Actions.PLAYER_LEFT)
+    input_system:registerInput('d', Actions.PLAYER_RIGHT)
+    input_system:registerInput(' ', Actions.RESET_BALL)
+    input_system:registerInput('escape', Actions.ESCAPE_TO_MENU)
+    input_system:registerInput('q', Actions.QUIT_GAME)
+
 
     local em = world:getEntityManager()
+
+    local ir = em:createEntity('globalinputresponse')
+    ir:addComponent(InputResponse():addResponse(globalInputResponse))
+
 
     local player = em:createEntity('player')
     player:addComponent(Transform(350, 500))
     player:addComponent(Rendering():setColor(147,147,205):setShape(RectangleShape:new(100, 20)))
     player:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
     player:addComponent(Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
-    player:addComponent(Behavior():addUpdateFunction(playerAI))
+    -- player:addComponent(Behavior():addUpdateFunction(playerAI))
+    player:addComponent(InputResponse():addResponse(playerInputResponse))
+
 
     world:tagEntity(Tags.PLAYER, player)
 
@@ -151,7 +184,10 @@ function love.update(dt)
     local collision_system = world:getSystem(CollisionSystem)
     local movement_system = world:getSystem(MovementSystem)
     local behavior_system = world:getSystem(BehaviorSystem)
+    local input_system = world:getSystem(InputSystem)
 
+
+    input_system:processInputResponses(em:getAllEntitiesContainingComponent(InputResponse), dt)
     
     behavior_system:processBehaviors(em:getAllEntitiesContainingComponent(Behavior), dt) 
 
