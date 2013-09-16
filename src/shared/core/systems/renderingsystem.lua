@@ -1,13 +1,47 @@
 require 'external.middleclass'
 require 'core.entity.system'
+require 'core.components.transform'
+require 'core.components.rendering'
 
 RenderingSystem = class('RenderingSystem', System)
 
 function RenderingSystem:initialize()
 
 	System.initialize(self, 'Rendering System')
+	self.camera_system = nil
+end
+
+function RenderingSystem:setCamera(camera)
+	self.camera_system = camera
+end
+
+function RenderingSystem:clearCamera()
+	self.camera_system = nil
+end
+
+
+function RenderingSystem:renderDrawables(entities)
+
+	if self.camera_system then
+		self.camera_system:attach()
+	end
+
+	for entity in entities:members() do
+
+        t = entity:getComponent(Transform)
+        r = entity:getComponent(Rendering)
+       
+        self:draw(t, r)
+        
+    end
+	
+
+	if self.camera_system then
+		self.camera_system:detach()
+	end
 
 end
+
 
 
 function RenderingSystem:draw(transform, rendering)

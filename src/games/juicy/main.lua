@@ -4,6 +4,7 @@ require 'core.systems.renderingsystem'
 require 'core.systems.collisionsystem'
 require 'core.systems.movementsystem'
 require 'core.systems.behaviorsystem'
+require 'core.systems.camerasystem'
 require 'core.systems.inputsystem'
 require 'core.entity.world'
 require 'core.components.transform'
@@ -38,6 +39,14 @@ Actions.QUIT_GAME = "quit"
 Actions.ESCAPE_TO_MENU = "escape"
 
 
+Actions.CAMERA_LEFT = "cleft"
+Actions.CAMERA_RIGHT = "cright" 
+Actions.CAMERA_UP = "cup" 
+Actions.CAMERA_DOWN = "cdown" 
+Actions.CAMERA_SCALE_UP = "cscaleup"
+Actions.CAMERA_SCALE_DOWN = "cscaledown"
+
+
 function love.load()
  
     world = World()
@@ -48,12 +57,16 @@ function love.load()
     local behavior_system = BehaviorSystem()
     local input_system = InputSystem()
 
+    local camera_system = CameraSystem()
+
+    rendering_system:setCamera(camera_system)
 
     world:setSystem(rendering_system)
     world:setSystem(collision_system)
     world:setSystem(movement_system)
     world:setSystem(behavior_system)
     world:setSystem(input_system)
+    world:setSystem(camera_system)
 
 
     input_system:registerInput('right', Actions.PLAYER_RIGHT)
@@ -63,6 +76,13 @@ function love.load()
     input_system:registerInput(' ', Actions.RESET_BALL)
     input_system:registerInput('escape', Actions.ESCAPE_TO_MENU)
     input_system:registerInput('q', Actions.QUIT_GAME)
+
+    input_system:registerInput('f', Actions.CAMERA_LEFT)
+    input_system:registerInput('h', Actions.CAMERA_RIGHT)
+    input_system:registerInput('t', Actions.CAMERA_UP)
+    input_system:registerInput('g', Actions.CAMERA_DOWN)
+    input_system:registerInput('z', Actions.CAMERA_SCALE_UP)
+    input_system:registerInput('x', Actions.CAMERA_SCALE_DOWN)
 
 
     local em = world:getEntityManager()
@@ -245,13 +265,7 @@ function love.draw()
     local rendering_system = world:getSystem(RenderingSystem)
     local em = world:getEntityManager()
 
-    for entity in em:getAllEntitiesContainingComponents(Transform, Rendering):members() do
-
-        t = entity:getComponent(Transform)
-        r = entity:getComponent(Rendering)
-        rendering_system:draw(t, r)
-        
-    end
+    rendering_system:renderDrawables(em:getAllEntitiesContainingComponents(Transform, Rendering))
 
     local debugstart = 400
 

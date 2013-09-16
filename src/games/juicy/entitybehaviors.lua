@@ -152,6 +152,40 @@ function globalInputResponse(global, held_actions, pressed_actions, dt)
         ]]
     end
 
+
+
+    move_speed = 100
+    scale_speed = 2
+    rotate_speed = 1
+
+    local camera = global:getWorld():getSystem(CameraSystem).transform
+
+    if held_actions[Actions.CAMERA_LEFT] then
+        camera:move(-dt * move_speed, 0)
+    end
+
+    if held_actions[Actions.CAMERA_RIGHT] then
+        camera:move(dt * move_speed, 0)
+    end
+
+    if held_actions[Actions.CAMERA_UP] then
+        camera:move(0, -dt * move_speed)
+    end
+
+    if held_actions[Actions.CAMERA_DOWN] then
+        camera:move(0, dt * move_speed)
+    end
+
+    if held_actions[Actions.CAMERA_SCALE_UP] then
+        camera:addScale(dt * scale_speed)
+    end
+
+    if held_actions[Actions.CAMERA_SCALE_DOWN] then
+        camera:addScale(-dt * scale_speed)
+    end
+
+
+
     -- Quit
     if pressed_actions[Actions.QUIT_GAME] then
         love.event.push("quit")
