@@ -35,6 +35,8 @@ function AssetManager:loadFont(key, font_name, font_size)
 	local font = love.graphics.newFont(self.font_path .. font_name, font_size)
 	
 	self.fonts[key] = font
+
+	return font
 end
 
 function AssetManager:getFont(name)
@@ -54,6 +56,8 @@ function AssetManager:loadSound(key, sound_name)
 	local snd  = love.audio.newSource(self.sound_path .. sound_name, 'static')
 	
 	self.sounds[key] = snd
+
+	return snd
 end
 
 function AssetManager:getSound(name)
