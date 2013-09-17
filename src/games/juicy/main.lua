@@ -18,6 +18,7 @@ require 'core.components.soundcomponent'
 require 'core.shapedata'
 require 'collisionbehaviors'
 require 'entitybehaviors'
+require 'external.slam'
 
 DEBUG = false
 
