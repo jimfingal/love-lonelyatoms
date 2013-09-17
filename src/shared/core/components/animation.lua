@@ -91,7 +91,5 @@ function TextAnimation:draw(x, y)
 
 	love.graphics.print(string.sub(self.text, 1, self.position), x, y)
 
-	-- love.graphics.print("p: " .. self.position .. " lp: " .. self.last_position, x, y + 200)
-
 end
 

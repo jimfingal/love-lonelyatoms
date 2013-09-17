@@ -1,175 +1,275 @@
 require 'external.middleclass'
-require 'core.gamestate'
-require 'core.oldentity.group'
-require 'sprites.player'
-require 'sprites.ball'
-require 'sprites.tile'
+require 'core.scene'
 require 'collections.set'
-Input = require 'core.input'
-require 'config.brickloader'
-require 'assets.assets'
-require 'core.tween'
+require 'core.oldentity.group'
+require 'core.systems.renderingsystem'
+require 'core.systems.collisionsystem'
+require 'core.systems.movementsystem'
+require 'core.systems.behaviorsystem'
+require 'core.systems.camerasystem'
+require 'core.systems.inputsystem'
+require 'core.systems.tweensystem'
+require 'core.entity.world'
+require 'core.components.transform'
+require 'core.components.rendering'
+require 'core.components.collider'
+require 'core.components.motion'
+require 'core.components.behavior'
+require 'core.components.inputresponse'
+require 'core.components.soundcomponent'
+require 'core.shapedata'
+require 'collisionbehaviors'
+require 'entitybehaviors'
+require 'entitysets'
+
+require 'enums.actions'
+require 'enums.assets'
+require 'enums.tags'
+
+PlayScene = class('Play', Scene)
+
+function PlayScene:initialize(name, w)
+
+    Scene.initialize(self, name, w)
+
+    local world = self.world
+
+    local input_system = world:getSystem(InputSystem)
+
+    input_system:registerInput('right', Actions.PLAYER_RIGHT)
+    input_system:registerInput('left', Actions.PLAYER_LEFT)
+    input_system:registerInput('a', Actions.PLAYER_LEFT)
+    input_system:registerInput('d', Actions.PLAYER_RIGHT)
+    input_system:registerInput(' ', Actions.RESET_BALL)
+    input_system:registerInput('escape', Actions.ESCAPE_TO_MENU)
+    input_system:registerInput('q', Actions.QUIT_GAME)
+
+    input_system:registerInput('f', Actions.CAMERA_LEFT)
+    input_system:registerInput('h', Actions.CAMERA_RIGHT)
+    input_system:registerInput('t', Actions.CAMERA_UP)
+    input_system:registerInput('g', Actions.CAMERA_DOWN)
+    input_system:registerInput('z', Actions.CAMERA_SCALE_UP)
+    input_system:registerInput('x', Actions.CAMERA_SCALE_DOWN)
 
 
-PlayState = class('Play', GameState)
+    local em = world:getEntityManager()
 
-function PlayState:initialize(name, state_manager, asset_manager)
-
-    GameState.initialize(self, name, state_manager, asset_manager)
-
-    self.world_edges = Group()
-    self.bricks = Group()
-
-    local TILE_SIZE = 50
-
-    local top_tile = Tile(0, -1 * TILE_SIZE, love.graphics.getWidth(), TILE_SIZE)
-    local bottom_tile = Tile(0, love.graphics.getHeight(), love.graphics.getWidth(), TILE_SIZE)
-    local left_tile = Tile(-1 * TILE_SIZE, 0, TILE_SIZE, love.graphics.getHeight())
-    local right_tile = Tile(love.graphics.getWidth(), 0, TILE_SIZE, love.graphics.getHeight())
-
-    self.world_edges:add(top_tile)
-    self.world_edges:add(bottom_tile)   
-    self.world_edges:add(left_tile)
-    self.world_edges:add(right_tile)
-
-    self.player = Player(350, 500, 100, 20)    
-    self.ball = Ball(395, 500 - 15, 15, 15)
-
-    self.input = InputManager()
-
-    self.input:registerInput('right', Actions.PLAYER_RIGHT)
-    self.input:registerInput('left', Actions.PLAYER_LEFT)
-    self.input:registerInput('a', Actions.PLAYER_LEFT)
-    self.input:registerInput('d', Actions.PLAYER_RIGHT)
-    self.input:registerInput(' ', Actions.RESET_BALL)
-    self.input:registerInput('escape', Actions.ESCAPE_TO_MENU)
-    self.input:registerInput('q', Actions.QUIT_GAME)
-
-    self.victory = false
-
-    
-
-end
-
-function PlayState:enter(brick_input)
-
-    self.input:clear()
-    self.player:stop()
-    self.player:moveTo(350, 500)
-    self.ball:disable()
-
-    self.victory = false
-
-    -- Loading....
-    love.graphics.setBackgroundColor(63, 63, 63, 255)
-    love.graphics.setColor(204,147,147)
-    love.graphics.setFont(self:assetManager():getFont(Assets.FONT_MEDIUM))
-    love.graphics.print("Loading...", 200, 550)
-
-    -- Reset bricks
-    self.brick_config = BrickLoader:load_bricks(self.asset_manager, brick_input)
-
-    self.bricks = self.brick_config.bricks
-
-    local background = self.brick_config.background_snd
-    
-    love.audio.stop()
-    background:setVolume(0.25)
-    background:setLooping(true)
-    love.audio.play(background)
-
- 
-end
+    local ir = em:createEntity('globalinputresponse')
+    ir:addComponent(InputResponse():addResponse(globalInputResponse))
 
 
-function PlayState:update(dt)
+    local player = em:createEntity('player')
+    player:addComponent(Transform(350, 500))
+    player:addComponent(ShapeRendering():setColor(147,147,205):setShape(RectangleShape:new(100, 20)))
+    player:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
+    player:addComponent(Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
+    -- player:addComponent(Behavior():addUpdateFunction(playerAI))
+    player:addComponent(InputResponse():addResponse(playerInputResponse))
 
-    self.input:update(dt)
-    Tweener:update(dt)
 
-    -- Reset Ball
-    if self.input:newAction(Actions.RESET_BALL) and not self.victory then
-        self.ball:reset(self.player)
-    end
+    world:tagEntity(Tags.PLAYER, player)
 
-    -- Escape to Menu
-    if self.input:newAction(Actions.ESCAPE_TO_MENU) then
-        self.ball:disable()
-        self.state_manager:changeState(States.MENU)
-    end
+    local ball = em:createEntity('ball')
+    ball:addComponent(Transform(395, 485))
+    ball:addComponent(ShapeRendering():setColor(220,220,204):setShape(RectangleShape:new(15, 15)))
+    ball:addComponent(Collider():setHitbox(RectangleShape:new(15, 15)))
+    ball:addComponent(Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
+    ball:addComponent(Behavior():addUpdateFunction(ballAutoResetOnNonexistence))
 
-    -- Quit
-    if self.input:newAction(Actions.QUIT_GAME) then
-        love.event.push("quit")
-    end
+    world:tagEntity(Tags.BALL, ball)
 
-    self.player:processInput(dt, self.input)    
+    local world_constrainer = em:createEntity('world_constrainer')
+    world_constrainer:addComponent(Behavior():addUpdateFunction(constrainActorsToWorld))
+     
+    local background_image = em:createEntity('background_image')
+    background_image:addComponent(Transform(0, 0):setLayerOrder(10))
+    background_image:addComponent(ShapeRendering():setColor(63, 63, 63, 255):setShape(RectangleShape:new(love.graphics.getWidth(), love.graphics.getHeight())))
+    world:tagEntity(Tags.BACKGROUND, background_image)
 
-    if self.player.active then
+    local bsnd = "background.mp3"
 
-         -- I want to be able to check a collision between one item, another item or group, and call a callback that
-        -- handles the two items that collided if it happens
-        self.player:processCollision(self.world_edges, function (player, collided_tile) player:collideWithWall(collided_tile) end)
-    end
+    local asset_manager = world:getAssetManager()
 
-    if self.ball.active then
+    asset_manager:loadSound(Assets.BACKGROUND_SOUND, bsnd)
 
-        self.ball:processCollision(self.player, function(ball, paddle) ball:collideWithPaddle(paddle) end)
+    local this_sound = asset_manager:getSound(Assets.BACKGROUND_SOUND)
+    this_sound:setVolume(0.25)
+    this_sound:setLooping(true)
 
-        self.ball:processCollision(self.world_edges, function(ball, wall) ball:collideWithWall(wall) end)
+    local background_sound_entity = em:createEntity('background_sound')
+    background_sound_entity:addComponent(SoundComponent():addSound(Assets.BACKGROUND_SOUND, this_sound))
 
-        self.ball:processCollision(self.bricks, function(ball, brick) ball:collideWithBrick(brick) end)
+    local sound_component = background_sound_entity:getComponent(SoundComponent)
 
-    end
+    local retrieved_sound = sound_component:getSound(Assets.BACKGROUND_SOUND)
+    love.audio.play(retrieved_sound)
 
-    -- TODO make more explicit what is happening in this phase?
-    self.player:update(dt)
-    self.ball:update(dt)
 
-    self.victory = true
-    for _, brick in self.bricks:members() do
-        if brick.active then
-            self.victory = false
-            break
+    -- Bricks
+    local c1 = 205
+    local c2 = 147
+    local c3 = 176
+        
+    local colors = List()
+
+    colors:append(Color:new(c1, c2, c2))
+    colors:append(Color:new(c1, c2, c3))
+    colors:append(Color:new(c1, c2, c1))
+    colors:append(Color:new(c3, c2, c1))
+    colors:append(Color:new(c2, c2, c1))
+    colors:append(Color:new(c2, c3, c1))
+    colors:append(Color:new(c2, c1, c1))
+    colors:append(Color:new(c2, c1, c3))
+    colors:append(Color:new(c2, c1, c2))
+    colors:append(Color:new(c3, c1, c2))
+
+
+    local brick_snd = "brick.mp3"
+   
+    asset_manager:loadSound(Assets.BRICK_SOUND, brick_snd)
+
+
+    for y = 0, 60, 20 do
+
+            local x_start = 0
+            local x_end = 700
+
+            if y > 0 and y % 40 == 20 then 
+                x_start = 50
+                x_end = 650
+            end
+
+            for x=x_start, x_end, 100 do
+
+                local random = math.random(1, colors:size())
+
+                local this_color = colors:memberAt(random)
+
+                local brick = em:createEntity('brick' .. y .. x)
+                brick:addComponent(Transform(x, y):setLayerOrder(2))
+                brick:addComponent(ShapeRendering():setColor(this_color:unpack()):setShape(RectangleShape:new(100, 20)))
+                brick:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
+                brick:addComponent(SoundComponent():addSound(Assets.BRICK_SOUND, asset_manager:getSound(Assets.BRICK_SOUND)))
+
+                world:addEntityToGroup(Tags.BRICK_GROUP, brick)
+
+            end
         end
-    end
 
+
+
+    -- Tends to fall off world
+    local TILE_SIZE = 20
+
+    local top_tile = em:createEntity('top_tile')
+    top_tile:addComponent(Transform(0, -1 * TILE_SIZE + 1))
+    top_tile:addComponent(Collider():setHitbox(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
+    top_tile:addComponent(ShapeRendering():setColor(147,147,205):setShape(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
+
+
+    local bottom_tile = em:createEntity('bottom_tile')
+    bottom_tile:addComponent(Transform(0, love.graphics.getHeight() - 1))
+    bottom_tile:addComponent(Collider():setHitbox(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
+    bottom_tile:addComponent(ShapeRendering():setColor(147,147,205):setShape(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
+
+    local left_tile = em:createEntity('left_tile')
+    left_tile:addComponent(Transform(-1 * TILE_SIZE + 1, 0))
+    left_tile:addComponent(Collider():setHitbox(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
+    left_tile:addComponent(ShapeRendering():setColor(147,147,205):setShape(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
+
+    local right_tile = em:createEntity('right_tile')
+    right_tile:addComponent(Transform(love.graphics.getWidth() - 1, 0))
+    right_tile:addComponent(Collider():setHitbox(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
+    right_tile:addComponent(ShapeRendering():setColor(147,147,205):setShape(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
+
+
+    world:addEntityToGroup(Tags.WALL_GROUP, top_tile)
+    world:addEntityToGroup(Tags.WALL_GROUP, bottom_tile)
+    world:addEntityToGroup(Tags.WALL_GROUP, left_tile)
+    world:addEntityToGroup(Tags.WALL_GROUP, right_tile)
+
+
+    local collision_system = world:getSystem(CollisionSystem)
+
+    collision_system:watchCollision(player, world:getEntitiesInGroup(Tags.WALL_GROUP))
+    collision_system:watchCollision(ball, player)
+    collision_system:watchCollision(ball, world:getEntitiesInGroup(Tags.WALL_GROUP))
+    collision_system:watchCollision(ball, world:getEntitiesInGroup(Tags.BRICK_GROUP))
 
 
 end
 
 
-function PlayState:draw()
 
-    love.graphics.setBackgroundColor(63, 63, 63, 255)
+function PlayScene:update(dt)
 
-    self.bricks:draw()
-    self.player:draw()
-    self.ball:draw()
+    local world = self.world
 
-    if self.victory then
-        love.graphics.setColor(204,147,147)
-        love.graphics.setFont(self:assetManager():getFont(Assets.FONT_LARGE))
-        love.graphics.print("YOU WIN!!!", 200, 200)
-        self.ball:disable()
+    -- Update tweenns
+    world:getSystem(TweenSystem):update(dt)
 
-    elseif not self.ball.active then
+    -- Update inout
+    world:getSystem(InputSystem):processInputResponses(entitiesRespondingToInput(world), dt)
+    
+    -- Update behaviors
+    world:getSystem(BehaviorSystem):processBehaviors(entitiesWithBehavior(world), dt) 
 
-        -- Only display if we haven't won
-        love.graphics.setColor(204,147,147)
-        love.graphics.setFont(self:assetManager():getFont(Assets.FONT_MEDIUM))
-        love.graphics.print("Press Space to Launch Ball", 200, 550)
+    -- Update movement
+    world:getSystem(MovementSystem):updateMovables(entitiesWithMovement(world), dt)
+
+    -- Handle collisions
+    local collision_system = world:getSystem(CollisionSystem)
+
+    local collisions = collision_system:getCollisions()
+
+    for collision_event in collisions:members() do
+
+        if collision_event.a == world:getTaggedEntity(Tags.PLAYER) and
+           world:getGroupsContainingEntity(collision_event.b):contains(Tags.WALL_GROUP) then
+
+           collidePlayerWithWall(collision_event.a, collision_event.b)
+
+        elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
+           world:getGroupsContainingEntity(collision_event.b):contains(Tags.WALL_GROUP) then
+
+          collideBallWithWall(collision_event.a, collision_event.b)
+
+        elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
+           collision_event.b == world:getTaggedEntity(Tags.PLAYER) then
+
+           collideBallWithPaddle(collision_event.a, collision_event.b)
+      
+        elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
+           world:getGroupsContainingEntity(collision_event.b):contains(Tags.BRICK_GROUP) then
+
+          collideBallWithBrick(collision_event.a, collision_event.b)
+
+        end
+
     end
+   
 
-    local debugstart = 300
 
-	if DEBUG then
+end
 
-        love.graphics.setFont(self:assetManager():getFont(Assets.FONT_SMALL))
-        love.graphics.print(love.timer.getFPS(), 50, debugstart)
-        love.graphics.print("Ball x: " .. self.ball.position.x, 50, debugstart + 20)
-        love.graphics.print("Ball y: " .. self.ball.position.y, 50, debugstart + 40)
 
+function PlayScene:draw()
+
+    local world = self.world
+
+    world:getSystem(RenderingSystem):renderDrawables(entitiesWithDrawability(world))
+
+    local debugstart = 400
+
+    if DEBUG then
+
+        local player_transform =  world:getTaggedEntity(Tags.PLAYER):getComponent(Transform)
+        local ball_transform = world:getTaggedEntity(Tags.BALL):getComponent(Transform)
+
+        love.graphics.print("Ball x: " .. ball_transform.position.x, 50, debugstart + 20)
+        love.graphics.print("Ball y: " .. ball_transform.position.y, 50, debugstart + 40)
+        love.graphics.print("Player x: " .. player_transform.position.x, 50, debugstart + 60)
+        love.graphics.print("Player y: " .. player_transform.position.y, 50, debugstart + 80)
     end
 
 
