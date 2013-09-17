@@ -74,7 +74,7 @@ function collideBallWithWall(ball, wall)
 	local ball_transform = ball:getComponent(Transform)
     local ball_movement = ball:getComponent(Motion)
     local ball_collider = ball:getComponent(Collider)
-    local ball_rendering = ball:getComponent(Rendering)
+    local ball_rendering = ball:getComponent(ShapeRendering)
 
     local wall_position = wall:getComponent(Transform):getPosition()
 
@@ -121,12 +121,12 @@ function collideBallWithBrick(ball, brick)
 	local ball_position = ball:getComponent(Transform):getPosition()
     local ball_movement = ball:getComponent(Motion)
     local ball_collider = ball:getComponent(Collider)
-    local ball_rendering = ball:getComponent(Rendering)
+    local ball_rendering = ball:getComponent(ShapeRendering)
 
 	local brick_transform = brick:getComponent(Transform)
 	local brick_position = brick:getComponent(Transform):getPosition()
     local brick_collider = brick:getComponent(Collider)
-    local brick_rendering = brick:getComponent(Rendering)
+    local brick_rendering = brick:getComponent(ShapeRendering)
 
     brick_collider:disable()
 	

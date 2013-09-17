@@ -59,10 +59,7 @@ function RenderingSystem:renderDrawables(entities)
 
 	    	if layer_set then
 	    		for entity in layer_set:members() do
-			        t = entity:getComponent(Transform)
-			        r = entity:getComponent(Rendering)
-			       
-			        self:draw(t, r)
+			        self:draw(entity)
 	    		end
 	    	end
 	    end
@@ -76,16 +73,63 @@ function RenderingSystem:renderDrawables(entities)
 end
 
 
+-- TODO, fix magic strings
 
-function RenderingSystem:draw(transform, rendering)
+local RenderingFunctions = {
+
+	shape = function(transform, rendering) 
+			
+			local shape = rendering:getShape()
+			local pos = transform:getPosition() + shape:offset()
+			shape:draw(pos, rendering:getFillMode())
+	end, 
+
+	text = function(transform, rendering) 
+
+		local previous_font = love.graphics.getFont()
+
+		if rendering.getFont() then
+		    love.graphics.setFont(rendering.getFont())
+
+		end
+
+	    love.graphics.print(rendering.getText(), 
+	    					transform.getPosition().x + rendering.getPadding(), 
+	    					transform.getPosition().y + rendering.getPadding())
+
+    	love.graphics.setFont(previous_font)
+
+	end, 
+
+	image = function() 
+
+		local img = rendering:getImg()
+		
+		-- TODO
+	end
+}
+
+
+
+function RenderingSystem:draw(entity)
+
+
+	local transform = entity:getComponent(Transform)
+
+	local rendering = nil
+
+	if entity:getComponent(ShapeRendering) then
+		rendering = entity:getComponent(ShapeRendering)
+	elseif entity:getComponent(TextRendering) then
+		rendering = entity:getComponent(TextRendering)
+	elseif entity:getComponent(ImageRendering) then
+		rendering = entity:getComponent(ImageRendering)
+	end
+
+	assert (rendering, "Must be able to get a rendering")
 
 	if rendering:isVisible() then
 		
-		local img = rendering:getImg()
-		local shape = rendering:getShape()
-
-		assert(img or shape, "Must have either an image or shape to be drawn")
-
 		-- Check the previous color settings
 		local r, g, b, a = love.graphics.getColor()
 		
@@ -93,15 +137,9 @@ function RenderingSystem:draw(transform, rendering)
 
 		love.graphics.setColor(color:unpack())
 
-		if img then -- Render image
-			
-		else -- Render shape
-			
-			local pos = transform:getPosition() + shape:offset()
+		local draw_action = RenderingFunctions[rendering.render_type]
+		draw_action(transform, rendering)
 
-			shape:draw(pos, rendering:getFillMode())
-
-		end
 
 		-- Restore the previous color settings
 		love.graphics.setColor(r, g, b, a)

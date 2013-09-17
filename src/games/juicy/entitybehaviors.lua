@@ -5,17 +5,50 @@ require 'core.components.motion'
 require 'core.vector'
 
 
+-- Special off-world handling for long load times
+function constrainActorsToWorld(constrainer, dt)
+
+    local em = constrainer:getWorld():getEntityManager()
+
+    local player_transform =  world:getTaggedEntity(Tags.PLAYER):getComponent(Transform)
+    local player_collider = world:getTaggedEntity(Tags.PLAYER):getComponent(Collider)
+
+    local ball_transform = world:getTaggedEntity(Tags.BALL):getComponent(Transform)
+
+
+    if ball_transform.position.x < 0 then
+        ball_transform.position.x = 0
+    elseif ball_transform.position.x > love.graphics.getWidth() then
+        ball_transform.position.x = love.graphics.getWidth()
+    end
+
+    if ball_transform.position.y < 0 then
+        ball_transform.position.y = 0
+    elseif ball_transform.position.y > love.graphics.getHeight() then
+        ball_transform.position.y = love.graphics.getHeight()
+    end
+
+    if player_transform.position.x < 0 then
+        player_transform.position.x = 0
+    elseif player_transform.position.x > love.graphics.getWidth() - player_collider:hitbox().width then
+        player_transform.position.x = love.graphics.getWidth() - player_collider:hitbox().width
+    end
+
+end
+
+
+
 function ballAutoResetOnNonexistence(ball, dt)
 
 	local ball_transform = ball:getComponent(Transform)
     local ball_movement = ball:getComponent(Motion)
     local ball_collider = ball:getComponent(Collider)
-    local ball_rendering = ball:getComponent(Rendering)
+    local ball_rendering = ball:getComponent(ShapeRendering)
 
     local player = ball:getWorld():getTaggedEntity(Tags.PLAYER)
 
     local player_transform = player:getComponent(Transform)
-    local player_render = player:getComponent(Rendering)
+    local player_render = player:getComponent(ShapeRendering)
 
 
    if ball_collider.active == false then
@@ -37,10 +70,10 @@ function playerAI(player, dt)
 
 	local player_position = player:getComponent(Transform):getPosition()
     local player_movement = player:getComponent(Motion)
-    local player_shape = player:getComponent(Rendering):getShape()
+    local player_shape = player:getComponent(ShapeRendering):getShape()
 
     local ball_position = player:getWorld():getTaggedEntity(Tags.BALL):getComponent(Transform):getPosition()
-    local ball_shape = player:getWorld():getTaggedEntity(Tags.BALL):getComponent(Rendering):getShape()
+    local ball_shape = player:getWorld():getTaggedEntity(Tags.BALL):getComponent(ShapeRendering):getShape()
     local ball_movement = player:getWorld():getTaggedEntity(Tags.BALL):getComponent(Motion)
 
 
@@ -126,12 +159,12 @@ function globalInputResponse(global, held_actions, pressed_actions, dt)
         local ball_transform = ball:getComponent(Transform)
         local ball_movement = ball:getComponent(Motion)
         local ball_collider = ball:getComponent(Collider)
-        local ball_rendering = ball:getComponent(Rendering)
+        local ball_rendering = ball:getComponent(ShapeRendering)
 
         local player = ball:getWorld():getTaggedEntity(Tags.PLAYER)
 
         local player_transform = player:getComponent(Transform)
-        local player_render = player:getComponent(Rendering)
+        local player_render = player:getComponent(ShapeRendering)
 
 
         ball_collider:enable()

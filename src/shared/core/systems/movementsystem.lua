@@ -8,6 +8,20 @@ function MovementSystem:initialize()
 
 end
 
+function MovementSystem:updateMovables(entities, dt)
+
+	for entity in entities:members() do
+	
+		local t = entity:getComponent(Transform)
+        local m = entity:getComponent(Motion)
+
+        self:update(t, m, dt)
+
+	end
+
+end
+
+
 function MovementSystem:update(transform, movement, dt)
 
 	if movement.drag then
