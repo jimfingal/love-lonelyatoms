@@ -246,7 +246,6 @@ function CollisionSystem:rectangleCollision(at, ac, bt, bc)
 		local b_upper_left = bt:getPosition() + b_rectangle:offset()
 
 
-
 		-- If any of these are true, then they don't intersect, so return "not" of that.
 		-- 0, 0 is in upper left hand corner.
 		return not (

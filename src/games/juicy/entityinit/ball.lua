@@ -20,18 +20,41 @@ function Ball.init(world)
     ball:addComponent(ShapeRendering():setColor(220,220,204):setShape(RectangleShape:new(15, 15)))
     ball:addComponent(Collider():setHitbox(RectangleShape:new(15, 15)))
     ball:addComponent(Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
-    ball:addComponent(Behavior():addUpdateFunction(ballAutoResetOnNonexistence))
+    -- ball:addComponent(Behavior():addUpdateFunction(ballAutoResetOnNonexistence))
+    ball:addComponent(InputResponse():addResponse(ballInputResponse))
 
     world:tagEntity(Tags.BALL, ball)
 
-    local collision_system = world:getSystem(CollisionSystem)
-
-    collision_system:watchCollision(ball, world:getTaggedEntity(Tags.PLAYER))
-    collision_system:watchCollision(ball, world:getEntitiesInGroup(Tags.WALL_GROUP))
-    collision_system:watchCollision(ball, world:getEntitiesInGroup(Tags.BRICK_GROUP))
 
 end 
 
+function ballInputResponse(ball, held_actions, pressed_actions, dt)
+
+    if pressed_actions[Actions.RESET_BALL] then
+  
+        local player = ball:getWorld():getTaggedEntity(Tags.PLAYER)
+
+        local ball_transform = ball:getComponent(Transform)
+        local ball_movement = ball:getComponent(Motion)
+        local ball_collider = ball:getComponent(Collider)
+        local ball_rendering = ball:getComponent(ShapeRendering)
+
+        local player = ball:getWorld():getTaggedEntity(Tags.PLAYER)
+
+        local player_transform = player:getComponent(Transform)
+        local player_render = player:getComponent(ShapeRendering)
+
+
+        ball_collider:enable()
+        ball_rendering:enable()
+        ball_movement:setVelocity(200, -425)
+
+        ball_transform:moveTo(player_transform:getPosition().x + player_render:getShape().width / 2, 
+                            player_transform:getPosition().y - ball_collider:hitbox().height)
+
+    end
+
+end
 
 function ballAutoResetOnNonexistence(ball, dt)
 

@@ -60,14 +60,7 @@ function PlayScene:initialize(name, w)
 
 
 
-    --[[ Initialize complicated entities ]]
-
-    Walls.init(world)
-    Player.init(world)
-    Bricks.init(world)
-    Ball.init(world)
-
-
+    
 
     local em = world:getEntityManager()
 
@@ -109,9 +102,32 @@ function PlayScene:initialize(name, w)
     love.audio.play(retrieved_sound)
 
 
+    --[[ Initialize complicated entities ]]
+
+    Walls.init(world)
+    Player.init(world)
+    Bricks.init(world)
+    Ball.init(world)
+
+    local collision_system = world:getSystem(CollisionSystem)
+
+    collision_system:watchCollision(world:getTaggedEntity(Tags.PLAYER), world:getEntitiesInGroup(Tags.WALL_GROUP))
+    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getTaggedEntity(Tags.PLAYER))
+    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.WALL_GROUP))
+    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.BRICK_GROUP))
+
 end
 
+function PlayScene:enter()
 
+    local ball = world:getTaggedEntity(Tags.BALL)
+    local ball_collider = ball:getComponent(Collider)
+    local ball_rendering = ball:getComponent(ShapeRendering)
+
+    ball_collider:disable()
+    ball_rendering:disable()
+
+end
 
 function PlayScene:update(dt)
 
