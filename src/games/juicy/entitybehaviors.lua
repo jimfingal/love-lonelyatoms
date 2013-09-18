@@ -39,16 +39,12 @@ function constrainActorsToWorld(constrainer, dt)
 end
 
 
-
-
-
 function globalInputResponse(global, held_actions, pressed_actions, dt)
 
     -- Escape to Menu
-    if pressed_actions[Actions.ESCAPE_TO_MENU] then
+    if pressed_actions[Actions.RESET_BOARD] then
 
-        love.audio.stop()
-        global:getWorld():getSceneManager():changeScene(Scenes.MENU)
+        global:getWorld():getSceneManager():changeScene(Scenes.PLAY)
     
     end
 

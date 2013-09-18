@@ -48,16 +48,9 @@ function PlayScene:initialize(name, w)
     input_system:registerInput('a', Actions.PLAYER_LEFT)
     input_system:registerInput('d', Actions.PLAYER_RIGHT)
     input_system:registerInput(' ', Actions.RESET_BALL)
-    input_system:registerInput('escape', Actions.ESCAPE_TO_MENU)
+    input_system:registerInput('escape', Actions.RESET_BOARD)
     input_system:registerInput('q', Actions.QUIT_GAME)
 
-    input_system:registerInput('f', Actions.CAMERA_LEFT)
-    input_system:registerInput('h', Actions.CAMERA_RIGHT)
-    input_system:registerInput('t', Actions.CAMERA_UP)
-    input_system:registerInput('g', Actions.CAMERA_DOWN)
-    input_system:registerInput('z', Actions.CAMERA_SCALE_UP)
-    input_system:registerInput('x', Actions.CAMERA_SCALE_DOWN)
-    
 
     local em = world:getEntityManager()
 
@@ -75,7 +68,13 @@ function PlayScene:initialize(name, w)
     world:tagEntity(Tags.BACKGROUND, play_background)
     world:addEntityToGroup(Tags.PLAY_GROUP, play_background)
 
- 
+
+    --[[ Script constraining things to world in case they go too fast]]
+
+    local world_constrainer = em:createEntity('world_constrainer')
+    world_constrainer:addComponent(Behavior():addUpdateFunction(constrainActorsToWorld))
+    world:addEntityToGroup(Tags.PLAY_GROUP, world_constrainer)
+
 
     --[[ Background sound ]]
     local asset_manager = world:getAssetManager()
@@ -95,45 +94,44 @@ function PlayScene:initialize(name, w)
     --[[ Initialize complicated entities ]]
 
     Walls.init(world)
-    Player.init(world)
     Ball.init(world)
-
-    local collision_system = world:getSystem(CollisionSystem)
-
   
-
-
 end
 
-function PlayScene:enter()
+function PlayScene:reset()
 
     love.audio.stop()
 
-    -- Bricks.init(world)
+    local world = self.world
+
+    Bricks.init(world)
+    Player.init(world)
 
     local collision_system = world:getSystem(CollisionSystem)
 
-    -- TODO better way to remove collision watching 
     collision_system:reset()
 
-    -- collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.BRICK_GROUP))
+    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.BRICK_GROUP))
     collision_system:watchCollision(world:getTaggedEntity(Tags.PLAYER), world:getEntitiesInGroup(Tags.WALL_GROUP))
     collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getTaggedEntity(Tags.PLAYER))
     collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.WALL_GROUP))
 
-
-    --[[
     local sound_component =  world:getTaggedEntity(Tags.BACKGROUND_SOUND):getComponent(SoundComponent)
     local retrieved_sound = sound_component:getSound(Assets.BACKGROUND_SOUND)
     love.audio.play(retrieved_sound)
-    ]]
-
+    
     local ball = world:getTaggedEntity(Tags.BALL)
     local ball_collider = ball:getComponent(Collider)
     local ball_rendering = ball:getComponent(ShapeRendering)
 
     ball_collider:disable()
     ball_rendering:disable()
+
+end
+
+function PlayScene:enter()
+
+    self:reset()
 
 end
 

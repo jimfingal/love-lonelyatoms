@@ -45,13 +45,27 @@ end
 
 function TweenSystem:update(dt)
 
+	local handles_to_remove = Set()
+
 	for handle, tweens in pairs(self.registry) do
 
+		local all_tweens_done = true
 		for key, tween in pairs(tweens) do
 
 			tween:update(dt)
 			handle.reference[key] = tween.value
 
+			if not tween:finished() then 
+				all_tweens_done = false
+			end
 		end
+
+		if all_tweens_done then
+			handles_to_remove:add(handle)
+		end 
+	end
+
+	for handle in handles_to_remove:members() do
+		self.registry[handle] = nil
 	end
 end

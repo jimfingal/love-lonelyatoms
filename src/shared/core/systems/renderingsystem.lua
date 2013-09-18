@@ -80,8 +80,11 @@ local RenderingFunctions = {
 	shape = function(transform, rendering) 
 			
 			local shape = rendering:getShape()
-			local pos = transform:getPosition() + shape:offset()
-			shape:draw(pos, rendering:getFillMode())
+			local position = transform:getPosition() + shape:offset()
+			local fill = rendering:getFillMode()
+
+			shape:draw(position, fill)
+
 	end, 
 
 	text = function(transform, rendering) 
@@ -139,7 +142,15 @@ function RenderingSystem:draw(entity)
 		love.graphics.setColor(color:unpack())
 
 		local draw_action = RenderingFunctions[rendering.render_type]
+
+
+		love.graphics.push()
+
+		-- TODO: scale and such
+
 		draw_action(transform, rendering)
+
+		love.graphics.pop()
 
 
 		-- Restore the previous color settings

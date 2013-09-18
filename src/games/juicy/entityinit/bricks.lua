@@ -26,41 +26,31 @@ function Bricks.init(world)
     end
 
 
-    local bsnd = "background.mp3"
-
-    local this_sound = asset_manager:loadSound(Assets.BACKGROUND_SOUND, bsnd)
-    this_sound:setVolume(0.25)
-    this_sound:setLooping(true)
-
-    local background_sound_entity = em:createEntity('background_sound')
-    background_sound_entity:addComponent(SoundComponent():addSound(Assets.BACKGROUND_SOUND, this_sound))
-    world:tagEntity(Tags.BACKGROUND_SOUND, background_sound_entity)
-    world:addEntityToGroup(Tags.PLAY_GROUP, background_sound_entity)
-
     local brick_snd = "brick.mp3"
 
     asset_manager:loadSound(Assets.BRICK_SOUND, brick_snd)
 
-    for y = 0, 60, 20 do
+    local tween_system = world:getSystem(TweenSystem)
 
-        local x_start = 0
-        local x_end = 700
+    local x_start = 80
+    local x_end = 680
 
-        if y > 0 and y % 40 == 20 then 
-            x_start = 50
-            x_end = 650
-        end
+    for y = 50, 290, 30 do
 
-        for x=x_start, x_end, 100 do
+        for x=x_start, x_end, 60 do
 
             local brick = em:createEntity('brick' .. y .. x)
-            brick:addComponent(Transform(x, y):setLayerOrder(2))
-            brick:addComponent(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(50, 20)))
+            brick:addComponent(Transform(x, y - 300):setLayerOrder(2))
+            brick:addComponent(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(30, 10)))
             brick:addComponent(Collider():setHitbox(RectangleShape:new(50, 20)))
             brick:addComponent(SoundComponent():addSound(Assets.BRICK_SOUND, asset_manager:getSound(Assets.BRICK_SOUND)))
 
             world:addEntityToGroup(Tags.BRICK_GROUP, brick)
             world:addEntityToGroup(Tags.PLAY_GROUP, brick)
+
+            tween_system:addTween(1 + math.random(), brick:getComponent(ShapeRendering):getShape(), {width = 50, height = 20}, Easing.outBounce)
+            tween_system:addTween(1 + math.random(), brick:getComponent(Transform):getPosition(), {x = x, y = y}, Easing.outBounce)
+            tween_system:addTween(1 + math.random(), brick:getComponent(Transform), {rotation = 2 * math.pi }, Easing.outBounce)
 
         end
     end

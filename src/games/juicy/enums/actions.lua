@@ -10,7 +10,7 @@ Actions.RESET_BALL = "reset"
 Actions.SKIP_SPLASH = "skip"
 
 Actions.QUIT_GAME = "quit"
-Actions.ESCAPE_TO_MENU = "escape"
+Actions.RESET_BOARD = "escape"
 
 
 Actions.CAMERA_LEFT = "cleft"
