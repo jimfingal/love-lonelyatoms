@@ -8,8 +8,6 @@ require 'core.components.soundcomponent'
 require 'core.vector'
 
 
-
-
 function entitiesRespondingToInput(world)
     local em = world:getEntityManager()
     return em:getAllEntitiesContainingComponent(InputResponse)
@@ -36,3 +34,6 @@ function entitiesWithDrawability(world)
 
     return drawables
 end
+
+
+

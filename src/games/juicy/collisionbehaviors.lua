@@ -118,6 +118,7 @@ end
 
 function collideBallWithBrick(ball, brick)
 
+	
 	local ball_position = ball:getComponent(Transform):getPosition()
     local ball_movement = ball:getComponent(Motion)
     local ball_collider = ball:getComponent(Collider)

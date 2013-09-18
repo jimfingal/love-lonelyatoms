@@ -24,6 +24,7 @@ function Ball.init(world)
     ball:addComponent(InputResponse():addResponse(ballInputResponse))
 
     world:tagEntity(Tags.BALL, ball)
+    world:addEntityToGroup(Tags.PLAY_GROUP, ball)
 
 
 end 

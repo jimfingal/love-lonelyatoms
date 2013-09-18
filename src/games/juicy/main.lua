@@ -6,8 +6,10 @@ require 'core.systems.behaviorsystem'
 require 'core.systems.camerasystem'
 require 'core.systems.inputsystem'
 require 'core.systems.tweensystem'
+require 'core.systems.menuguisystem'
 require 'core.entity.world'
 require 'scenes.playscene'
+require 'scenes.menuscene'
 require 'enums.scenes'
 require 'external.slam'
 
@@ -16,6 +18,26 @@ DEBUG = false
 function love.load()
  
     world = World()
+
+    loadAssets(world)
+    loadSystems(world)
+    loadScenes(world)
+
+end
+
+function loadAssets(world)
+
+    ps2p = "PressStart2P.ttf"
+    
+    local asset_manager = world:getAssetManager()
+    asset_manager:loadFont(Assets.FONT_LARGE, ps2p, 30)
+    asset_manager:loadFont(Assets.FONT_MEDIUM, ps2p, 18)
+    asset_manager:loadFont(Assets.FONT_SMALL, ps2p, 14)
+
+end
+
+
+function loadSystems(world)
 
     local rendering_system = RenderingSystem()
     local camera_system = CameraSystem()
@@ -36,16 +58,28 @@ function love.load()
     local input_system = InputSystem()
     world:setSystem(input_system)
 
-
     local tween_system = TweenSystem()
     world:setSystem(tween_system)
 
+    local menu_system = MenuGuiSystem(world)
+    world:setSystem(menu_system)
+
+
+end
+
+
+function loadScenes(world)
 
     local scene_manager = world:getSceneManager()
 
     local play_scene = PlayScene(Scenes.PLAY, world)
     scene_manager:registerScene(play_scene)
-    scene_manager:changeScene(Scenes.PLAY)
+
+    local menu_scene = MenuScene(Scenes.MENU, world)
+    scene_manager:registerScene(menu_scene)
+
+    scene_manager:changeScene(Scenes.MENU)
+    
 
 
 end

@@ -4,6 +4,7 @@ require 'collections.set'
 GroupManager = class('GroupManager')
 
 function GroupManager:initialize(world)
+
         self.entities_by_group = {}
         self.groups_by_entity = {}
 
@@ -25,7 +26,8 @@ function GroupManager:addEntityToGroup(group, entity)
 	entities:add(entity)
 
 	-- Put entity into group, initializing set if needed
-	local groups = self:getGroupsContainingEntity(group)
+
+	local groups = self:getGroupsContainingEntity(entity)
 
 	if groups:size() == 0 then
 		self.groups_by_entity[entity] = groups
@@ -35,12 +37,9 @@ function GroupManager:addEntityToGroup(group, entity)
 
 end
 
-function GroupManager:initializeEntitySet(group)
-
-	return
-end
 
 function GroupManager:getEntitiesInGroup(group)
+	
 	assert(group, "Must have a group parameter")
 
 	-- return self.entities_by_group[group]
@@ -54,9 +53,8 @@ function GroupManager:getEntitiesInGroup(group)
 end
 
 function GroupManager:getGroupsContainingEntity(entity)
-	assert(entity, "Must have an entity parameter")
 
-	-- return self.groups_by_entity[entity]
+	assert(entity, "Must have an entity parameter")
 
 	if self.groups_by_entity[entity] then
 		return self.groups_by_entity[entity]

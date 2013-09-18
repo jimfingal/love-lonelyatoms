@@ -26,6 +26,7 @@ function Player.init(world)
 
 
     world:tagEntity(Tags.PLAYER, player)
+    world:addEntityToGroup(Tags.PLAY_GROUP, player)
 
 
 

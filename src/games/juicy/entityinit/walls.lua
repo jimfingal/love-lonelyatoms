@@ -38,11 +38,16 @@ function Walls.init(world)
     right_tile:addComponent(Collider():setHitbox(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
     right_tile:addComponent(ShapeRendering():setColor(147,147,205):setShape(RectangleShape:new(TILE_SIZE, love.graphics.getHeight())))
 
-
     world:addEntityToGroup(Tags.WALL_GROUP, top_tile)
     world:addEntityToGroup(Tags.WALL_GROUP, bottom_tile)
     world:addEntityToGroup(Tags.WALL_GROUP, left_tile)
     world:addEntityToGroup(Tags.WALL_GROUP, right_tile)
+
+    world:addEntityToGroup(Tags.PLAY_GROUP, top_tile)
+    world:addEntityToGroup(Tags.PLAY_GROUP, bottom_tile)
+    world:addEntityToGroup(Tags.PLAY_GROUP, left_tile)
+    world:addEntityToGroup(Tags.PLAY_GROUP, right_tile)
+
 
 end 
 

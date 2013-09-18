@@ -64,6 +64,7 @@ function Bricks.init(world)
             brick:addComponent(SoundComponent():addSound(Assets.BRICK_SOUND, asset_manager:getSound(Assets.BRICK_SOUND)))
 
             world:addEntityToGroup(Tags.BRICK_GROUP, brick)
+            world:addEntityToGroup(Tags.PLAY_GROUP, brick)
 
         end
     end

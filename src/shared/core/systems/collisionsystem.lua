@@ -28,6 +28,7 @@ function CollisionSystem:stopWatchingCollision(config)
 	self.collisions_to_watch:remove(config)
 end
 
+-- TODO: take entity set input
 function CollisionSystem:getCollisions()
 
 	local collisions = Set()

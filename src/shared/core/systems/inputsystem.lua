@@ -30,6 +30,7 @@ end
 
 
 function InputSystem:processInputResponses(entities, dt)
+  
 	self:update(dt)
 
 	for entity in entities:members() do

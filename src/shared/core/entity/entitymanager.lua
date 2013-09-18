@@ -89,7 +89,7 @@ function EntityManager:getStoreAndComponentWithValidation(uuid, component_class)
 
 	assert(store, 'There are no entities registered with component: ' .. tostring(component_class))
 	assert(component, 'There is no component of type ' .. tostring(component_class) .. ' for entity ' 
-						.. uuid .. '( ' .. self:getEntityName(uuid) .. ')')
+						.. tostring(uuid) .. '( ' .. self:getEntityName(uuid) .. ')')
 
 	return store, component
 end
@@ -97,7 +97,7 @@ end
 
 function EntityManager:getComponent(uuid, component_class)
 
-	assert(uuid and component_class, "Must have a uuid and component class parameter; given: " .. uuid .. " and " .. tostring(component_class))
+	assert(uuid and component_class, "Must have a uuid and component class parameter; given: " .. tostring(uuid) .. " and " .. tostring(component_class))
 
 	local store, component = self:getStoreAndComponentWithValidation(uuid, component_class)
 

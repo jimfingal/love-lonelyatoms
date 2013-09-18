@@ -20,4 +20,10 @@ Actions.CAMERA_DOWN = "cdown"
 Actions.CAMERA_SCALE_UP = "cscaleup"
 Actions.CAMERA_SCALE_DOWN = "cscaledown"
 
+
+Actions.MENU_UP = "up"
+Actions.MENU_DOWN = "down"
+Actions.MENU_SELECT = "select"
+
+
 return Actions

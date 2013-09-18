@@ -88,17 +88,18 @@ local RenderingFunctions = {
 
 		local previous_font = love.graphics.getFont()
 
-		if rendering.getFont() then
-		    love.graphics.setFont(rendering.getFont())
-
+		if rendering:getFont() then
+		    love.graphics.setFont(rendering:getFont())
 		end
 
-	    love.graphics.print(rendering.getText(), 
-	    					transform.getPosition().x + rendering.getPadding(), 
-	    					transform.getPosition().y + rendering.getPadding())
+	    love.graphics.print(rendering:getText(), 
+	    					transform:getPosition().x + rendering:getPadding(), 
+	    					transform:getPosition().y + rendering:getPadding())
 
-    	love.graphics.setFont(previous_font)
-
+	    if previous_font then 
+	    	love.graphics.setFont(previous_font)
+	    end
+	    
 	end, 
 
 	image = function() 

@@ -68,13 +68,15 @@ function PlayScene:initialize(name, w)
 
     local ir = em:createEntity('globalinputresponse')
     ir:addComponent(InputResponse():addResponse(globalInputResponse))
+    world:addEntityToGroup(Tags.PLAY_GROUP, ir)
 
 
     --[[ Script constraining things to world ]]
 
     local world_constrainer = em:createEntity('world_constrainer')
     world_constrainer:addComponent(Behavior():addUpdateFunction(constrainActorsToWorld))
-     
+    world:addEntityToGroup(Tags.PLAY_GROUP, world_constrainer)
+
 
     --[[ Background Image ]]
 
@@ -82,6 +84,7 @@ function PlayScene:initialize(name, w)
     background_image:addComponent(Transform(0, 0):setLayerOrder(10))
     background_image:addComponent(ShapeRendering():setColor(63, 63, 63, 255):setShape(RectangleShape:new(love.graphics.getWidth(), love.graphics.getHeight())))
     world:tagEntity(Tags.BACKGROUND, background_image)
+    world:addEntityToGroup(Tags.PLAY_GROUP, background_image)
 
 
     --[[ Initialize and play Background Sound ]]
@@ -95,11 +98,8 @@ function PlayScene:initialize(name, w)
 
     local background_sound_entity = em:createEntity('background_sound')
     background_sound_entity:addComponent(SoundComponent():addSound(Assets.BACKGROUND_SOUND, this_sound))
-
-
-    local sound_component = background_sound_entity:getComponent(SoundComponent)
-    local retrieved_sound = sound_component:getSound(Assets.BACKGROUND_SOUND)
-    love.audio.play(retrieved_sound)
+    world:tagEntity(Tags.BACKGROUND_SOUND, background_sound_entity)
+    world:addEntityToGroup(Tags.PLAY_GROUP, background_sound_entity)
 
 
     --[[ Initialize complicated entities ]]
@@ -116,9 +116,16 @@ function PlayScene:initialize(name, w)
     collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.WALL_GROUP))
     collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.BRICK_GROUP))
 
+
 end
 
 function PlayScene:enter()
+
+    love.audio.stop()
+
+    local sound_component =  world:getTaggedEntity(Tags.BACKGROUND_SOUND):getComponent(SoundComponent)
+    local retrieved_sound = sound_component:getSound(Assets.BACKGROUND_SOUND)
+    love.audio.play(retrieved_sound)
 
     local ball = world:getTaggedEntity(Tags.BALL)
     local ball_collider = ball:getComponent(Collider)
@@ -133,17 +140,19 @@ function PlayScene:update(dt)
 
     local world = self.world
 
+    local play_scene_items = world:getEntitiesInGroup(Tags.PLAY_GROUP)
+
     --[[ Update tweens ]] 
     world:getSystem(TweenSystem):update(dt)
 
     --[[ Update input ]]
-    world:getSystem(InputSystem):processInputResponses(entitiesRespondingToInput(world), dt)
+    world:getSystem(InputSystem):processInputResponses(play_scene_items:intersection(entitiesRespondingToInput(world)), dt)
     
     --[[ Update behaviors ]]
-    world:getSystem(BehaviorSystem):processBehaviors(entitiesWithBehavior(world), dt) 
+    world:getSystem(BehaviorSystem):processBehaviors(play_scene_items:intersection(entitiesWithBehavior(world)), dt) 
 
     --[[ Update movement ]]
-    world:getSystem(MovementSystem):updateMovables(entitiesWithMovement(world), dt)
+    world:getSystem(MovementSystem):updateMovables(play_scene_items:intersection(entitiesWithMovement(world)), dt)
 
     --[[ Handle collisions ]]
 
@@ -153,6 +162,7 @@ function PlayScene:update(dt)
 
     -- TODO: don't have if / elses
     for collision_event in collisions:members() do
+
 
         if collision_event.a == world:getTaggedEntity(Tags.PLAYER) and
            world:getGroupsContainingEntity(collision_event.b):contains(Tags.WALL_GROUP) then
@@ -187,7 +197,9 @@ function PlayScene:draw()
 
     local world = self.world
 
-    world:getSystem(RenderingSystem):renderDrawables(entitiesWithDrawability(world))
+    local play_scene_items = world:getEntitiesInGroup(Tags.PLAY_GROUP)
+
+    world:getSystem(RenderingSystem):renderDrawables(play_scene_items:intersection(entitiesWithDrawability(world)))
 
     local debugstart = 400
 
@@ -195,11 +207,13 @@ function PlayScene:draw()
 
         local player_transform =  world:getTaggedEntity(Tags.PLAYER):getComponent(Transform)
         local ball_transform = world:getTaggedEntity(Tags.BALL):getComponent(Transform)
+        local ball_collider = world:getTaggedEntity(Tags.BALL):getComponent(Collider)
 
         love.graphics.print("Ball x: " .. ball_transform.position.x, 50, debugstart + 20)
         love.graphics.print("Ball y: " .. ball_transform.position.y, 50, debugstart + 40)
-        love.graphics.print("Player x: " .. player_transform.position.x, 50, debugstart + 60)
-        love.graphics.print("Player y: " .. player_transform.position.y, 50, debugstart + 80)
+        love.graphics.print("Ball collider active: " .. tostring(ball_collider.active), 50, debugstart + 60)
+        love.graphics.print("Player x: " .. player_transform.position.x, 50, debugstart + 80)
+        love.graphics.print("Player y: " .. player_transform.position.y, 50, debugstart + 100)
     end
 
 
