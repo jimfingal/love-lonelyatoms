@@ -1,7 +1,5 @@
-
 require 'external.middleclass'
 require 'collections.list'
-require 'core.input'
 require 'core.color'
 
 

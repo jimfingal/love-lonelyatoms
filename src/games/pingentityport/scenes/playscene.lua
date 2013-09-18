@@ -1,7 +1,6 @@
 require 'external.middleclass'
 require 'core.scene'
 require 'collections.set'
-require 'core.oldentity.group'
 require 'core.systems.renderingsystem'
 require 'core.systems.collisionsystem'
 require 'core.systems.movementsystem'

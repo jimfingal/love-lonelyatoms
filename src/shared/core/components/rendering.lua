@@ -1,6 +1,5 @@
 require 'external.middleclass'
 require 'core.color'
-require 'core.mixins.movable'
 
 
 -- [[ TODO, don't like this. Should be able to just ask for Rendering component. Perhaps have factory and private member containing data?]]
