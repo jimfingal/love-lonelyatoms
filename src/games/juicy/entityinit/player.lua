@@ -7,7 +7,7 @@ require 'core.components.inputresponse'
 require 'core.components.soundcomponent'
 
 require 'enums.tags'
-
+require 'enums.palette'
 
 Player = {}
 
@@ -18,8 +18,8 @@ function Player.init(world)
 
     local player = em:createEntity('player')
     player:addComponent(Transform(350, 500))
-    player:addComponent(ShapeRendering():setColor(147,147,205):setShape(RectangleShape:new(100, 20)))
-    player:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
+    player:addComponent(ShapeRendering():setColor(Palette.COLOR_PADDLE.r,Palette.COLOR_PADDLE.g,Palette.COLOR_PADDLE.b):setShape(RectangleShape:new(100, 20)))
+    player:addComponent(Collider():setHitbox(RectangleShape:new(100, 30)))
     player:addComponent(Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
     -- player:addComponent(Behavior():addUpdateFunction(playerAI))
     player:addComponent(InputResponse():addResponse(playerInputResponse))

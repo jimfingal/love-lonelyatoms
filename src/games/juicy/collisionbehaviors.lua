@@ -4,6 +4,8 @@ require 'core.components.collider'
 require 'core.components.motion'
 Easing = require 'external.easing'
 
+require 'enums.tags'
+
 
 function collideBallWithPaddle(ball, paddle)
 
@@ -77,39 +79,32 @@ function collideBallWithWall(ball, wall)
     local ball_rendering = ball:getComponent(ShapeRendering)
 
     local wall_position = wall:getComponent(Transform):getPosition()
+    local wall_hitbox = wall:getComponent(Collider):hitbox()
+
+    local world = ball:getWorld()
 
 	-- Top wall
-	if ball_transform:getPosition().y < 5 then
+	if wall == world:getTaggedEntity(Tags.TOP_WALL) then
 
-		ball_transform:moveTo(ball_transform:getPosition().x, 1)
+		ball_transform:moveTo(ball_transform:getPosition().x, wall_position.y + wall_hitbox.height)
 		ball_movement:invertVerticalVelocity()
 
 	-- Bottom wall
+	elseif wall == world:getTaggedEntity(Tags.BOTTOM_WALL) then
 
-	elseif ball_transform:getPosition().y >= love.graphics.getHeight() - ball_collider:hitbox().height - 1 then
-
-		-- TODO: easier way to just totally disable an entity
 		ball_collider:disable()
 		ball_rendering:disable()
 
 	-- Left wall
-	elseif ball_transform:getPosition().x <= 5 then
+	elseif wall == world:getTaggedEntity(Tags.LEFT_WALL) then
 
-		--[[
-		assert(false, "Ran into left wall: " .. tostring(ball) .. " ; " .. tostring(wall))
-		]]
-
-		ball_transform:moveTo(1, ball_transform:getPosition().y)
+		ball_transform:moveTo(wall_position.x + wall_hitbox.width + 1, ball_transform:getPosition().y)
 		ball_movement:invertHorizontalVelocity()
 
 	-- Right wall
-	else
-		
-		--[[ assert(false, "Ran into right wall: " .. tostring(ball) .. " ; " .. 
-					tostring(wall_position) .. tostring(wall))
-		]]
+	elseif wall == world:getTaggedEntity(Tags.RIGHT_WALL) then
 
-		ball_transform:moveTo(love.graphics.getWidth() - ball_collider:hitbox().width, ball_transform:getPosition().y)
+		ball_transform:moveTo(wall_position.x - 1 - ball_collider:hitbox().width, ball_transform:getPosition().y)
 		ball_movement:invertHorizontalVelocity()
 	end
 

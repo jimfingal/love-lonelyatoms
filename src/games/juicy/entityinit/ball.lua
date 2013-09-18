@@ -7,6 +7,7 @@ require 'core.components.inputresponse'
 require 'core.components.soundcomponent'
 
 require 'enums.tags'
+require 'enums.palette'
 
 
 Ball = {}
@@ -17,7 +18,7 @@ function Ball.init(world)
 
     local ball = em:createEntity('ball')
     ball:addComponent(Transform(395, 485))
-    ball:addComponent(ShapeRendering():setColor(220,220,204):setShape(RectangleShape:new(15, 15)))
+    ball:addComponent(ShapeRendering():setColor(Palette.COLOR_BALL:unpack()):setShape(RectangleShape:new(15, 15)))
     ball:addComponent(Collider():setHitbox(RectangleShape:new(15, 15)))
     ball:addComponent(Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
     -- ball:addComponent(Behavior():addUpdateFunction(ballAutoResetOnNonexistence))

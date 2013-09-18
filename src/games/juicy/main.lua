@@ -9,11 +9,10 @@ require 'core.systems.tweensystem'
 require 'core.systems.menuguisystem'
 require 'core.entity.world'
 require 'scenes.playscene'
-require 'scenes.menuscene'
 require 'enums.scenes'
 require 'external.slam'
 
-DEBUG = false
+DEBUG = true
 
 function love.load()
  
@@ -27,12 +26,7 @@ end
 
 function loadAssets(world)
 
-    ps2p = "PressStart2P.ttf"
-    
-    local asset_manager = world:getAssetManager()
-    asset_manager:loadFont(Assets.FONT_LARGE, ps2p, 30)
-    asset_manager:loadFont(Assets.FONT_MEDIUM, ps2p, 18)
-    asset_manager:loadFont(Assets.FONT_SMALL, ps2p, 14)
+    -- TODO: load sounds
 
 end
 
@@ -75,10 +69,7 @@ function loadScenes(world)
     local play_scene = PlayScene(Scenes.PLAY, world)
     scene_manager:registerScene(play_scene)
 
-    local menu_scene = MenuScene(Scenes.MENU, world)
-    scene_manager:registerScene(menu_scene)
-
-    scene_manager:changeScene(Scenes.MENU)
+    scene_manager:changeScene(Scenes.PLAY)
     
 
 

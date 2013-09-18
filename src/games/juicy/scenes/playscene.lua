@@ -24,6 +24,7 @@ require 'entitysets'
 require 'enums.actions'
 require 'enums.assets'
 require 'enums.tags'
+require 'enums.palette'
 
 Ball = require 'entityinit.ball'
 Bricks = require 'entityinit.bricks'
@@ -56,9 +57,6 @@ function PlayScene:initialize(name, w)
     input_system:registerInput('g', Actions.CAMERA_DOWN)
     input_system:registerInput('z', Actions.CAMERA_SCALE_UP)
     input_system:registerInput('x', Actions.CAMERA_SCALE_DOWN)
-
-
-
     
 
     local em = world:getEntityManager()
@@ -69,21 +67,30 @@ function PlayScene:initialize(name, w)
     ir:addComponent(InputResponse():addResponse(globalInputResponse))
     world:addEntityToGroup(Tags.PLAY_GROUP, ir)
 
-
-    --[[ Script constraining things to world ]]
-
-    local world_constrainer = em:createEntity('world_constrainer')
-    world_constrainer:addComponent(Behavior():addUpdateFunction(constrainActorsToWorld))
-    world:addEntityToGroup(Tags.PLAY_GROUP, world_constrainer)
-
-
     --[[ Background Image ]]
 
     local play_background = em:createEntity('play_background')
     play_background:addComponent(Transform(0, 0):setLayerOrder(10))
-    play_background:addComponent(ShapeRendering():setColor(63, 63, 63, 255):setShape(RectangleShape:new(love.graphics.getWidth(), love.graphics.getHeight())))
+    play_background:addComponent(ShapeRendering():setColor(Palette.COLOR_BACKGROUND:unpack()):setShape(RectangleShape:new(love.graphics.getWidth(), love.graphics.getHeight())))
     world:tagEntity(Tags.BACKGROUND, play_background)
     world:addEntityToGroup(Tags.PLAY_GROUP, play_background)
+
+ 
+
+    --[[ Background sound ]]
+    local asset_manager = world:getAssetManager()
+    local bsnd = "background.mp3"
+
+    local this_sound = asset_manager:loadSound(Assets.BACKGROUND_SOUND, bsnd)
+    this_sound:setVolume(0.25)
+    this_sound:setLooping(true)
+    this_sound:play()
+
+    local background_sound_entity = em:createEntity('background_sound')
+    background_sound_entity:addComponent(SoundComponent():addSound(Assets.BACKGROUND_SOUND, this_sound))
+    world:tagEntity(Tags.BACKGROUND_SOUND, background_sound_entity)
+    world:addEntityToGroup(Tags.PLAY_GROUP, background_sound_entity)
+
 
     --[[ Initialize complicated entities ]]
 
@@ -98,26 +105,28 @@ function PlayScene:initialize(name, w)
 
 end
 
-function PlayScene:enter(song)
+function PlayScene:enter()
 
     love.audio.stop()
 
-    Bricks.init(world, song)
+    -- Bricks.init(world)
 
     local collision_system = world:getSystem(CollisionSystem)
 
     -- TODO better way to remove collision watching 
     collision_system:reset()
 
-    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.BRICK_GROUP))
+    -- collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.BRICK_GROUP))
     collision_system:watchCollision(world:getTaggedEntity(Tags.PLAYER), world:getEntitiesInGroup(Tags.WALL_GROUP))
     collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getTaggedEntity(Tags.PLAYER))
     collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.WALL_GROUP))
 
 
+    --[[
     local sound_component =  world:getTaggedEntity(Tags.BACKGROUND_SOUND):getComponent(SoundComponent)
     local retrieved_sound = sound_component:getSound(Assets.BACKGROUND_SOUND)
     love.audio.play(retrieved_sound)
+    ]]
 
     local ball = world:getTaggedEntity(Tags.BALL)
     local ball_collider = ball:getComponent(Collider)
@@ -132,19 +141,17 @@ function PlayScene:update(dt)
 
     local world = self.world
 
-    local play_scene_items = world:getEntitiesInGroup(Tags.PLAY_GROUP)
-
     --[[ Update tweens ]] 
     world:getSystem(TweenSystem):update(dt)
 
     --[[ Update input ]]
-    world:getSystem(InputSystem):processInputResponses(play_scene_items:intersection(entitiesRespondingToInput(world)), dt)
+    world:getSystem(InputSystem):processInputResponses(entitiesRespondingToInput(world), dt)
     
     --[[ Update behaviors ]]
-    world:getSystem(BehaviorSystem):processBehaviors(play_scene_items:intersection(entitiesWithBehavior(world)), dt) 
+    world:getSystem(BehaviorSystem):processBehaviors(entitiesWithBehavior(world), dt) 
 
     --[[ Update movement ]]
-    world:getSystem(MovementSystem):updateMovables(play_scene_items:intersection(entitiesWithMovement(world)), dt)
+    world:getSystem(MovementSystem):updateMovables(entitiesWithMovement(world), dt)
 
     --[[ Handle collisions ]]
 
@@ -189,9 +196,7 @@ function PlayScene:draw()
 
     local world = self.world
 
-    local play_scene_items = world:getEntitiesInGroup(Tags.PLAY_GROUP)
-
-    world:getSystem(RenderingSystem):renderDrawables(play_scene_items:intersection(entitiesWithDrawability(world)))
+    world:getSystem(RenderingSystem):renderDrawables(entitiesWithDrawability(world))
 
     local debugstart = 400
 

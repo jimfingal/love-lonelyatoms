@@ -1,6 +1,6 @@
 function love.conf(t)
-    t.title = "Ping v2.0"
-    t.author = "Jim Fingal and Brian Fife"
+    t.title = "Juicy Breakout, Love Edition"
+    t.author = "Jim Fingal"
     t.url = nil
     t.identity = nil
     t.version = "0.8.0"
