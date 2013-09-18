@@ -11,6 +11,16 @@ function GroupManager:initialize(world)
         self.world = world
 end
 
+function GroupManager:removeEntityFromGroup(group, entity)
+
+	local entities = self:getEntitiesInGroup(group)
+	entities:remove(entity)
+
+	local groups = self:getGroupsContainingEntity(entity)
+	groups:remove(group)
+
+end
+
 function GroupManager:addEntityToGroup(group, entity)
 
 	assert(group, "Must have a group parameter")

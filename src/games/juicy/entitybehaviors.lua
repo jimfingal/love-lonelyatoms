@@ -4,6 +4,8 @@ require 'core.components.collider'
 require 'core.components.motion'
 require 'core.vector'
 
+require 'enums.scenes'
+require 'enums.tags'
 
 -- Special off-world handling for long load times
 function constrainActorsToWorld(constrainer, dt)
@@ -42,18 +44,12 @@ end
 
 function globalInputResponse(global, held_actions, pressed_actions, dt)
 
-
-        -- Reset Ball
---    if pressed_actions[Actions.RESET_BALL] and not self.victory then
-
-
     -- Escape to Menu
     if pressed_actions[Actions.ESCAPE_TO_MENU] then
 
-        --[[
-        self.ball:disable()
-        self.state_manager:changeState(States.MENU)
-        ]]
+        love.audio.stop()
+        global:getWorld():getSceneManager():changeScene(Scenes.MENU)
+    
     end
 
 

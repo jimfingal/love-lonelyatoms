@@ -80,11 +80,11 @@ function PlayScene:initialize(name, w)
 
     --[[ Background Image ]]
 
-    local background_image = em:createEntity('background_image')
-    background_image:addComponent(Transform(0, 0):setLayerOrder(10))
-    background_image:addComponent(ShapeRendering():setColor(63, 63, 63, 255):setShape(RectangleShape:new(love.graphics.getWidth(), love.graphics.getHeight())))
-    world:tagEntity(Tags.BACKGROUND, background_image)
-    world:addEntityToGroup(Tags.PLAY_GROUP, background_image)
+    local play_background = em:createEntity('play_background')
+    play_background:addComponent(Transform(0, 0):setLayerOrder(10))
+    play_background:addComponent(ShapeRendering():setColor(63, 63, 63, 255):setShape(RectangleShape:new(love.graphics.getWidth(), love.graphics.getHeight())))
+    world:tagEntity(Tags.BACKGROUND, play_background)
+    world:addEntityToGroup(Tags.PLAY_GROUP, play_background)
 
     --[[ Initialize complicated entities ]]
 
@@ -94,9 +94,7 @@ function PlayScene:initialize(name, w)
 
     local collision_system = world:getSystem(CollisionSystem)
 
-    collision_system:watchCollision(world:getTaggedEntity(Tags.PLAYER), world:getEntitiesInGroup(Tags.WALL_GROUP))
-    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getTaggedEntity(Tags.PLAYER))
-    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.WALL_GROUP))
+  
 
 
 end
@@ -108,7 +106,15 @@ function PlayScene:enter(song)
     Bricks.init(world, song)
 
     local collision_system = world:getSystem(CollisionSystem)
+
+    -- TODO better way to remove collision watching 
+    collision_system:reset()
+
     collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.BRICK_GROUP))
+    collision_system:watchCollision(world:getTaggedEntity(Tags.PLAYER), world:getEntitiesInGroup(Tags.WALL_GROUP))
+    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getTaggedEntity(Tags.PLAYER))
+    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.WALL_GROUP))
+
 
     local sound_component =  world:getTaggedEntity(Tags.BACKGROUND_SOUND):getComponent(SoundComponent)
     local retrieved_sound = sound_component:getSound(Assets.BACKGROUND_SOUND)

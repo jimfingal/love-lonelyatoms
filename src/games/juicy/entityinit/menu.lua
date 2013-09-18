@@ -107,6 +107,10 @@ function menuInputResponse(menu, held_actions, pressed_actions, dt)
 
         menu_component:selectMenuItem(menu_component.selected_index)
 
+        -- TODO: Special case to make sound play at beginning of menu entrance; just make this play
+        -- at Menu:enter()
+        menu_component.selected_index = nil
+
     end
 
 end

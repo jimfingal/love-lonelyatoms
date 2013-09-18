@@ -42,7 +42,9 @@ function EntityManager:setEntityName(uuid, name)
 end
 
 function EntityManager:getEntityName(uuid)
-	return self.entity_names[uuid]
+
+	local name = self.entity_names[uuid]
+	return name or "" 
 end
 
 

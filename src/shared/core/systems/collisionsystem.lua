@@ -16,6 +16,12 @@ function CollisionSystem:initialize(world)
 
 end
 
+
+function CollisionSystem:reset()
+	self.collisions_to_watch = Set()
+end
+
+
 function CollisionSystem:watchCollision(a, b)
 
 	local config = CollisionConfig(a, b)

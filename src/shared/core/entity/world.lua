@@ -73,6 +73,12 @@ end
 
 function World:killEntity(entity)
 
+	local groups = self:getGroupsContainingEntity(entity)
+
+	for group in groups:members() do
+		self.group_manager:removeEntityFromGroup(group, entity)
+	end
+
 	self.entity_manager:killEntity(entity.entity_id)
 
 	-- TODO remove from groups

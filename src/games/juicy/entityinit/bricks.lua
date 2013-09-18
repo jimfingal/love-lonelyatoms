@@ -41,12 +41,13 @@ function Bricks.init(world, song)
         background_snd:kill()
     end
 
+    local asset_manager = world:getAssetManager()
+
     for brick in existing_bricks:members() do
         brick:kill()
     end
 
 
-    local asset_manager = world:getAssetManager()
 
     if not song then 
 
@@ -111,7 +112,6 @@ function Bricks.init(world, song)
         background_sound_entity:addComponent(SoundComponent():addSound(Assets.BACKGROUND_SOUND, this_sound))
         world:tagEntity(Tags.BACKGROUND_SOUND, background_sound_entity)
         world:addEntityToGroup(Tags.PLAY_GROUP, background_sound_entity)
-
 
         for _, brickinfo in ipairs(config.bricks) do
 
