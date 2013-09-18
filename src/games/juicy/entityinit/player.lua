@@ -28,9 +28,6 @@ function Player.init(world)
     world:tagEntity(Tags.PLAYER, player)
 
 
-    local collision_system = world:getSystem(CollisionSystem)
-
-    collision_system:watchCollision(player, world:getEntitiesInGroup(Tags.WALL_GROUP))
 
 
 end 
