@@ -69,3 +69,14 @@ end
 function World:getTaggedEntity(tag)
 	return self.tag_manager:getEntity(tag)
 end
+
+
+function World:killEntity(entity)
+
+	self.entity_manager:killEntity(entity.entity_id)
+
+	-- TODO remove from groups
+	-- TODO remove tags
+
+end
+

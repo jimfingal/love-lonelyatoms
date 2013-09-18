@@ -86,27 +86,10 @@ function PlayScene:initialize(name, w)
     world:tagEntity(Tags.BACKGROUND, background_image)
     world:addEntityToGroup(Tags.PLAY_GROUP, background_image)
 
-
-    --[[ Initialize and play Background Sound ]]
-    local asset_manager = world:getAssetManager()
-
-    local bsnd = "background.mp3"
-    
-    local this_sound = asset_manager:loadSound(Assets.BACKGROUND_SOUND, bsnd)
-    this_sound:setVolume(0.25)
-    this_sound:setLooping(true)
-
-    local background_sound_entity = em:createEntity('background_sound')
-    background_sound_entity:addComponent(SoundComponent():addSound(Assets.BACKGROUND_SOUND, this_sound))
-    world:tagEntity(Tags.BACKGROUND_SOUND, background_sound_entity)
-    world:addEntityToGroup(Tags.PLAY_GROUP, background_sound_entity)
-
-
     --[[ Initialize complicated entities ]]
 
     Walls.init(world)
     Player.init(world)
-    Bricks.init(world)
     Ball.init(world)
 
     local collision_system = world:getSystem(CollisionSystem)
@@ -114,14 +97,18 @@ function PlayScene:initialize(name, w)
     collision_system:watchCollision(world:getTaggedEntity(Tags.PLAYER), world:getEntitiesInGroup(Tags.WALL_GROUP))
     collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getTaggedEntity(Tags.PLAYER))
     collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.WALL_GROUP))
-    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.BRICK_GROUP))
 
 
 end
 
-function PlayScene:enter()
+function PlayScene:enter(song)
 
     love.audio.stop()
+
+    Bricks.init(world, song)
+
+    local collision_system = world:getSystem(CollisionSystem)
+    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.BRICK_GROUP))
 
     local sound_component =  world:getTaggedEntity(Tags.BACKGROUND_SOUND):getComponent(SoundComponent)
     local retrieved_sound = sound_component:getSound(Assets.BACKGROUND_SOUND)

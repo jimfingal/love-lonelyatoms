@@ -1,0 +1,30 @@
+local python_brick_config_output = { 
+	name = "CloudsForm",
+	background_length = 81.2589569161,
+	song_length = 24.21841,
+	background_snd = "CloudsForm_background.mp3",
+	bricks = {
+		{ x = 50, y = 0, width = 100, height = 20, snd = 'CloudsForm20.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 150, y = 0, width = 100, height = 20, snd = 'CloudsForm19.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 250, y = 0, width = 100, height = 20, snd = 'CloudsForm18.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 350, y = 0, width = 100, height = 20, snd = 'CloudsForm17.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 450, y = 0, width = 100, height = 20, snd = 'CloudsForm16.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 550, y = 0, width = 100, height = 20, snd = 'CloudsForm15.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 650, y = 0, width = 100, height = 20, snd = 'CloudsForm14.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 0, y = 20, width = 100, height = 20, snd = 'CloudsForm13.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 100, y = 20, width = 100, height = 20, snd = 'CloudsForm12.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 200, y = 20, width = 100, height = 20, snd = 'CloudsForm11.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 300, y = 20, width = 100, height = 20, snd = 'CloudsForm10.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 400, y = 20, width = 100, height = 20, snd = 'CloudsForm9.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 500, y = 20, width = 100, height = 20, snd = 'CloudsForm8.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 600, y = 20, width = 100, height = 20, snd = 'CloudsForm7.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 700, y = 20, width = 100, height = 20, snd = 'CloudsForm6.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 150, y = 40, width = 100, height = 20, snd = 'CloudsForm5.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 150, y = 40, width = 100, height = 20, snd = 'CloudsForm4.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 250, y = 40, width = 100, height = 20, snd = 'CloudsForm3.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 350, y = 40, width = 100, height = 20, snd = 'CloudsForm2.mp3', r=176, g=205, b=147, brightness_index=9 },
+		{ x = 450, y = 40, width = 100, height = 20, snd = 'CloudsForm1.mp3', r=176, g=205, b=147, brightness_index=9 },
+	 },
+	 speed = 15 
+}
+return python_brick_config_output

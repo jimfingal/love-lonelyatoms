@@ -60,7 +60,7 @@ function MetaEntity:removeAllComponents()
 end
 
 function MetaEntity:kill()
-	self.parent_entity_manager:kill(self.entity_id)
+	self.world:killEntity(self)
 end
 
 

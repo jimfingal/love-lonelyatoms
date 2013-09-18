@@ -50,7 +50,7 @@ function AssetManager:loadSound(key, sound_name)
 	assert(sound_name, "Missing argument: sound to register")
 
 	if self.sounds[key] then
-		return -- Don't double-load
+		return self.sounds[key] -- Don't double-load
 	end
 
 	local snd  = love.audio.newSource(self.sound_path .. sound_name, 'static')
@@ -58,6 +58,7 @@ function AssetManager:loadSound(key, sound_name)
 	self.sounds[key] = snd
 
 	return snd
+
 end
 
 function AssetManager:getSound(name)

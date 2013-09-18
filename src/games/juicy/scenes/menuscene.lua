@@ -50,11 +50,10 @@ function MenuScene:initialize(name, w)
 
 
     --[[ Background Image ]]
-    local background_image = em:createEntity('background_image')
-    background_image:addComponent(Transform(0, 0):setLayerOrder(10))
-    background_image:addComponent(ShapeRendering():setColor(63, 63, 63, 255):setShape(RectangleShape:new(love.graphics.getWidth(), love.graphics.getHeight())))
-    world:tagEntity(Tags.BACKGROUND, background_image)
-    world:addEntityToGroup(Tags.MENU_GROUP, background_image)
+    local menu_background = em:createEntity('menu_background')
+    menu_background:addComponent(Transform(0, 0):setLayerOrder(10))
+    menu_background:addComponent(ShapeRendering():setColor(63, 63, 63, 255):setShape(RectangleShape:new(love.graphics.getWidth(), love.graphics.getHeight())))
+    world:addEntityToGroup(Tags.MENU_GROUP, menu_background)
 
 
     Menu.init(world)
