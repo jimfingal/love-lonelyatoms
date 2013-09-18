@@ -118,11 +118,11 @@ function RenderingSystem:draw(entity)
 
 	local rendering = nil
 
-	if entity:getComponent(ShapeRendering) then
+	if entity:hasComponent(ShapeRendering) then
 		rendering = entity:getComponent(ShapeRendering)
-	elseif entity:getComponent(TextRendering) then
+	elseif entity:hasComponent(TextRendering) then
 		rendering = entity:getComponent(TextRendering)
-	elseif entity:getComponent(ImageRendering) then
+	elseif entity:hasComponent(ImageRendering) then
 		rendering = entity:getComponent(ImageRendering)
 	end
 

@@ -41,7 +41,7 @@ function MetaEntity:getComponent(component_class)
 end
 
 function MetaEntity:hasComponent(component_class)
-	return self:getComponent(component_class)
+	return self.parent_entity_manager:hasComponent(self.entity_id, component_class)
 end
 
 function MetaEntity:getAllComponents()
