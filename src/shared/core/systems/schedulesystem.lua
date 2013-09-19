@@ -1,8 +1,10 @@
 require 'external.middleclass'
 
-Scheduler = class("Scheduler")
+ScheduleSystem = class("ScheduleSystem", System)
 
-function Scheduler:initialize()
+function ScheduleSystem:initialize()
+
+	System.initialize(self, 'Schedule System')
 
 	-- Key is {func, func_after}, value is duration to keep calling
 	self.running = {}
@@ -17,7 +19,7 @@ function Scheduler:initialize()
 	-- self.time = 0
 end
 
-function Scheduler:update(dt)
+function ScheduleSystem:update(dt)
 
 	-- self.time = self.time + dt
 
@@ -82,7 +84,7 @@ function Scheduler:update(dt)
 
 end
 
-function Scheduler:processExpiredEntries()
+function ScheduleSystem:processExpiredEntries()
 
 	for entry, _ in pairs(self.expired) do 
 		self.delayed[entry] = nil
@@ -91,21 +93,21 @@ function Scheduler:processExpiredEntries()
 end
 
 
-function Scheduler:do_for(duration, func, func_after)
+function ScheduleSystem:do_for(duration, func, func_after)
 
 	local entry = {func = func, func_after = func_after, duration = duration}
 	self.running[entry] = duration
 
 end
 
-function Scheduler:do_after(duration, func)
+function ScheduleSystem:do_after(duration, func)
 
 	local entry = {func = func, duration = duration}
 	self.delayed[entry] = duration
 
 end
 
-function Scheduler:do_every(duration, func)
+function ScheduleSystem:do_every(duration, func)
 
 	local entry = {func = func, duration = duration}
 	self.periodic[entry] = duration

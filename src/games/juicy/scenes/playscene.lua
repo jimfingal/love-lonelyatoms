@@ -8,6 +8,7 @@ require 'core.systems.behaviorsystem'
 require 'core.systems.camerasystem'
 require 'core.systems.inputsystem'
 require 'core.systems.tweensystem'
+require 'core.systems.schedulesystem'
 require 'core.entity.world'
 require 'core.components.transform'
 require 'core.components.rendering'
@@ -138,6 +139,9 @@ end
 function PlayScene:update(dt)
 
     local world = self.world
+
+    --[[ Update scheduled functions ]] 
+    world:getSystem(ScheduleSystem):update(dt)
 
     --[[ Update tweens ]] 
     world:getSystem(TweenSystem):update(dt)

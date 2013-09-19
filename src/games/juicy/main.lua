@@ -7,6 +7,8 @@ require 'core.systems.camerasystem'
 require 'core.systems.inputsystem'
 require 'core.systems.tweensystem'
 require 'core.systems.menuguisystem'
+require 'core.systems.schedulesystem'
+
 require 'core.entity.world'
 require 'scenes.playscene'
 require 'enums.scenes'
@@ -57,6 +59,9 @@ function loadSystems(world)
 
     local menu_system = MenuGuiSystem(world)
     world:setSystem(menu_system)
+
+    local schedule_system = ScheduleSystem(world)
+    world:setSystem(schedule_system)
 
 
 end

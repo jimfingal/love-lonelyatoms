@@ -147,6 +147,7 @@ function RenderingSystem:draw(entity)
 		love.graphics.push()
 
 		-- TODO: scale and such
+		love.graphics.scale(transform:unpackScale())
 
 		draw_action(transform, rendering)
 

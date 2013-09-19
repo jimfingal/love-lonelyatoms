@@ -27,6 +27,23 @@ function Ball.init(world)
     world:tagEntity(Tags.BALL, ball)
     world:addEntityToGroup(Tags.PLAY_GROUP, ball)
 
+    local tween_system = world:getSystem(TweenSystem)
+    local schedule_system = world:getSystem(ScheduleSystem)
+
+
+    revertBall = function()
+                    world:getSystem(TweenSystem):addTween(0.25, world:getTaggedEntity(Tags.BALL):getComponent(ShapeRendering):getShape(), {width = 15, height = 15 }, Easing.inSine, getBallBig)
+                end
+    getBallBig = function()
+            world:getSystem(TweenSystem):addTween(0.25, 
+                world:getTaggedEntity(Tags.BALL):getComponent(ShapeRendering):getShape(), 
+                {width = 30, height = 30 }, 
+                Easing.inSine, 
+                revertBall)
+    end
+
+    getBallBig()
+
 
 end 
 

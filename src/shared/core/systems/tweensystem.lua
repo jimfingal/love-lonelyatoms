@@ -23,7 +23,7 @@ end
 
 -- Tweens a single value
 -- target is {x = 10}
-function TweenSystem:addTween(duration, ref, targets, method)
+function TweenSystem:addTween(duration, ref, targets, method, finished_func)
 
 	-- Each value gets its own tween for clarity. Takes up more memory
 	-- that probably should
@@ -35,7 +35,7 @@ function TweenSystem:addTween(duration, ref, targets, method)
 		tweens[key] = t
 	end
 
-	local handle = {reference = ref, t = tweens}
+	local handle = {reference = ref, t = tweens, finished_func = finished_func}
 
 	self.registry[handle] = tweens
 
@@ -66,6 +66,9 @@ function TweenSystem:update(dt)
 	end
 
 	for handle in handles_to_remove:members() do
+		if handle.finished_func then
+			handle.finished_func()
+		end
 		self.registry[handle] = nil
 	end
 end
