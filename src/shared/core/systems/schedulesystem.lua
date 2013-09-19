@@ -93,21 +93,21 @@ function ScheduleSystem:processExpiredEntries()
 end
 
 
-function ScheduleSystem:do_for(duration, func, func_after)
+function ScheduleSystem:doFor(duration, func, func_after)
 
 	local entry = {func = func, func_after = func_after, duration = duration}
 	self.running[entry] = duration
 
 end
 
-function ScheduleSystem:do_after(duration, func)
+function ScheduleSystem:doAfter(duration, func)
 
 	local entry = {func = func, duration = duration}
 	self.delayed[entry] = duration
 
 end
 
-function ScheduleSystem:do_every(duration, func)
+function ScheduleSystem:doEvery(duration, func)
 
 	local entry = {func = func, duration = duration}
 	self.periodic[entry] = duration

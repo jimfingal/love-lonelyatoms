@@ -23,6 +23,7 @@ DEBUG = true
 function love.load()
     -- initialize library
 
+    world = World()
 
     circle = CollidableCircle(100, 100, 50)
     circle:setColor(205,147,176)

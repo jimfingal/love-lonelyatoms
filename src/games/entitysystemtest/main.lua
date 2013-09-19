@@ -2,12 +2,15 @@ require 'core.components.transform'
 require 'core.components.rendering'
 require 'core.systems.renderingsystem'
 require 'core.systems.collisionsystem'
+require 'core.systems.inputsystem'
 
 require 'core.shapedata'
 require 'core.entity.world'
 
-Timer = require 'external.timer'
-
+require 'core.tween'
+Easing = require 'external.easing'
+require 'core.systems.tweensystem'
+require 'core.systems.schedulesystem'
 
 function love.load()
 
@@ -17,10 +20,17 @@ function love.load()
 
     local rendering_system = RenderingSystem()
     local collision_system = CollisionSystem(world)
+    local input_system = InputSystem()
+    local tween_system = TweenSystem()
+    local schedule_system = ScheduleSystem()
 
+    input_system:registerInput(" ", "change")
 
     world:setSystem(rendering_system)
     world:setSystem(collision_system)
+    world:setSystem(input_system)
+    world:setSystem(tween_system)
+    world:setSystem(schedule_system)
 
 
     local em = world:getEntityManager()
@@ -51,6 +61,62 @@ function love.load()
     mouse:addComponent(Collider():setHitbox(CircleShape:new(50)))
 
 
+
+
+    revertSize = function()
+            world:getSystem(TweenSystem):addTween(0.5, 
+                world:getTaggedEntity("rectangle"):getComponent(Transform):getScale(), 
+                {x = 1, y = 1 }, 
+                Easing.linear, 
+                getBig)
+            
+    end
+
+    getBig = function()
+            world:getSystem(TweenSystem):addTween(0.5, 
+                world:getTaggedEntity("rectangle"):getComponent(Transform):getScale(), 
+                {x = 2, y = 2 }, 
+                Easing.linear, 
+                revertSize)
+    end
+
+
+
+    revertSize = function()
+            world:getSystem(TweenSystem):addTween(0.5, 
+                world:getTaggedEntity("rectangle"):getComponent(Transform):getScale(), 
+                {x = 1, y = 1 }, 
+                Easing.linear, 
+                getBig)
+            
+    end
+
+    schedule_system:doFor(math.huge, function(dt)
+                    transform = world:getTaggedEntity("rectangle"):getComponent(Transform)
+                    transform.rotation = transform.rotation + 3 * love.timer.getDelta()
+                end)
+
+    --[[
+    rotate2 = function()
+            world:getSystem(TweenSystem):addTween(1, 
+                world:getTaggedEntity("rectangle"):getComponent(Transform), 
+                {rotation = 0 }, 
+                Easing.linear, 
+                rotate1)
+    end
+
+    rotate = function()
+            world:getSystem(TweenSystem):addTween(1, 
+                world:getTaggedEntity("rectangle"):getComponent(Transform), 
+                {rotation = 2 * math.pi}, 
+                Easing.linear, 
+                rotate2)
+    end
+    ]]
+
+    getBig()
+   --  rotate()
+
     world:tagEntity("mouse", mouse)
 
 
@@ -69,9 +135,15 @@ end
 
 function love.update(dt)
 
-    Timer.update(dt)
+    world:getSystem(ScheduleSystem):update(dt)
 
-   if love.keyboard.isDown(" ") then
+    local tween_system = world:getSystem(TweenSystem)
+    tween_system:update(dt)
+
+    local input_system = world:getSystem(InputSystem)
+    input_system:update(dt)
+
+   if input_system:newAction("change") then
 
      if not input_disabled then
 
@@ -98,9 +170,6 @@ function love.update(dt)
 
             end
 
-            input_disabled = true
-
-            Timer.add(0.2, function() input_disabled = false end)
 
        end
     end
@@ -154,9 +223,11 @@ function love.draw()
 
     world:getSystem(RenderingSystem):renderDrawables(em:getAllEntitiesContainingComponents(Transform, ShapeRendering))
 
-        -- Hack
-        -- r:setFillMode('fill')
-    
+    -- Hack
+
+    for e in em:getAllEntitiesContainingComponent(ShapeRendering):members() do
+        e:getComponent(ShapeRendering):setFillMode('fill')
+    end
 
 
 end

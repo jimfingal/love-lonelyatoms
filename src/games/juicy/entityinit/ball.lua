@@ -32,13 +32,13 @@ function Ball.init(world)
 
 
     revertBall = function()
-                    world:getSystem(TweenSystem):addTween(0.25, world:getTaggedEntity(Tags.BALL):getComponent(ShapeRendering):getShape(), {width = 15, height = 15 }, Easing.inSine, getBallBig)
+                    world:getSystem(TweenSystem):addTween(0.1, world:getTaggedEntity(Tags.BALL):getComponent(ShapeRendering):getShape(), {width = 15, height = 15 }, Easing.linear, getBallBig)
                 end
     getBallBig = function()
-            world:getSystem(TweenSystem):addTween(0.25, 
+            world:getSystem(TweenSystem):addTween(0.1, 
                 world:getTaggedEntity(Tags.BALL):getComponent(ShapeRendering):getShape(), 
                 {width = 30, height = 30 }, 
-                Easing.inSine, 
+                Easing.linear, 
                 revertBall)
     end
 

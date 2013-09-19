@@ -9,7 +9,7 @@ function RenderingSystem:initialize()
 
 	System.initialize(self, 'Rendering System')
 	self.camera_system = nil
-
+	self.canvas = love.graphics.newCanvas()
 end
 
 function RenderingSystem:setCamera(camera)
@@ -80,10 +80,22 @@ local RenderingFunctions = {
 	shape = function(transform, rendering) 
 			
 			local shape = rendering:getShape()
-			local position = transform:getPosition() + shape:offset()
 			local fill = rendering:getFillMode()
 
-			shape:draw(position, fill)
+			local shape_center = shape:center(transform:getPosition())
+
+			love.graphics.push()
+			love.graphics.translate(shape_center.x, shape_center.y)
+			love.graphics.rotate(transform:getRotation())
+			love.graphics.scale(transform:unpackScale())
+
+			shape:drawAroundOrigin(fill)
+
+			love.graphics.pop()
+
+
+
+
 
 	end, 
 
@@ -142,17 +154,7 @@ function RenderingSystem:draw(entity)
 		love.graphics.setColor(color:unpack())
 
 		local draw_action = RenderingFunctions[rendering.render_type]
-
-
-		love.graphics.push()
-
-		-- TODO: scale and such
-		love.graphics.scale(transform:unpackScale())
-
 		draw_action(transform, rendering)
-
-		love.graphics.pop()
-
 
 		-- Restore the previous color settings
 		love.graphics.setColor(r, g, b, a)
