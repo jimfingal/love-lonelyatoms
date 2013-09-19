@@ -213,6 +213,8 @@ function PlayScene:draw()
         love.graphics.print("Ball collider active: " .. tostring(ball_collider.active), 50, debugstart + 60)
         love.graphics.print("Player x: " .. player_transform.position.x, 50, debugstart + 80)
         love.graphics.print("Player y: " .. player_transform.position.y, 50, debugstart + 100)
+        love.graphics.print("FPS: " .. love.timer.getFPS(), 50, debugstart + 120)
+
     end
 
 

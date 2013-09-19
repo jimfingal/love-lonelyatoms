@@ -32,15 +32,20 @@ function Ball.init(world)
 
 
     revertBall = function()
-                    world:getSystem(TweenSystem):addTween(0.1, world:getTaggedEntity(Tags.BALL):getComponent(ShapeRendering):getShape(), {width = 15, height = 15 }, Easing.linear, getBallBig)
+                    world:getSystem(TweenSystem):addTween(0.1, world:getTaggedEntity(Tags.BALL):getComponent(Transform):getScale(), {x = 1, y = 1 }, Easing.linear, getBallBig)
                 end
     getBallBig = function()
             world:getSystem(TweenSystem):addTween(0.1, 
-                world:getTaggedEntity(Tags.BALL):getComponent(ShapeRendering):getShape(), 
-                {width = 30, height = 30 }, 
-                Easing.linear, 
+                world:getTaggedEntity(Tags.BALL):getComponent(Transform):getScale(), 
+                {x = 2, y = 1.5 }, 
+                Easing.inSine, 
                 revertBall)
     end
+
+    schedule_system:doFor(math.huge, function()
+                    transform = world:getTaggedEntity(Tags.BALL):getComponent(Transform)
+                    transform.rotation = transform.rotation + 3 * love.timer.getDelta()
+                end)
 
     getBallBig()
 
