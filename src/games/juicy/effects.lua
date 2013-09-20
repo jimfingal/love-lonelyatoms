@@ -201,6 +201,20 @@ function EffectDispatcher.allEffects(entity, dx, dy)
     EffectDispatcher.rotateEntity(entity) 
 end
 
+
+function EffectDispatcher.slowMo(length)
+
+    local time_system = world:getSystem(TimeSystem)
+
+    time_system.dilation = 0.1
+
+    world:getSystem(TweenSystem):addTween(length, time_system, {dilation = 1 }, Easing.outQuad)
+
+end
+
+
+
+
 --[[
     -- [ [ Player effects ]
 

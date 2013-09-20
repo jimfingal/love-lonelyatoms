@@ -9,6 +9,7 @@ require 'core.systems.camerasystem'
 require 'core.systems.inputsystem'
 require 'core.systems.tweensystem'
 require 'core.systems.schedulesystem'
+require 'core.systems.timesystem'
 require 'core.entity.world'
 require 'core.components.transform'
 require 'core.components.rendering'
@@ -124,6 +125,7 @@ function PlayScene:initialize(name, w)
 
         EffectDispatcher.cameraShake()
         EffectDispatcher.allEffects(ball, 2, 1.5)
+        EffectDispatcher.slowMo(0.5)
 
     end)
 
@@ -144,6 +146,8 @@ function PlayScene:reset()
     love.audio.stop()
 
     local world = self.world
+
+    world:getSystem(TimeSystem):stop()
 
     Bricks.init(world)
     Player.init(world)
@@ -177,8 +181,6 @@ function PlayScene:reset()
         self.effects:dropInPlayer()
     end
 
-
-
 end
 
 function PlayScene:enter()
@@ -187,9 +189,17 @@ function PlayScene:enter()
 
 end
 
-function PlayScene:update(dt)
+function PlayScene:update(love_dt)
+
 
     local world = self.world
+
+    local time_system = world:getSystem(TimeSystem)
+
+    time_system:update(love_dt)
+
+    -- Spoof DT to be the current time system's dt
+    local dt = time_system:getDt()
 
     --[[ Update scheduled functions ]] 
     world:getSystem(ScheduleSystem):update(dt)
@@ -248,6 +258,9 @@ end
 function PlayScene:draw()
 
     local world = self.world
+
+    -- If we're currently paused, unpause
+    world:getSystem(TimeSystem):go()
 
     love.graphics.setBackgroundColor(Palette.COLOR_BRICK:unpack())
 

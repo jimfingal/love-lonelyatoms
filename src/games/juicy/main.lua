@@ -8,6 +8,8 @@ require 'core.systems.inputsystem'
 require 'core.systems.tweensystem'
 require 'core.systems.menuguisystem'
 require 'core.systems.schedulesystem'
+require 'core.systems.messagesystem'
+require 'core.systems.timesystem'
 
 require 'core.entity.world'
 require 'scenes.playscene'
@@ -66,6 +68,8 @@ function loadSystems(world)
     local message_system = MessageSystem()
     world:setSystem(message_system)
 
+    local time_system = TimeSystem()
+    world:setSystem(time_system)
 
 end
 
