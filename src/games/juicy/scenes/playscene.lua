@@ -21,11 +21,14 @@ require 'core.shapedata'
 require 'collisionbehaviors'
 require 'entitybehaviors'
 require 'entitysets'
+require 'effects'
+require 'settings'
 
 require 'enums.actions'
 require 'enums.assets'
 require 'enums.tags'
 require 'enums.palette'
+
 
 Ball = require 'entityinit.ball'
 Bricks = require 'entityinit.bricks'
@@ -39,6 +42,8 @@ function PlayScene:initialize(name, w)
     Scene.initialize(self, name, w)
 
     local world = self.world
+
+    self.effects = EffectDispatcher(world)
 
     -- [[ Register Inputs ]]
 
@@ -96,6 +101,41 @@ function PlayScene:initialize(name, w)
 
     Walls.init(world)
     Ball.init(world)
+
+    local message_system = world:getSystem(MessageSystem)
+
+    -- Global listener that sets effects
+    local panopticon = em:createEntity('panopticon')
+    world:tagEntity(Tags.PANOPTICON, panopticon)
+
+    local pan_message = Messaging(world:getSystem(MessageSystem))
+    panopticon:addComponent(pan_message)
+
+    pan_message:registerMessageResponse(Events.BALL_COLLISION_PLAYER, function(ball, player)
+
+        EffectDispatcher.cameraShake()
+        EffectDispatcher.allEffects(ball, 2, 1.5)
+        EffectDispatcher.scaleEntity(player, 1.5, 1.3)
+        --EffectDispatcher.rotateJitter(player, 1)
+
+    end)
+
+    pan_message:registerMessageResponse(Events.BALL_COLLISION_BRICK, function(ball, brick)
+
+        EffectDispatcher.cameraShake()
+        EffectDispatcher.allEffects(ball, 2, 1.5)
+
+    end)
+
+    pan_message:registerMessageResponse(Events.BALL_COLLISION_WALL, function(ball, wall)
+        
+        EffectDispatcher.cameraShake()
+        EffectDispatcher.allEffects(ball, 2, 1.5)
+        EffectDispatcher.scaleEntity(wall, 5, 5)
+
+
+    end)
+
   
 end
 
@@ -127,6 +167,17 @@ function PlayScene:reset()
 
     ball_collider:disable()
     ball_rendering:disable()
+
+
+    if Settings.BRICKS_DROPIN then
+        self.effects:dropInBricks()
+    end
+
+    if Settings.PLAYER_DROPIN then
+        self.effects:dropInPlayer()
+    end
+
+
 
 end
 
@@ -197,6 +248,8 @@ end
 function PlayScene:draw()
 
     local world = self.world
+
+    love.graphics.setBackgroundColor(Palette.COLOR_BRICK:unpack())
 
     world:getSystem(RenderingSystem):renderDrawables(entitiesWithDrawability(world))
 

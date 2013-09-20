@@ -7,6 +7,8 @@ Tags.BRICK_GROUP = "bricks"
 Tags.BACKGROUND = "background"
 Tags.BACKGROUND_SOUND = "background_sound"
 
+Tags.PANOPTICON = "panopticon"
+
 Tags.PLAY_GROUP = "playgroup"
 
 Tags.TOP_WALL = "top"

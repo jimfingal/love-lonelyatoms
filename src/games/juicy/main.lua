@@ -63,6 +63,9 @@ function loadSystems(world)
     local schedule_system = ScheduleSystem(world)
     world:setSystem(schedule_system)
 
+    local message_system = MessageSystem()
+    world:setSystem(message_system)
+
 
 end
 

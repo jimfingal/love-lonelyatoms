@@ -5,9 +5,12 @@ require 'core.components.motion'
 Easing = require 'external.easing'
 
 require 'enums.tags'
+require 'enums.events'
 
 
 function collideBallWithPaddle(ball, paddle)
+
+	ball:getComponent(Messaging):emitMessage(Events.BALL_COLLISION_PLAYER, ball, paddle)
 
 	local ball_transform = ball:getComponent(Transform)
     local ball_movement = ball:getComponent(Motion)
@@ -73,6 +76,8 @@ end
 
 function collideBallWithWall(ball, wall)
 
+	ball:getComponent(Messaging):emitMessage(Events.BALL_COLLISION_WALL, ball, wall)
+
 	local ball_transform = ball:getComponent(Transform)
     local ball_movement = ball:getComponent(Motion)
     local ball_collider = ball:getComponent(Collider)
@@ -113,7 +118,8 @@ end
 
 function collideBallWithBrick(ball, brick)
 
-	
+	ball:getComponent(Messaging):emitMessage(Events.BALL_COLLISION_BRICK, ball, brick)
+
 	local ball_position = ball:getComponent(Transform):getPosition()
     local ball_movement = ball:getComponent(Motion)
     local ball_collider = ball:getComponent(Collider)
@@ -130,8 +136,6 @@ function collideBallWithBrick(ball, brick)
 
 	local tween_system = brick:getWorld():getSystem(TweenSystem)
 
-
-
     local sound_component = brick:getComponent(SoundComponent)
 
     local retrieved_sound = sound_component:getSound(Assets.BRICK_SOUND)
@@ -139,9 +143,19 @@ function collideBallWithBrick(ball, brick)
 
 
 	brick_transform:setLayerOrder(brick_transform:getLayerOrder() + 1)
-	tween_system:addTween(1, brick_rendering:getShape(), {width = 0, height = 0}, Easing.linear)
-	tween_system:addTween(1, brick_position, {x = brick_position.x + 100, y = brick_position.y + 300}, Easing.inBack)
-	tween_system:addTween(1, brick_rendering.color, {alpha = 0}, Easing.inCubic)
+	tween_system:addTween(1 + math.random(), brick_transform, {rotation = 8 * math.pi}, Easing.linear)
+	tween_system:addTween(1 + math.random(), brick_rendering:getShape(), {width = 0, height = 0}, Easing.linear)
+	tween_system:addTween(1+ math.random(), brick_rendering.color, {alpha = 0}, Easing.linear)
+
+
+	local normalized_ball_velocity = ball_movement:getVelocity():normalized()
+
+	local brick_target_x = brick_position.x + 300 * normalized_ball_velocity.x
+	local brick_target_y = brick_position.y + 300 * normalized_ball_velocity.y
+
+	tween_system:addTween(1 + math.random(), brick_position, {x = brick_target_x, y =brick_target_y}, Easing.linear)
+
+
 
 
 

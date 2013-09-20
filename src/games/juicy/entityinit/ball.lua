@@ -5,10 +5,11 @@ require 'core.components.motion'
 require 'core.components.behavior'
 require 'core.components.inputresponse'
 require 'core.components.soundcomponent'
-
+require 'core.components.messaging'
+require 'core.systems.messagesystem'
+require 'enums.events'
 require 'enums.tags'
 require 'enums.palette'
-
 
 Ball = {}
 
@@ -23,32 +24,10 @@ function Ball.init(world)
     ball:addComponent(Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
     -- ball:addComponent(Behavior():addUpdateFunction(ballAutoResetOnNonexistence))
     ball:addComponent(InputResponse():addResponse(ballInputResponse))
+    ball:addComponent(Messaging(world:getSystem(MessageSystem)))
 
     world:tagEntity(Tags.BALL, ball)
     world:addEntityToGroup(Tags.PLAY_GROUP, ball)
-
-    local tween_system = world:getSystem(TweenSystem)
-    local schedule_system = world:getSystem(ScheduleSystem)
-
-
-    revertBall = function()
-                    world:getSystem(TweenSystem):addTween(0.1, world:getTaggedEntity(Tags.BALL):getComponent(Transform):getScale(), {x = 1, y = 1 }, Easing.linear, getBallBig)
-                end
-    getBallBig = function()
-            world:getSystem(TweenSystem):addTween(0.1, 
-                world:getTaggedEntity(Tags.BALL):getComponent(Transform):getScale(), 
-                {x = 2, y = 1.5 }, 
-                Easing.inSine, 
-                revertBall)
-    end
-
-    schedule_system:doFor(math.huge, function()
-                    transform = world:getTaggedEntity(Tags.BALL):getComponent(Transform)
-                    transform.rotation = transform.rotation + 3 * love.timer.getDelta()
-                end)
-
-    getBallBig()
-
 
 end 
 

@@ -42,6 +42,10 @@ function Motion:initialize()
 
 end
 
+function Motion:getVelocity()
+	return self.velocity:clone()
+end
+
 function Motion:setVelocity(x, y)
 	self.velocity.x = x
 	self.velocity.y = y

@@ -21,26 +21,15 @@ function Player.init(world)
         player = em:createEntity('player')
     end
 
-    player:addComponent(Transform(350, 200))
-    player:addComponent(ShapeRendering():setColor(Palette.COLOR_PADDLE:unpack()):setShape(RectangleShape:new(50, 20)))
+    player:addComponent(Transform(350, 500))
+    player:addComponent(ShapeRendering():setColor(Palette.COLOR_PADDLE:unpack()):setShape(RectangleShape:new(100, 30)))
     player:addComponent(Collider():setHitbox(RectangleShape:new(100, 30)))
     player:addComponent(Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
     -- player:addComponent(Behavior():addUpdateFunction(playerAI))
     player:addComponent(InputResponse():addResponse(playerInputResponse))
 
-
-    local tween_system = world:getSystem(TweenSystem)
-
-    tween_system:addTween(1 + math.random(), player:getComponent(ShapeRendering):getShape(), {width = 100, height = 30}, Easing.outBounce)
-    tween_system:addTween(1 + math.random(), player:getComponent(Transform):getPosition(), {x = 350, y = 500}, Easing.outBounce)
-
-
-
     world:tagEntity(Tags.PLAYER, player)
     world:addEntityToGroup(Tags.PLAY_GROUP, player)
-
-
-
 
 end 
 

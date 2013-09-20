@@ -99,10 +99,12 @@ function Vector:normalize_inplace()
 	return self
 end
 
---[[
-function vector:normalized()
+function Vector:normalized()
 	return self:clone():normalize_inplace()
 end
+
+--[[
+
 
 function vector:rotate_inplace(phi)
 	local c, s = cos(phi), sin(phi)
