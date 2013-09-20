@@ -2,7 +2,7 @@ require 'external.middleclass'
 require 'core.entity.system'
 require 'core.components.messaging'
 require 'collections.set'
-require 'collections.tally'
+require 'utils.tally'
 
 StatisticsSystem = class('StatisticsSystem', System)
 

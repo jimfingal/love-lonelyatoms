@@ -4,7 +4,7 @@
 
 require 'external.middleclass'
 require 'core.entity.system'
-require 'helpers.mathhelpers'
+require 'utils.mathutils'
 
 
 CameraSystem = class('CameraSystem', System)

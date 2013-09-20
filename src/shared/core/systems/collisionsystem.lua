@@ -2,7 +2,7 @@ require 'external.middleclass'
 require 'core.entity.system'
 require 'core.components.transform'
 require 'core.components.collider'
-require 'helpers.mathhelpers'
+require 'utils.mathutils'
 
 
 CollisionSystem = class('CollisionSystem', System)

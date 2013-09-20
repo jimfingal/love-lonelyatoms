@@ -16,8 +16,6 @@ function Transform:initialize(x, y)
 
 	self.scale = Vector(1, 1)
 
-
-
 end
 
 --[[ Position ]]
