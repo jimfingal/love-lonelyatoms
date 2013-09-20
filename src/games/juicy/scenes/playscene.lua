@@ -126,6 +126,8 @@ function PlayScene:initialize(name, w)
         EffectDispatcher.cameraShake()
         EffectDispatcher.allEffects(ball, 2, 1.5)
         EffectDispatcher.slowMo(0.5)
+        --EffectDispatcher.cameraZoom(brick)
+
 
     end)
 

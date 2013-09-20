@@ -26,7 +26,7 @@ function CameraSystem:attach()
 	love.graphics.scale(self.transform:unpackScale())
 
 	-- Translate
-	love.graphics.translate(-self.transform:getPosition().x, -self.transform:getPosition().y)
+	love.graphics.translate(-self.transform:getPosition().x * self.transform.scale.x, -self.transform:getPosition().y * self.transform.scale.y)
 
 end
 
