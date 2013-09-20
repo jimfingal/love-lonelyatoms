@@ -21,14 +21,14 @@ print('set 3: ' .. tostring(s3))
 
 print('union both ways: ')
 
-print(s2:union(s3))
-print(s3:union(s2))
+print(Set.union(s2, s3))
+print(Set.union(s3, s2))
 
 -- Throw some asserts in here
 
 print('intersection both ways: ')
-print(s2:intersection(s3))
-print(s3:intersection(s2))
+print(Set.intersection(s2, s3))
+print(Set.intersection(s3, s2))
 
 l = List({'a', 'b', 'c', 'a'})
 

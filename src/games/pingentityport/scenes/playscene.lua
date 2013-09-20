@@ -138,13 +138,13 @@ function PlayScene:update(dt)
     world:getSystem(TweenSystem):update(dt)
 
     --[[ Update input ]]
-    world:getSystem(InputSystem):processInputResponses(play_scene_items:intersection(entitiesRespondingToInput(world)), dt)
+    world:getSystem(InputSystem):processInputResponses(Set.intersection(play_scene_items, entitiesRespondingToInput(world)), dt)
     
     --[[ Update behaviors ]]
-    world:getSystem(BehaviorSystem):processBehaviors(play_scene_items:intersection(entitiesWithBehavior(world)), dt) 
+    world:getSystem(BehaviorSystem):processBehaviors(Set.intersection(play_scene_items, entitiesWithBehavior(world)), dt) 
 
     --[[ Update movement ]]
-    world:getSystem(MovementSystem):updateMovables(play_scene_items:intersection(entitiesWithMovement(world)), dt)
+    world:getSystem(MovementSystem):updateMovables(Set.intersection(play_scene_items, entitiesWithMovement(world)), dt)
 
     --[[ Handle collisions ]]
 
@@ -191,7 +191,7 @@ function PlayScene:draw()
 
     local play_scene_items = world:getEntitiesInGroup(Tags.PLAY_GROUP)
 
-    world:getSystem(RenderingSystem):renderDrawables(play_scene_items:intersection(entitiesWithDrawability(world)))
+    world:getSystem(RenderingSystem):renderDrawables(Set.intersection(play_scene_items, entitiesWithDrawability(world)))
 
     local debugstart = 400
 

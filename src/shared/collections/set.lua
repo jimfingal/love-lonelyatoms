@@ -12,6 +12,15 @@ function Set:initialize(list)
 	end
 end
 
+-- Clones the set, but not the members within
+function Set:clone()
+	local clone = Set()
+	for member in self:members() do
+		clone:add(member)
+	end
+	return clone
+end
+
 function Set:add(element)
 	self.set[element] = true
 end
@@ -38,20 +47,21 @@ function Set:members()
 	return pairs(self.set)
 end
 
-function Set:union(b)
+
+function Set.union(a, b)
     local union = Set()
 
-    for k in self:members() do union:add(k) end    
+    for k in a:members() do union:add(k) end    
     for k in b:members() do union:add(k) end
         
     return union
  end
     
-function Set:intersection(b)
+function Set.intersection(a, b)
 
 	local intersection = Set()
   	
-  	for k in self:members() do
+  	for k in a:members() do
   		intersection.set[k] = b.set[k]
     end
     

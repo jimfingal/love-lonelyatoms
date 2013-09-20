@@ -213,7 +213,7 @@ function EntityManager:getAllEntitiesContainingComponents(first, ...)
 
 			local other_entities = self:getAllEntitiesContainingComponent(class)
 
-			entities = entities:intersection(other_entities)
+			entities = Set.intersection(entities, other_entities)
 
 			if entities:size() == 0 then
 				return entities
