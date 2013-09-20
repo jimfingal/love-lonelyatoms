@@ -1,24 +1,21 @@
 require 'external.middleclass'
-require 'collections.set'
+require 'collections.multimap'
 
 GroupManager = class('GroupManager')
 
 function GroupManager:initialize(world)
 
-        self.entities_by_group = {}
-        self.groups_by_entity = {}
-
+        self.entities_by_group = MultiMap()
+        self.groups_by_entity = MultiMap()
         self.world = world
 end
 
 function GroupManager:removeEntityFromGroup(group, entity)
 
-	local entities = self:getEntitiesInGroup(group)
-	entities:remove(entity)
+	self.entities_by_group:remove(group, entity)
+	self.groups_by_entity:remove(entity, group)
 
-	local groups = self:getGroupsContainingEntity(entity)
-	groups:remove(group)
-
+	return self
 end
 
 function GroupManager:addEntityToGroup(group, entity)
@@ -26,50 +23,26 @@ function GroupManager:addEntityToGroup(group, entity)
 	assert(group, "Must have a group parameter")
 	assert(entity, "Must have an entity parameter")
 
-	-- Put entity into group, initializing set if needed
-	local entities = self:getEntitiesInGroup(group)
+	self.entities_by_group:put(group, entity)
+	self.groups_by_entity:put(entity, group)
 
-	if entities:size() == 0 then
-		self.entities_by_group[group] = entities
-	end
-
-	entities:add(entity)
-
-	-- Put entity into group, initializing set if needed
-
-	local groups = self:getGroupsContainingEntity(entity)
-
-	if groups:size() == 0 then
-		self.groups_by_entity[entity] = groups
-	end
-
-	groups:add(group)
-
+	return self
 end
 
 
 function GroupManager:getEntitiesInGroup(group)
 	
 	assert(group, "Must have a group parameter")
-
-	-- return self.entities_by_group[group]
-
-	if self.entities_by_group[group] then
-		return self.entities_by_group[group]
-	else
-		return Set:new()		
-	end
-
+	return self.entities_by_group:get(group)
+	
 end
 
 function GroupManager:getGroupsContainingEntity(entity)
 
 	assert(entity, "Must have an entity parameter")
+	return self.groups_by_entity:get(entity)
+end
 
-	if self.groups_by_entity[entity] then
-		return self.groups_by_entity[entity]
-	else
-		return Set:new()
-	end
-
+function GroupManager:__tostring()
+	return "GROUP MANAGER: [Entities by group: " .. tostring(self.entities_by_group) .. "; Groups by Entity: " .. tostring(self.groups_by_entity) .. "]"
 end

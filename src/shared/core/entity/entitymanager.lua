@@ -1,6 +1,7 @@
 
 require 'external.middleclass'
 require 'collections.set'
+require 'collections.multimap'
 require 'core.entity.metaentity'
 
 
@@ -204,7 +205,7 @@ function EntityManager:getAllEntitiesContainingComponents(first, ...)
 
 	else
 
-		local entities = self:getAllEntitiesContainingComponent(first)
+		entities = self:getAllEntitiesContainingComponent(first)
 
 		-- Continually narrow down to do intersection. If we get to the point of
 		-- No overlap, return empty set.
@@ -224,7 +225,6 @@ function EntityManager:getAllEntitiesContainingComponents(first, ...)
 	end
 
 	return entities
-
 
 end
 

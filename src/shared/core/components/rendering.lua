@@ -78,6 +78,9 @@ function ShapeRendering:getFillMode()
 end
 
 
+function ShapeRendering:__tostring()
+	return "Component: Shape Rendering :: " .. tostring(self:getShape()) -- TOOD more
+end
 
 --[[ Text ]]
 
@@ -128,6 +131,10 @@ end
 
 function TextRendering:getFont()
 	return self.font
+end
+
+function TextRendering:__tostring()
+	return "Component: Text Rendering :: " .. self:getText() -- TOOD more
 end
 
 

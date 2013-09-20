@@ -66,7 +66,7 @@ function MenuScene:update(dt)
     local world = self.world
 
     local menu_scene_items = world:getEntitiesInGroup(Tags.MENU_GROUP)
- 
+
     --[[ Update input ]]
     world:getSystem(InputSystem):processInputResponses(Set.intersection(menu_scene_items, entitiesRespondingToInput(world)), dt)
 
@@ -79,8 +79,12 @@ function MenuScene:draw()
     local world = self.world
 
     local menu_scene_items = world:getEntitiesInGroup(Tags.MENU_GROUP)
+    local drawable_items = entitiesWithDrawability(world)
+    
+    local menu_drawables = Set.intersection(menu_scene_items, drawable_items)
 
-    world:getSystem(RenderingSystem):renderDrawables(Set.intersection(menu_scene_items, entitiesWithDrawability(world)))
+
+    world:getSystem(RenderingSystem):renderDrawables(menu_drawables)
 
    -- [[ TODO: hack, should be a renderable ]]
 

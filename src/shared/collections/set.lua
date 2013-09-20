@@ -40,7 +40,11 @@ function Set:contains(element)
 end
 
 function Set:size()
-	return #self.set
+	local count = 0
+	for member in self:members() do
+		count = count + 1
+	end
+	return count
 end
 
 function Set:members()
@@ -49,6 +53,10 @@ end
 
 
 function Set.union(a, b)
+
+	if not a then return b end
+	if not b then return a end
+
     local union = Set()
 
     for k in a:members() do union:add(k) end    
@@ -57,11 +65,13 @@ function Set.union(a, b)
     return union
  end
     
-function Set.intersection(a, b)
+function Set:intersection(b)
 
 	local intersection = Set()
-  	
-  	for k in a:members() do
+
+	if (not b) then return intersection end
+
+  	for k in self:members() do
   		intersection.set[k] = b.set[k]
     end
     
