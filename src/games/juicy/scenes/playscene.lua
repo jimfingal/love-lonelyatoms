@@ -114,6 +114,12 @@ function PlayScene:initialize(name, w)
 
     pan_message:registerMessageResponse(Events.BALL_COLLISION_PLAYER, function(ball, player)
 
+        local statistics_system = world:getSystem(StatisticsSystem)
+        local time_system = world:getSystem(TimeSystem)
+
+        statistics_system:addToEventTally(Events.BALL_COLLISION_PLAYER)
+        statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_PLAYER, time_system:getTime())
+
         EffectDispatcher.cameraShake()
         EffectDispatcher.allEffects(ball, 2, 1.5)
         EffectDispatcher.scaleEntity(player, 1.5, 1.3)
@@ -123,16 +129,30 @@ function PlayScene:initialize(name, w)
 
     pan_message:registerMessageResponse(Events.BALL_COLLISION_BRICK, function(ball, brick)
 
+
+        local statistics_system = world:getSystem(StatisticsSystem)
+        local time_system = world:getSystem(TimeSystem)
+
+        statistics_system:addToEventTally(Events.BALL_COLLISION_BRICK)
+        EffectDispatcher.playBrickSoundWithAdjustedPitch(brick, statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_BRICK, time_system:getTime()))
+        statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_BRICK, time_system:getTime())
+
+        EffectDispatcher.dispatchBrick(ball, brick)
         EffectDispatcher.cameraShake()
         EffectDispatcher.allEffects(ball, 2, 1.5)
-        EffectDispatcher.slowMo(0.5)
+        --EffectDispatcher.slowMo(0.5)
         --EffectDispatcher.cameraZoom(brick)
-
 
     end)
 
     pan_message:registerMessageResponse(Events.BALL_COLLISION_WALL, function(ball, wall)
         
+        local statistics_system = world:getSystem(StatisticsSystem)
+        local time_system = world:getSystem(TimeSystem)
+
+        statistics_system:addToEventTally(Events.BALL_COLLISION_WALL)
+        statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_WALL, time_system:getTime())
+
         EffectDispatcher.cameraShake()
         EffectDispatcher.allEffects(ball, 2, 1.5)
         EffectDispatcher.scaleEntity(wall, 5, 5)
@@ -268,7 +288,7 @@ function PlayScene:draw()
 
     world:getSystem(RenderingSystem):renderDrawables(entitiesWithDrawability(world))
 
-    local debugstart = 400
+    local debugstart = 50
 
     if DEBUG then
 
@@ -282,6 +302,20 @@ function PlayScene:draw()
         love.graphics.print("Player x: " .. player_transform.position.x, 50, debugstart + 80)
         love.graphics.print("Player y: " .. player_transform.position.y, 50, debugstart + 100)
         love.graphics.print("FPS: " .. love.timer.getFPS(), 50, debugstart + 120)
+
+        local statistics_system = world:getSystem(StatisticsSystem)
+        local timer_system = world:getSystem(TimeSystem)
+
+
+        love.graphics.print("Number of times ball hit player: " .. statistics_system:getEventTally(Events.BALL_COLLISION_PLAYER), 50, debugstart + 140)
+        love.graphics.print("Number of times ball hit wall: " .. statistics_system:getEventTally(Events.BALL_COLLISION_WALL), 50, debugstart + 160)
+        love.graphics.print("Number of times ball hit brick: " .. statistics_system:getEventTally(Events.BALL_COLLISION_BRICK), 50, debugstart + 180)
+
+        love.graphics.print("Time since ball hit player: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_PLAYER, timer_system:getTime()), 50, debugstart + 200)
+        love.graphics.print("Time since ball hit wall: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_WALL, timer_system:getTime()), 50, debugstart + 220)
+        love.graphics.print("Time since ball hit brick: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_BRICK, timer_system:getTime()), 50, debugstart + 240)
+
+
 
     end
 

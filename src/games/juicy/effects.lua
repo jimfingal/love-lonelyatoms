@@ -212,6 +212,58 @@ function EffectDispatcher.slowMo(length)
 
 end
 
+
+function EffectDispatcher.dispatchBrick(ball, brick)
+
+    local ball_position = ball:getComponent(Transform):getPosition()
+    local ball_movement = ball:getComponent(Motion)
+    local ball_collider = ball:getComponent(Collider)
+    local ball_rendering = ball:getComponent(ShapeRendering)
+
+    local brick_transform = brick:getComponent(Transform)
+    local brick_position = brick:getComponent(Transform):getPosition()
+    local brick_collider = brick:getComponent(Collider)
+    local brick_rendering = brick:getComponent(ShapeRendering)
+
+    brick_collider:disable()
+    
+    -- death animation
+
+    local tween_system = brick:getWorld():getSystem(TweenSystem)
+
+    brick_transform:setLayerOrder(brick_transform:getLayerOrder() + 1)
+    tween_system:addTween(1 + math.random(), brick_transform, {rotation = 8 * math.pi}, Easing.linear)
+    tween_system:addTween(1 + math.random(), brick_rendering:getShape(), {width = 0, height = 0}, Easing.linear)
+    tween_system:addTween(1+ math.random(), brick_rendering.color, {alpha = 0}, Easing.linear)
+
+
+    local normalized_ball_velocity = ball_movement:getVelocity():normalized()
+
+    local brick_target_x = brick_position.x + 300 * normalized_ball_velocity.x
+    local brick_target_y = brick_position.y + 300 * normalized_ball_velocity.y
+
+    tween_system:addTween(1 + math.random(), brick_position, {x = brick_target_x, y =brick_target_y}, Easing.linear)
+
+
+end
+
+function EffectDispatcher.playBrickSoundWithAdjustedPitch(brick, dt)
+
+    local sound_component = brick:getComponent(SoundComponent)
+    local retrieved_sound = sound_component:getSound(Assets.BRICK_SOUND)
+
+    if dt < 0.5 then
+        local current_pitch = retrieved_sound:getPitch()
+        retrieved_sound:setPitch(current_pitch + (1/8))
+    else
+        retrieved_sound:setPitch(1.0)
+    end
+
+    love.audio.play(retrieved_sound)
+end
+
+
+
 --[[
 function EffectDispatcher.cameraZoom(entity)
 
@@ -240,38 +292,5 @@ function EffectDispatcher.cameraZoom(entity)
 end
 ]]
 
-
-
-
---[[
-    -- [ [ Player effects ]
-
-    -- [ [ Brick Effects]
-
-
- 
-    -- [ [ Ball Effects ]
-  local tween_system = world:getSystem(TweenSystem)
-    local schedule_system = world:getSystem(ScheduleSystem)
-
-
-    revertBall = function()
-                    world:getSystem(TweenSystem):addTween(0.1, world:getTaggedEntity(Tags.BALL):getComponent(Transform):getScale(), {x = 1, y = 1 }, Easing.linear, getBallBig)
-                end
-    getBallBig = function()
-            world:getSystem(TweenSystem):addTween(0.1, 
-                world:getTaggedEntity(Tags.BALL):getComponent(Transform):getScale(), 
-                {x = 2, y = 1.5 }, 
-                Easing.inSine, 
-                revertBall)
-    end
-
-    schedule_system:doFor(math.huge, function()
-                    transform = world:getTaggedEntity(Tags.BALL):getComponent(Transform)
-                    transform.rotation = transform.rotation + 3 * love.timer.getDelta()
-                end)
-
-    getBallBig()
---]]
 
 return EffectDispatcher

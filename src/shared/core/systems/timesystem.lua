@@ -27,7 +27,11 @@ function TimeSystem:update(dt)
 end
 
 function TimeSystem:getDt()
-	return self.dt
+	return self.dt + 0
+end
+
+function TimeSystem:getTime()
+	return self.time + 0
 end
 
 function TimeSystem:stop()

@@ -10,6 +10,7 @@ require 'core.systems.menuguisystem'
 require 'core.systems.schedulesystem'
 require 'core.systems.messagesystem'
 require 'core.systems.timesystem'
+require 'core.systems.statisticssystem'
 
 require 'core.entity.world'
 require 'scenes.playscene'
@@ -70,6 +71,9 @@ function loadSystems(world)
 
     local time_system = TimeSystem()
     world:setSystem(time_system)
+
+    local statistics_system = StatisticsSystem()
+    world:setSystem(statistics_system)
 
 end
 
