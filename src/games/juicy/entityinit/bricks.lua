@@ -26,7 +26,7 @@ function Bricks.init(world)
     end
 
 
-    local brick_snd = "brick.mp3"
+    local brick_snd = "brick.wav"
 
     asset_manager:loadSound(Assets.BRICK_SOUND, brick_snd)
 

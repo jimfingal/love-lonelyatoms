@@ -41,6 +41,7 @@ function GroupManager:getGroupsContainingEntity(entity)
 
 	assert(entity, "Must have an entity parameter")
 	return self.groups_by_entity:get(entity)
+	
 end
 
 function GroupManager:__tostring()

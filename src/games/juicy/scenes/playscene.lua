@@ -85,7 +85,7 @@ function PlayScene:initialize(name, w)
 
     --[[ Background sound ]]
     local asset_manager = world:getAssetManager()
-    local bsnd = "background.mp3"
+    local bsnd = "You_Kill_My_Brother_-_07_-_Micro_Invasion_-_You_Kill_My_Brother_-_Go_Go_Go.mp3"
 
     local this_sound = asset_manager:loadSound(Assets.BACKGROUND_SOUND, bsnd)
     this_sound:setVolume(0.25)
