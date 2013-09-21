@@ -10,3 +10,28 @@ function EmissionSystem:initialize(world)
 	self.world = world
 
 end
+
+
+function EmissionSystem:updateEmitters(entities)
+
+	for entity in entities:members() do
+
+		local emitter = entity:getComponent(Emitter)
+
+		if emitter:isActive() and emitter:isReady() then
+
+			self:processEmission(emitter)
+
+		end
+
+	end
+
+end
+
+
+function EmissionSystem:processEmission(emitter)
+
+	local this_guy = emitter:emit()
+	emitter:makeUnready()
+
+end

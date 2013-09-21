@@ -80,6 +80,7 @@ function Pool:getObject()
 		self.used_objects:add(this_object)
 
 		self.used_count = 	self.used_count + 1
+
 		return this_object
 
 	-- Return nil if we've reached our limit and none to recycle
