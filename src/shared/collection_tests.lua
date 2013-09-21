@@ -1,7 +1,6 @@
 require 'collections.set'
 require 'collections.list'
 require 'collections.multimap'
-require 'collections.tally'
 
 
 function settest() 
