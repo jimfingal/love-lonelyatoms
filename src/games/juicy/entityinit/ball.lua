@@ -33,8 +33,8 @@ function BallInitializer:createEntity()
     self.entity:addComponent(InputResponse():addResponse(ballInputResponse))
     self.entity:addComponent(Messaging(world:getSystem(MessageSystem)))
 
-    self:addSelfToGroup(Tags.PLAY_GROUP)
-    self:tagSelf(Tags.BALL)
+    self.entity:addToGroup(Tags.PLAY_GROUP)
+    self.entity:tag(Tags.BALL)
 
     local ball_behavior = Behavior()
     ball_behavior:addUpdateFunction(constrainEntityToWorld)

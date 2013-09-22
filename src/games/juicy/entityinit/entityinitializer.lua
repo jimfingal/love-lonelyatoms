@@ -11,15 +11,3 @@ function EntityInitializer:initialize(world, name)
     self.entity = em:createEntity(name)
 
 end
-
-function EntityInitializer:addSelfToGroup(group)
-
-	self.world:addEntityToGroup(group, self.entity)
-
-end
-
-function EntityInitializer:tagSelf(tag)
-
-    self.world:tagEntity(tag, self.entity)
-
-end

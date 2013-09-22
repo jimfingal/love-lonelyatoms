@@ -1,14 +1,6 @@
 require 'external.middleclass'
 require 'core.scene'
 require 'collections.set'
-require 'core.systems.renderingsystem'
-require 'core.systems.collisionsystem'
-require 'core.systems.movementsystem'
-require 'core.systems.behaviorsystem'
-require 'core.systems.camerasystem'
-require 'core.systems.tweensystem'
-require 'core.systems.schedulesystem'
-require 'core.systems.timesystem'
 require 'core.entity.world'
 require 'core.components.transform'
 require 'core.components.rendering'
@@ -125,8 +117,8 @@ local createGlobalEventListener = function(world)
 
     pan_message:registerMessageResponse(Events.BALL_COLLISION_PLAYER, function(ball, player)
 
-        local statistics_system = world:getSystem(StatisticsSystem)
-        local time_system = world:getSystem(TimeSystem)
+        local statistics_system = world:getStatisticsSystem()
+        local time_system = world:getTimeSystem()
 
         statistics_system:addToEventTally(Events.BALL_COLLISION_PLAYER)
         statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_PLAYER, time_system:getTime())
@@ -141,8 +133,8 @@ local createGlobalEventListener = function(world)
     pan_message:registerMessageResponse(Events.BALL_COLLISION_BRICK, function(ball, brick)
 
 
-        local statistics_system = world:getSystem(StatisticsSystem)
-        local time_system = world:getSystem(TimeSystem)
+        local statistics_system = world:getStatisticsSystem()
+        local time_system = world:getTimeSystem()
 
         statistics_system:addToEventTally(Events.BALL_COLLISION_BRICK)
         EffectDispatcher.playBrickSoundWithAdjustedPitch(brick, statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_BRICK, time_system:getTime()))
@@ -158,8 +150,8 @@ local createGlobalEventListener = function(world)
 
     pan_message:registerMessageResponse(Events.BALL_COLLISION_WALL, function(ball, wall)
         
-        local statistics_system = world:getSystem(StatisticsSystem)
-        local time_system = world:getSystem(TimeSystem)
+        local statistics_system = world:getStatisticsSystem()
+        local time_system = world:getTimeSystem()
 
         statistics_system:addToEventTally(Events.BALL_COLLISION_WALL)
         statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_WALL, time_system:getTime())
@@ -204,7 +196,7 @@ function PlayScene:reset()
 
     local world = self.world
 
-    world:getSystem(TimeSystem):stop()
+    world:getTimeSystem():stop()
 
     Bricks.init(world)
     Player.init(world)
@@ -241,34 +233,33 @@ end
 
 function PlayScene:update(love_dt)
 
-
-    local world = self.world
-
-    local time_system = world:getSystem(TimeSystem)
+    -- Update time system
+    local time_system = world:getTimeSystem()
 
     time_system:update(love_dt)
 
     -- Spoof DT to be the current time system's dt
     local dt = time_system:getDt()
 
-    --[[ Update scheduled functions ]] 
-    world:getSystem(ScheduleSystem):update(dt)
+    -- Update scheduled functions
+    self.world:getScheduleSystem():update(dt)
 
-    --[[ Update tweens ]] 
-    world:getSystem(TweenSystem):update(dt)
+    -- Update tweens 
+    self.world:getTweenSystem():update(dt)
 
-    --[[ Update input ]]
-   world:getInputSystem():processInputResponses(entitiesRespondingToInput(world), dt)
+    -- Update input
+    self.world:getInputSystem():processInputResponses(entitiesRespondingToInput(world), dt)
     
-    --[[ Update behaviors ]]
-    world:getSystem(BehaviorSystem):processBehaviors(entitiesWithBehavior(world), dt) 
+    -- Update behaviors
+    self.world:getBehaviorSystem():processBehaviors(entitiesWithBehavior(world), dt) 
 
-    --[[ Update movement ]]
-    world:getSystem(MovementSystem):updateMovables(entitiesWithMovement(world), dt)
+    -- Update movement 
+
+    self.world:getMovementSystem():updateMovables(entitiesWithMovement(world), dt)
 
     --[[ Handle collisions ]]
 
-    local collision_system = world:getSystem(CollisionSystem)
+    local collision_system = self.world:getCollisionSystem()
 
     local collisions = collision_system:getCollisions()
 
@@ -307,14 +298,12 @@ end
 
 function PlayScene:draw()
 
-    local world = self.world
-
     -- If we're currently paused, unpause
-    world:getSystem(TimeSystem):go()
+    self.world:getTimeSystem():go()
 
     love.graphics.setBackgroundColor(Palette.COLOR_BRICK:unpack())
 
-    world:getSystem(RenderingSystem):renderDrawables(entitiesWithDrawability(world))
+    self.world:getRenderingSystem():renderDrawables(entitiesWithDrawability(world))
 
     local debugstart = 50
 
@@ -331,8 +320,8 @@ function PlayScene:draw()
         love.graphics.print("Player y: " .. player_transform.position.y, 50, debugstart + 100)
         love.graphics.print("FPS: " .. love.timer.getFPS(), 50, debugstart + 120)
 
-        local statistics_system = world:getSystem(StatisticsSystem)
-        local timer_system = world:getSystem(TimeSystem)
+        local statistics_system = world:getStatisticsSystem()
+        local timer_system = world:getTimeSystem()
 
 
         love.graphics.print("Number of times ball hit player: " .. statistics_system:getEventTally(Events.BALL_COLLISION_PLAYER), 50, debugstart + 140)

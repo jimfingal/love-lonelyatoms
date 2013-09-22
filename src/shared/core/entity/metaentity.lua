@@ -59,6 +59,15 @@ function MetaEntity:removeAllComponents()
 	return self
 end
 
+function MetaEntity:addToGroup(group)
+	self.world:addEntityToGroup(group, self)
+end
+
+function MetaEntity:tag(tag)
+    self.world:tagEntity(tag, self)
+end
+
+
 function MetaEntity:kill()
 	self.world:killEntity(self)
 end

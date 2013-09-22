@@ -4,6 +4,14 @@ require 'core.managers.groupmanager'
 require 'core.managers.tagmanager'
 require 'core.managers.scenemanager'
 require 'core.managers.assetmanager'
+require 'core.systems.schedulesystem'
+require 'core.systems.renderingsystem'
+require 'core.systems.collisionsystem'
+require 'core.systems.movementsystem'
+require 'core.systems.behaviorsystem'
+require 'core.systems.camerasystem'
+require 'core.systems.tweensystem'
+require 'core.systems.timesystem'
 require 'core.systems.inputsystem'
 
 
@@ -88,9 +96,41 @@ function World:killEntity(entity)
 end
 
 
--- System Getters
+-- Convenience System Getters. To reduce amount of code that loads,
+-- can comment these and includes above out, and use generic getter above.
 
 function World:getInputSystem()
 	return self:getSystem(InputSystem)
 end
 
+function World:getScheduleSystem()
+	return self:getSystem(ScheduleSystem)
+end
+
+function World:getTimeSystem()
+	return self:getSystem(TimeSystem)
+end
+
+function World:getStatisticsSystem()
+	return self:getSystem(StatisticsSystem)
+end
+
+function World:getRenderingSystem()
+	return self:getSystem(RenderingSystem)
+end
+
+function World:getTweenSystem()
+	return self:getSystem(TweenSystem)
+end
+
+function World:getBehaviorSystem()
+	return self:getSystem(BehaviorSystem)
+end
+
+function World:getCollisionSystem()
+	return self:getSystem(CollisionSystem)
+end
+
+function World:getMovementSystem()
+	return self:getSystem(MovementSystem)
+end
