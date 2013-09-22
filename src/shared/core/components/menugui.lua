@@ -1,6 +1,7 @@
 require 'external.middleclass'
 require 'collections.list'
 require 'core.color'
+require 'core.entity.component'
 
 
 

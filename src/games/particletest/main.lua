@@ -29,7 +29,7 @@ require 'core.shapedata'
 require 'core.entity.world'
 require 'external.slam'
 
-DEBUG = true
+DEBUG = false
 
 function love.load()
  

@@ -19,6 +19,7 @@ function love.load()
  
     world = World()
 
+    -- Load Fonts and Globally Used Assets
     loadAssets(world)
     loadSystems(world)
     loadScenes(world)
@@ -27,7 +28,7 @@ end
 
 function loadAssets(world)
 
-    ps2p = "PressStart2P.ttf"
+    local ps2p = "PressStart2P.ttf"
     
     local asset_manager = world:getAssetManager()
     asset_manager:loadFont(Assets.FONT_LARGE, ps2p, 30)

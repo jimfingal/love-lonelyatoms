@@ -6,7 +6,6 @@ require 'core.systems.collisionsystem'
 require 'core.systems.movementsystem'
 require 'core.systems.behaviorsystem'
 require 'core.systems.camerasystem'
-require 'core.systems.inputsystem'
 require 'core.systems.tweensystem'
 require 'core.systems.schedulesystem'
 require 'core.systems.timesystem'
@@ -19,17 +18,15 @@ require 'core.components.behavior'
 require 'core.components.inputresponse'
 require 'core.components.soundcomponent'
 require 'core.shapedata'
-require 'collisionbehaviors'
-require 'entitybehaviors'
+require 'behaviors.collisionbehaviors'
 require 'entitysets'
-require 'effects'
+require 'behaviors.effects'
 require 'settings'
 
 require 'enums.actions'
 require 'enums.assets'
 require 'enums.tags'
 require 'enums.palette'
-
 
 Ball = require 'entityinit.ball'
 Bricks = require 'entityinit.bricks'
@@ -38,36 +35,39 @@ Walls = require 'entityinit.walls'
 
 PlayScene = class('Play', Scene)
 
-function PlayScene:initialize(name, w)
+local registerGlobalInputs = function (world)
 
-    Scene.initialize(self, name, w)
+    local em = world:getEntityManager()
+    local input_system = world:getInputSystem()
 
-    local world = self.world
-
-    self.effects = EffectDispatcher(world)
-
-    -- [[ Register Inputs ]]
-
-    local input_system = world:getSystem(InputSystem)
-
-    input_system:registerInput('right', Actions.PLAYER_RIGHT)
-    input_system:registerInput('left', Actions.PLAYER_LEFT)
-    input_system:registerInput('a', Actions.PLAYER_LEFT)
-    input_system:registerInput('d', Actions.PLAYER_RIGHT)
-    input_system:registerInput(' ', Actions.RESET_BALL)
     input_system:registerInput('escape', Actions.RESET_BOARD)
     input_system:registerInput('q', Actions.QUIT_GAME)
 
+    local globalInputResponse = function(entity, held_actions, pressed_actions, dt)
+
+        -- Reset the Board
+        if pressed_actions[Actions.RESET_BOARD] then
+            entity:getWorld():getSceneManager():changeScene(Scenes.PLAY)
+        end
+
+        -- Quit
+        if pressed_actions[Actions.QUIT_GAME] then
+            love.event.push("quit")
+        end
+
+    end
+
+    local global_input_responder = em:createEntity('globalinputresponse')
+    global_input_responder:addComponent(InputResponse():addResponse(globalInputResponse))
+    world:addEntityToGroup(Tags.PLAY_GROUP, global_input_responder)
+
+
+end
+
+local createBackgroundImage = function (world)
+
 
     local em = world:getEntityManager()
-
-    --[[ Script dealing with special input ]]
-
-    local ir = em:createEntity('globalinputresponse')
-    ir:addComponent(InputResponse():addResponse(globalInputResponse))
-    world:addEntityToGroup(Tags.PLAY_GROUP, ir)
-
-    --[[ Background Image ]]
 
     local play_background = em:createEntity('play_background')
     play_background:addComponent(Transform(0, 0):setLayerOrder(10))
@@ -76,14 +76,12 @@ function PlayScene:initialize(name, w)
     world:addEntityToGroup(Tags.PLAY_GROUP, play_background)
 
 
-    --[[ Script constraining things to world in case they go too fast]]
+end
 
-    local world_constrainer = em:createEntity('world_constrainer')
-    world_constrainer:addComponent(Behavior():addUpdateFunction(constrainActorsToWorld))
-    world:addEntityToGroup(Tags.PLAY_GROUP, world_constrainer)
+local loadBackgroundSound = function (world)
 
+    local em = world:getEntityManager()
 
-    --[[ Background sound ]]
     local asset_manager = world:getAssetManager()
     local bsnd = "You_Kill_My_Brother_-_07_-_Micro_Invasion_-_You_Kill_My_Brother_-_Go_Go_Go.mp3"
 
@@ -97,12 +95,25 @@ function PlayScene:initialize(name, w)
     world:tagEntity(Tags.BACKGROUND_SOUND, background_sound_entity)
     world:addEntityToGroup(Tags.PLAY_GROUP, background_sound_entity)
 
+end
 
-    --[[ Initialize complicated entities ]]
 
-    Walls.init(world)
-    Ball.init(world)
+local resetCollisionSystem = function(world)
 
+    local collision_system = world:getSystem(CollisionSystem)
+
+    collision_system:reset()
+
+    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.BRICK_GROUP))
+    collision_system:watchCollision(world:getTaggedEntity(Tags.PLAYER), world:getEntitiesInGroup(Tags.WALL_GROUP))
+    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getTaggedEntity(Tags.PLAYER))
+    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.WALL_GROUP))
+
+end
+
+local createGlobalEventListener = function(world)
+
+    local em = world:getEntityManager()
     local message_system = world:getSystem(MessageSystem)
 
     -- Global listener that sets effects
@@ -159,6 +170,30 @@ function PlayScene:initialize(name, w)
 
 
     end)
+end
+
+function PlayScene:initialize(name, w)
+
+    Scene.initialize(self, name, w)
+
+    local world = self.world
+
+    self.effects = EffectDispatcher(world)
+
+    registerGlobalInputs(world)
+
+    createBackgroundImage(world)
+
+    loadBackgroundSound(world)
+
+    -- Initialize complicated entities
+
+    Walls.init(world)
+
+    local ball = BallInitializer(world)
+    ball:createEntity()
+
+    createGlobalEventListener(world)
 
   
 end
@@ -174,14 +209,7 @@ function PlayScene:reset()
     Bricks.init(world)
     Player.init(world)
 
-    local collision_system = world:getSystem(CollisionSystem)
-
-    collision_system:reset()
-
-    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.BRICK_GROUP))
-    collision_system:watchCollision(world:getTaggedEntity(Tags.PLAYER), world:getEntitiesInGroup(Tags.WALL_GROUP))
-    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getTaggedEntity(Tags.PLAYER))
-    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.WALL_GROUP))
+    resetCollisionSystem(world)
 
     local sound_component =  world:getTaggedEntity(Tags.BACKGROUND_SOUND):getComponent(SoundComponent)
     local retrieved_sound = sound_component:getSound(Assets.BACKGROUND_SOUND)
@@ -230,7 +258,7 @@ function PlayScene:update(love_dt)
     world:getSystem(TweenSystem):update(dt)
 
     --[[ Update input ]]
-    world:getSystem(InputSystem):processInputResponses(entitiesRespondingToInput(world), dt)
+   world:getInputSystem():processInputResponses(entitiesRespondingToInput(world), dt)
     
     --[[ Update behaviors ]]
     world:getSystem(BehaviorSystem):processBehaviors(entitiesWithBehavior(world), dt) 
@@ -290,7 +318,7 @@ function PlayScene:draw()
 
     local debugstart = 50
 
-    if DEBUG then
+    if Settings.DEBUG then
 
         local player_transform =  world:getTaggedEntity(Tags.PLAYER):getComponent(Transform)
         local ball_transform = world:getTaggedEntity(Tags.BALL):getComponent(Transform)
@@ -321,3 +349,5 @@ function PlayScene:draw()
 
 
 end
+
+

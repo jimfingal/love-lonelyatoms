@@ -1,29 +1,12 @@
-
+-- Enumerated actions that the user can take.
+-- Depending on the context, these actions are mapped to different user inputs.
 
 Actions = {}
 
 Actions.PLAYER_LEFT = "left"
 Actions.PLAYER_RIGHT = "right" 
-
-Actions.RESET_BALL = "reset"
-
-Actions.SKIP_SPLASH = "skip"
-
 Actions.QUIT_GAME = "quit"
-Actions.RESET_BOARD = "escape"
-
-
-Actions.CAMERA_LEFT = "cleft"
-Actions.CAMERA_RIGHT = "cright" 
-Actions.CAMERA_UP = "cup" 
-Actions.CAMERA_DOWN = "cdown" 
-Actions.CAMERA_SCALE_UP = "cscaleup"
-Actions.CAMERA_SCALE_DOWN = "cscaledown"
-
-
-Actions.MENU_UP = "up"
-Actions.MENU_DOWN = "down"
-Actions.MENU_SELECT = "select"
-
+Actions.RESET_BALL = "reset_ball"
+Actions.RESET_BOARD = "reset_board"
 
 return Actions

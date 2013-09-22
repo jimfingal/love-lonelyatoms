@@ -9,6 +9,7 @@
 
 require 'external.middleclass'
 require 'collections.list'
+require 'core.entity.component'
 
 Animation = class("Animation", Component)
 

@@ -1,3 +1,4 @@
+-- Enumerated names for the scenes in our game
 
 Scenes = {}
 

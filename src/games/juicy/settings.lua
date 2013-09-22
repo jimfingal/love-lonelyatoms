@@ -1,5 +1,8 @@
 
+-- Global Settings, for turning particular things on and off
 Settings = {}
+
+Settings.DEBUG = false
 
 Settings.BRICKS_DROPIN = true
 Settings.BRICKS_ROTATE = true

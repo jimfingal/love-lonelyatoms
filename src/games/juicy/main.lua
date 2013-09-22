@@ -17,21 +17,30 @@ require 'scenes.playscene'
 require 'enums.scenes'
 require 'external.slam'
 
-DEBUG = true
 
 function love.load()
  
     world = World()
 
+    -- Load Fonts and Globally Used Assets
     loadAssets(world)
+
+    -- Initialize and Store World Systems
     loadSystems(world)
+
+    -- Initialize Game Scenes
     loadScenes(world)
 
 end
 
 function loadAssets(world)
 
-    -- TODO: load sounds
+    local ps2p = "PressStart2P.ttf"
+    
+    local asset_manager = world:getAssetManager()
+    asset_manager:loadFont(Assets.FONT_LARGE, ps2p, 30)
+    asset_manager:loadFont(Assets.FONT_MEDIUM, ps2p, 18)
+    asset_manager:loadFont(Assets.FONT_SMALL, ps2p, 14)
 
 end
 
@@ -43,7 +52,6 @@ function loadSystems(world)
     rendering_system:setCamera(camera_system)
     world:setSystem(rendering_system)
     world:setSystem(camera_system)
-
 
     local collision_system = CollisionSystem(world)
     world:setSystem(collision_system)
@@ -80,6 +88,7 @@ end
 
 function loadScenes(world)
 
+    -- Only one scene here. TODO: Add Splash and Menu
     local scene_manager = world:getSceneManager()
 
     local play_scene = PlayScene(Scenes.PLAY, world)
@@ -92,6 +101,7 @@ function loadScenes(world)
 end
 
 -- Perform computations, etc. between screen refreshes.
+-- Defer to the update process in the current scene.
 function love.update(dt)
 
    world:getSceneManager():update(dt)
@@ -99,7 +109,7 @@ function love.update(dt)
 end
 
 -- Update the screen.
-
+-- Defer to the draw process in the current scene.
 function love.draw()
 
    world:getSceneManager():draw(dt)

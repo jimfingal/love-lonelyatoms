@@ -10,24 +10,36 @@ require 'core.systems.messagesystem'
 require 'enums.events'
 require 'enums.tags'
 require 'enums.palette'
+require 'behaviors.genericbehaviors'
 
-Ball = {}
+require 'entityinit.entityinitializer'
 
-function Ball.init(world)
+require 'external.middleclass'
 
-    local em = world:getEntityManager()
+BallInitializer  = class('BallInitializer', EntityInitializer)
 
-    local ball = em:createEntity('ball')
-    ball:addComponent(Transform(395, 485))
-    ball:addComponent(ShapeRendering():setColor(Palette.COLOR_BALL:unpack()):setShape(RectangleShape:new(15, 15)))
-    ball:addComponent(Collider():setHitbox(RectangleShape:new(15, 15)))
-    ball:addComponent(Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
-    -- ball:addComponent(Behavior():addUpdateFunction(ballAutoResetOnNonexistence))
-    ball:addComponent(InputResponse():addResponse(ballInputResponse))
-    ball:addComponent(Messaging(world:getSystem(MessageSystem)))
+function BallInitializer:initialize(world)
+    EntityInitializer.initialize(self, world, 'ball')
+    return self
+end
 
-    world:tagEntity(Tags.BALL, ball)
-    world:addEntityToGroup(Tags.PLAY_GROUP, ball)
+function BallInitializer:createEntity()
+
+    self.entity:addComponent(Transform(395, 485))
+    self.entity:addComponent(ShapeRendering():setColor(Palette.COLOR_BALL:unpack()):setShape(RectangleShape:new(15, 15)))
+    self.entity:addComponent(Collider():setHitbox(RectangleShape:new(15, 15)))
+    self.entity:addComponent(Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
+    -- self.entity:addComponent(Behavior():addUpdateFunction(ballAutoResetOnNonexistence))
+    self.entity:addComponent(InputResponse():addResponse(ballInputResponse))
+    self.entity:addComponent(Messaging(world:getSystem(MessageSystem)))
+
+    self:addSelfToGroup(Tags.PLAY_GROUP)
+    self:tagSelf(Tags.BALL)
+
+    local ball_behavior = Behavior()
+    ball_behavior:addUpdateFunction(constrainEntityToWorld)
+    -- ball_behavior:addUpdateFunction(ballAutoResetOnNonexistence)
+    self.entity:addComponent(ball_behavior)
 
 end 
 
@@ -85,5 +97,3 @@ function ballAutoResetOnNonexistence(ball, dt)
     end
 
 end
-
-return Ball

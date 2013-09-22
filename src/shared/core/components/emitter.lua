@@ -1,6 +1,7 @@
 require 'external.middleclass'
 require 'collections.list'
 require 'utils.pool'
+require 'core.entity.component'
 
 Emitter = class("Emitter", Component)
 

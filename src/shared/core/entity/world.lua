@@ -4,9 +4,10 @@ require 'core.managers.groupmanager'
 require 'core.managers.tagmanager'
 require 'core.managers.scenemanager'
 require 'core.managers.assetmanager'
+require 'core.systems.inputsystem'
+
 
 World = class('World')
-
 
 function World:initialize()
 	self.entity_manager = EntityManager(self)
@@ -84,5 +85,12 @@ function World:killEntity(entity)
 	-- TODO remove from groups
 	-- TODO remove tags
 
+end
+
+
+-- System Getters
+
+function World:getInputSystem()
+	return self:getSystem(InputSystem)
 end
 

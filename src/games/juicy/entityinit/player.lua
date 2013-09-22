@@ -6,6 +6,8 @@ require 'core.components.behavior'
 require 'core.components.inputresponse'
 require 'core.components.soundcomponent'
 
+require 'behaviors.genericbehaviors'
+
 require 'enums.tags'
 require 'enums.palette'
 
@@ -31,7 +33,30 @@ function Player.init(world)
     world:tagEntity(Tags.PLAYER, player)
     world:addEntityToGroup(Tags.PLAY_GROUP, player)
 
+   local behavior = Behavior()
+    behavior:addUpdateFunction(constrainEntityToWorld)
+    -- behavior:addUpdateFunction(playerAI)
+    player:addComponent(behavior)
+
+    registerPlayerInputs(world)
+
 end 
+
+
+
+function registerPlayerInputs(world)
+
+    local input_system = world:getInputSystem()
+
+    -- Register Key Strokes
+    input_system:registerInput('right', Actions.PLAYER_RIGHT)
+    input_system:registerInput('left', Actions.PLAYER_LEFT)
+    input_system:registerInput('a', Actions.PLAYER_LEFT)
+    input_system:registerInput('d', Actions.PLAYER_RIGHT)
+    input_system:registerInput(' ', Actions.RESET_BALL)
+
+end
+
 
 
 function playerAI(player, dt)

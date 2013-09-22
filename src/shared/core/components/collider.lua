@@ -1,4 +1,5 @@
 require 'external.middleclass'
+require 'core.entity.component'
 
 Collider = class('Collider', Component)
 

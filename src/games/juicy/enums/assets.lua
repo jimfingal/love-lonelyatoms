@@ -1,3 +1,6 @@
+-- Enumerated Assets. This allows us to retrieve assets by a fixed name,
+-- rather than have to refer to a filename.
+
 Assets = {}
 
 Assets.BACKGROUND_SOUND = "background"
