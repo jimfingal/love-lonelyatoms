@@ -17,4 +17,5 @@ function BackgroundImageBuilder:create()
     self.entity:addComponent(ShapeRendering():setColor(Palette.COLOR_BACKGROUND:unpack()):setShape(RectangleShape:new(love.graphics.getWidth(), love.graphics.getHeight())))
     self.entity:tag(Tags.BACKGROUND)
     self.entity:addToGroup(Tags.PLAY_GROUP)
+    
 end

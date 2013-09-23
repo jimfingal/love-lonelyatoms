@@ -33,7 +33,7 @@ function BallBuilder:create()
     self.entity:addComponent(Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
     -- self.entity:addComponent(Behavior():addUpdateFunction(ballAutoResetOnNonexistence))
     self.entity:addComponent(InputResponse():addResponse(ballInputResponse))
-    self.entity:addComponent(Messaging(world:getSystem(MessageSystem)))
+    self.entity:addComponent(Messaging(self.world:getSystem(MessageSystem)))
 
     self.entity:addToGroup(Tags.PLAY_GROUP)
     self.entity:tag(Tags.BALL)

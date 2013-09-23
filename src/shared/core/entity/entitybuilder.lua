@@ -18,7 +18,7 @@ function EntityBuilder:create()
 
 	-- Called if we're just building one entity
 	if not self.entity then
-		local em = world:getEntityManager()
+		local em = self.world:getEntityManager()
     	self.entity = em:createEntity(name)
     end
 

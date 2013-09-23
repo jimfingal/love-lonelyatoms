@@ -13,11 +13,6 @@ function GlobalInputBuilder:create()
 
     EntityBuilder.create(self)
 
-    local input_system = world:getInputSystem()
-
-    input_system:registerInput('escape', Actions.RESET_BOARD)
-    input_system:registerInput('q', Actions.QUIT_GAME)
-
     local globalInputResponse = function(entity, held_actions, pressed_actions, dt)
 
         -- Reset the Board

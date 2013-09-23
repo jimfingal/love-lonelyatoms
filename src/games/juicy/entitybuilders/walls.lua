@@ -22,7 +22,7 @@ end
 
 function WallBuilder:create()
 
-    local em = world:getEntityManager()
+    local em = self.world:getEntityManager()
 
      -- Tends to fall off world
     local TILE_SIZE = 10
@@ -48,15 +48,15 @@ function WallBuilder:create()
     right_tile:addComponent(Collider():setHitbox(RectangleShape:new(TILE_SIZE, love.graphics.getHeight() - 2 * TILE_SIZE)))
     right_tile:addComponent(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(TILE_SIZE, love.graphics.getHeight() - 2 * TILE_SIZE)))
 
-    world:addEntityToGroup(Tags.WALL_GROUP, top_tile)
-    world:addEntityToGroup(Tags.WALL_GROUP, bottom_tile)
-    world:addEntityToGroup(Tags.WALL_GROUP, left_tile)
-    world:addEntityToGroup(Tags.WALL_GROUP, right_tile)
+    self.world:addEntityToGroup(Tags.WALL_GROUP, top_tile)
+    self.world:addEntityToGroup(Tags.WALL_GROUP, bottom_tile)
+    self.world:addEntityToGroup(Tags.WALL_GROUP, left_tile)
+    self.world:addEntityToGroup(Tags.WALL_GROUP, right_tile)
 
-    world:tagEntity(Tags.TOP_WALL, top_tile)
-    world:tagEntity(Tags.BOTTOM_WALL, bottom_tile)
-    world:tagEntity(Tags.LEFT_WALL, left_tile)
-    world:tagEntity(Tags.RIGHT_WALL, right_tile)
+    self.world:tagEntity(Tags.TOP_WALL, top_tile)
+    self.world:tagEntity(Tags.BOTTOM_WALL, bottom_tile)
+    self.world:tagEntity(Tags.LEFT_WALL, left_tile)
+    self.world:tagEntity(Tags.RIGHT_WALL, right_tile)
 
 end
 

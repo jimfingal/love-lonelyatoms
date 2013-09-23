@@ -123,14 +123,14 @@ function EffectDispatcher.scaleEntity(entity, dx, dy)
 
     local revert = 
         function()
-            world:getSystem(TweenSystem):addTween(0.1, 
+            entity:getWorld():getSystem(TweenSystem):addTween(0.1, 
                 entity:getComponent(Transform):getScale(), 
                 {x = 1, y = 1 }, 
                 Easing.linear)
         end
 
     local scaleUp = function()
-                world:getSystem(TweenSystem):addTween(0.1, 
+                entity:getWorld():getSystem(TweenSystem):addTween(0.1, 
                     entity:getComponent(Transform):getScale(), 
                     {x = dx, y = dy }, 
                     Easing.inSine, 
@@ -151,7 +151,7 @@ function EffectDispatcher.rotateEntity(entity)
         target_rotation = 2 * math.pi
     end
 
-    world:getSystem(TweenSystem):addTween(0.1, transform, {rotation = target_rotation }, Easing.linear)
+    entity:getWorld():getSystem(TweenSystem):addTween(0.1, transform, {rotation = target_rotation }, Easing.linear)
 
 end
 

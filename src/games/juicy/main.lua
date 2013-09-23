@@ -18,21 +18,19 @@ require 'enums.scenes'
 require 'external.slam'
 
 
+local world = nil
+
 function love.load()
  
     world = World()
 
-    -- Load Fonts and Globally Used Assets
     loadAssets(world)
-
-    -- Initialize and Store World Systems
     loadSystems(world)
-
-    -- Initialize Game Scenes
     loadScenes(world)
 
 end
 
+-- Load Fonts and Globally Used Assets
 function loadAssets(world)
 
     local ps2p = "PressStart2P.ttf"
@@ -45,6 +43,7 @@ function loadAssets(world)
 end
 
 
+-- Initialize and Store World Systems
 function loadSystems(world)
 
     local rendering_system = RenderingSystem()
@@ -86,6 +85,7 @@ function loadSystems(world)
 end
 
 
+-- Initialize Game Scenes
 function loadScenes(world)
 
     -- Only one scene here. TODO: Add Splash and Menu
@@ -96,22 +96,21 @@ function loadScenes(world)
 
     scene_manager:changeScene(Scenes.PLAY)
     
-
-
 end
 
+
 -- Perform computations, etc. between screen refreshes.
--- Defer to the update process in the current scene.
 function love.update(dt)
 
+    -- Defer to the update process in the current scene.
    world:getSceneManager():update(dt)
 
 end
 
 -- Update the screen.
--- Defer to the draw process in the current scene.
 function love.draw()
 
+    -- Defer to the draw process in the current scene.
    world:getSceneManager():draw(dt)
 
 end

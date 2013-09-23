@@ -78,6 +78,61 @@ function PlayScene:initialize(name, w)
   
 end
 
+
+function PlayScene:enter()
+
+    self:reset()
+
+end
+
+function PlayScene:update(dt)
+
+    -- Update time system
+    local time_system = self.world:getTimeSystem()
+    time_system:update(dt)
+    local game_world_dt = time_system:getDt()
+
+    -- Update scheduled functions
+    self.world:getScheduleSystem():update(game_world_dt)
+
+    -- Update tweens 
+    self.world:getTweenSystem():update(game_world_dt)
+
+    -- Update input
+    self.world:getInputSystem():processInputResponses(entitiesRespondingToInput(self.world), game_world_dt)
+    
+    -- Update behaviors
+    self.world:getBehaviorSystem():processBehaviors(entitiesWithBehavior(self.world), game_world_dt) 
+
+    -- Update movement 
+    self.world:getMovementSystem():updateMovables(entitiesWithMovement(self.world), game_world_dt)
+    
+    -- Detect and Announce collisions
+    local collision_system = self.world:getCollisionSystem()
+    local collisions = collision_system:getCollisions()
+    announceCollisions(self.world, collisions)
+
+end
+
+
+function PlayScene:draw()
+
+    -- If we're currently paused, unpause
+    self.world:getTimeSystem():go()
+
+    love.graphics.setBackgroundColor(Palette.COLOR_BRICK:unpack())
+
+    self.world:getRenderingSystem():renderDrawables(entitiesWithDrawability(self.world))
+
+
+    if Settings.DEBUG then
+        self:outputDebugText()
+    end
+
+
+end
+
+
 function PlayScene:reset()
 
     self.world:getTimeSystem():stop()
@@ -100,88 +155,33 @@ function PlayScene:reset()
 
 end
 
-function PlayScene:enter()
 
-    self:reset()
-
-end
-
-function PlayScene:update(dt)
-
-    -- Update time system
-    local time_system = world:getTimeSystem()
-
-    time_system:update(dt)
-
-    -- Spoof DT to be the current time system's dt
-    local game_world_dt = time_system:getDt()
-
-    -- Update scheduled functions
-    self.world:getScheduleSystem():update(game_world_dt)
-
-    -- Update tweens 
-    self.world:getTweenSystem():update(game_world_dt)
-
-    -- Update input
-    self.world:getInputSystem():processInputResponses(entitiesRespondingToInput(world), game_world_dt)
-    
-    -- Update behaviors
-    self.world:getBehaviorSystem():processBehaviors(entitiesWithBehavior(world), game_world_dt) 
-
-    -- Update movement 
-    self.world:getMovementSystem():updateMovables(entitiesWithMovement(world), game_world_dt)
-
-    --[[ Handle collisions ]]
-
-    local collision_system = self.world:getCollisionSystem()
-
-    local collisions = collision_system:getCollisions()
-
-    announceCollisions(world, collisions)
-
-end
-
-
-function PlayScene:draw()
-
-    -- If we're currently paused, unpause
-    self.world:getTimeSystem():go()
-
-    love.graphics.setBackgroundColor(Palette.COLOR_BRICK:unpack())
-
-    self.world:getRenderingSystem():renderDrawables(entitiesWithDrawability(world))
+function PlayScene:outputDebugText()
 
     local debugstart = 50
+    local player_transform =  self.world:getTaggedEntity(Tags.PLAYER):getComponent(Transform)
+    local ball_transform = self.world:getTaggedEntity(Tags.BALL):getComponent(Transform)
+    local ball_collider = self.world:getTaggedEntity(Tags.BALL):getComponent(Collider)
 
-    if Settings.DEBUG then
+    love.graphics.print("Ball x: " .. ball_transform.position.x, 50, debugstart + 20)
+    love.graphics.print("Ball y: " .. ball_transform.position.y, 50, debugstart + 40)
+    love.graphics.print("Ball collider active: " .. tostring(ball_collider.active), 50, debugstart + 60)
+    love.graphics.print("Player x: " .. player_transform.position.x, 50, debugstart + 80)
+    love.graphics.print("Player y: " .. player_transform.position.y, 50, debugstart + 100)
+    love.graphics.print("FPS: " .. love.timer.getFPS(), 50, debugstart + 120)
 
-        local player_transform =  world:getTaggedEntity(Tags.PLAYER):getComponent(Transform)
-        local ball_transform = world:getTaggedEntity(Tags.BALL):getComponent(Transform)
-        local ball_collider = world:getTaggedEntity(Tags.BALL):getComponent(Collider)
+    local statistics_system = self.world:getStatisticsSystem()
+    local timer_system = self.world:getTimeSystem()
 
-        love.graphics.print("Ball x: " .. ball_transform.position.x, 50, debugstart + 20)
-        love.graphics.print("Ball y: " .. ball_transform.position.y, 50, debugstart + 40)
-        love.graphics.print("Ball collider active: " .. tostring(ball_collider.active), 50, debugstart + 60)
-        love.graphics.print("Player x: " .. player_transform.position.x, 50, debugstart + 80)
-        love.graphics.print("Player y: " .. player_transform.position.y, 50, debugstart + 100)
-        love.graphics.print("FPS: " .. love.timer.getFPS(), 50, debugstart + 120)
+    love.graphics.print("Number of times ball hit player: " .. statistics_system:getEventTally(Events.BALL_COLLISION_PLAYER), 50, debugstart + 140)
+    love.graphics.print("Number of times ball hit wall: " .. statistics_system:getEventTally(Events.BALL_COLLISION_WALL), 50, debugstart + 160)
+    love.graphics.print("Number of times ball hit brick: " .. statistics_system:getEventTally(Events.BALL_COLLISION_BRICK), 50, debugstart + 180)
 
-        local statistics_system = world:getStatisticsSystem()
-        local timer_system = world:getTimeSystem()
-
-
-        love.graphics.print("Number of times ball hit player: " .. statistics_system:getEventTally(Events.BALL_COLLISION_PLAYER), 50, debugstart + 140)
-        love.graphics.print("Number of times ball hit wall: " .. statistics_system:getEventTally(Events.BALL_COLLISION_WALL), 50, debugstart + 160)
-        love.graphics.print("Number of times ball hit brick: " .. statistics_system:getEventTally(Events.BALL_COLLISION_BRICK), 50, debugstart + 180)
-
-        love.graphics.print("Time since ball hit player: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_PLAYER, timer_system:getTime()), 50, debugstart + 200)
-        love.graphics.print("Time since ball hit wall: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_WALL, timer_system:getTime()), 50, debugstart + 220)
-        love.graphics.print("Time since ball hit brick: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_BRICK, timer_system:getTime()), 50, debugstart + 240)
-
-
-
-    end
-
+    love.graphics.print("Time since ball hit player: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_PLAYER, timer_system:getTime()), 50, debugstart + 200)
+    love.graphics.print("Time since ball hit wall: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_WALL, timer_system:getTime()), 50, debugstart + 220)
+    love.graphics.print("Time since ball hit brick: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_BRICK, timer_system:getTime()), 50, debugstart + 240)
 
 end
+
+
 

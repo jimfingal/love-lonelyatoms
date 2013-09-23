@@ -107,7 +107,7 @@ function CollisionSystem:checkCollision(entity_a, entity_b)
 		return nil
 	end
 
-	local em = world:getEntityManager()
+	local em = self.world:getEntityManager()
 
 	-- Transform and Collider
 	at = entity_a:getComponent(Transform)
