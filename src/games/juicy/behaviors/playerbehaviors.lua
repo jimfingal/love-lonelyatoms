@@ -19,13 +19,6 @@ function collidePlayerWithWall(player, wall)
     local wall_position = wall:getComponent(Transform):getPosition()
     local wall_hitbox = wall:getComponent(Collider):hitbox()
 
-
-    local player_left_edge = player_transform:getPosition().x
-    local player_right_edge = player_transform:getPosition().x + player_collider:hitbox().width
-
-    local wall_left_edge = wall_position.x
-    local wall_right_edge = wall_position.x + wall_hitbox.width
-
     local left_wall = wall:getWorld():getTaggedEntity(Tags.LEFT_WALL)
     local right_wall = wall:getWorld():getTaggedEntity(Tags.RIGHT_WALL)
 
@@ -34,38 +27,17 @@ function collidePlayerWithWall(player, wall)
     -- Left Edge collision
     if wall == left_wall then
 
-        -- Translate to be on the other side of it
-
         local new_x = wall_position.x + wall_hitbox.width + 1
 
         player_transform:moveTo(new_x, player_transform:getPosition().y)
         player_movement.velocity = -player_movement.velocity / 2
 
-        --[[
-        if self.current_action == Actions.PLAYER_LEFT then
-            self.velocity = Vector.ZERO
-        else
-            self.velocity = -self.velocity
-        end
-        ]]
-
-
     elseif wall == right_wall then
 
         local new_x = wall_position.x - player_collider:hitbox().width - 1
 
-        -- Translate to be on the other side of it
         player_transform:moveTo(new_x, player_transform:getPosition().y)
-
         player_movement.velocity = -player_movement.velocity / 2
-
-		--[[
-        if self.current_action == Actions.PLAYER_RIGHT then
-            self.velocity = Vector.ZERO
-        else
-            self.velocity = -self.velocity
-        end
-		]]
 
     else 
 
