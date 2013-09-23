@@ -134,3 +134,7 @@ end
 function World:getMovementSystem()
 	return self:getSystem(MovementSystem)
 end
+
+function World:getMessageSystem()
+	return self:getSystem(MessageSystem)
+end

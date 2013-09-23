@@ -7,5 +7,7 @@ Events = {}
 Events.BALL_COLLISION_PLAYER = "ballcollisionplayer"
 Events.BALL_COLLISION_WALL = "ballcollisionwall"
 Events.BALL_COLLISION_BRICK = "ballcollisionbrick"
+Events.PLAYER_COLLISION_WALL = "playercollisionwall"
+
 
 return Events

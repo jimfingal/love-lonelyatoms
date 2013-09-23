@@ -40,7 +40,6 @@ function PlayerBuilder:create()
     self.entity:addComponent(behavior)
 
     -- TODO Combine
-    registerPlayerInputs(world)
     self.entity:addComponent(InputResponse():addResponse(playerInputResponse))
 
 end 
@@ -50,23 +49,6 @@ function PlayerBuilder:reset()
     -- TODO
 
 end
-
-
-
-
-function registerPlayerInputs(world)
-
-    local input_system = world:getInputSystem()
-
-    -- Register Key Strokes
-    input_system:registerInput('right', Actions.PLAYER_RIGHT)
-    input_system:registerInput('left', Actions.PLAYER_LEFT)
-    input_system:registerInput('a', Actions.PLAYER_LEFT)
-    input_system:registerInput('d', Actions.PLAYER_RIGHT)
-    input_system:registerInput(' ', Actions.RESET_BALL)
-
-end
-
 
 
 function playerAI(player, dt)

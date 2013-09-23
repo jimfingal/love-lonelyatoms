@@ -1,9 +1,6 @@
 require 'core.components.transform'
 require 'core.components.rendering'
 require 'core.components.collider'
-require 'core.components.motion'
-require 'core.components.behavior'
-require 'core.components.inputresponse'
 require 'core.components.soundcomponent'
 
 require 'enums.assets'

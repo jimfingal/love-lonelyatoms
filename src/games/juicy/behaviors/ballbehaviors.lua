@@ -29,7 +29,7 @@ end
 
 function collideBallWithPaddle(ball, paddle)
 
-    ball:getComponent(Messaging):emitMessage(Events.BALL_COLLISION_PLAYER, ball, paddle)
+    -- ball:getComponent(Messaging):emitMessage(Events.BALL_COLLISION_PLAYER, ball, paddle)
 
     local ball_transform = ball:getComponent(Transform)
     local ball_movement = ball:getComponent(Motion)
@@ -95,7 +95,7 @@ end
 
 function collideBallWithWall(ball, wall)
 
-    ball:getComponent(Messaging):emitMessage(Events.BALL_COLLISION_WALL, ball, wall)
+    -- ball:getComponent(Messaging):emitMessage(Events.BALL_COLLISION_WALL, ball, wall)
 
     local ball_transform = ball:getComponent(Transform)
     local ball_movement = ball:getComponent(Motion)

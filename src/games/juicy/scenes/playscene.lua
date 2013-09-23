@@ -32,23 +32,9 @@ require 'entitybuilders.player'
 require 'entitybuilders.walls'
 
 GlobalEffects = require 'scripts.globaleffects'
+require 'scripts.collisions'
 
 PlayScene = class('Play', Scene)
-
-
-
-local resetCollisionSystem = function(world)
-
-    local collision_system = world:getSystem(CollisionSystem)
-
-    collision_system:reset()
-    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.BRICK_GROUP))
-    collision_system:watchCollision(world:getTaggedEntity(Tags.PLAYER), world:getEntitiesInGroup(Tags.WALL_GROUP))
-    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getTaggedEntity(Tags.PLAYER))
-    collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.WALL_GROUP))
-
-end
-
 
 function PlayScene:initialize(name, w)
 
@@ -56,9 +42,20 @@ function PlayScene:initialize(name, w)
 
     local world = self.world
 
+    -- Verbs for Play Scene
+    local input_system = world:getInputSystem()
+    input_system:registerInput('right', Actions.PLAYER_RIGHT)
+    input_system:registerInput('left', Actions.PLAYER_LEFT)
+    input_system:registerInput('a', Actions.PLAYER_LEFT)
+    input_system:registerInput('d', Actions.PLAYER_RIGHT)
+    input_system:registerInput(' ', Actions.RESET_BALL)
+    input_system:registerInput('escape', Actions.RESET_BOARD)
+    input_system:registerInput('q', Actions.QUIT_GAME)
+
+
     self.effects = EffectDispatcher(world)
 
-    -- Initialize entities
+    -- Entities
     self.ball_builder = BallBuilder(world)
     self.player_builder = PlayerBuilder(world)
     self.wall_builder = WallBuilder(world)
@@ -109,31 +106,30 @@ function PlayScene:enter()
 
 end
 
-function PlayScene:update(love_dt)
+function PlayScene:update(dt)
 
     -- Update time system
     local time_system = world:getTimeSystem()
 
-    time_system:update(love_dt)
+    time_system:update(dt)
 
     -- Spoof DT to be the current time system's dt
-    local dt = time_system:getDt()
+    local game_world_dt = time_system:getDt()
 
     -- Update scheduled functions
-    self.world:getScheduleSystem():update(dt)
+    self.world:getScheduleSystem():update(game_world_dt)
 
     -- Update tweens 
-    self.world:getTweenSystem():update(dt)
+    self.world:getTweenSystem():update(game_world_dt)
 
     -- Update input
-    self.world:getInputSystem():processInputResponses(entitiesRespondingToInput(world), dt)
+    self.world:getInputSystem():processInputResponses(entitiesRespondingToInput(world), game_world_dt)
     
     -- Update behaviors
-    self.world:getBehaviorSystem():processBehaviors(entitiesWithBehavior(world), dt) 
+    self.world:getBehaviorSystem():processBehaviors(entitiesWithBehavior(world), game_world_dt) 
 
     -- Update movement 
-
-    self.world:getMovementSystem():updateMovables(entitiesWithMovement(world), dt)
+    self.world:getMovementSystem():updateMovables(entitiesWithMovement(world), game_world_dt)
 
     --[[ Handle collisions ]]
 
@@ -141,35 +137,7 @@ function PlayScene:update(love_dt)
 
     local collisions = collision_system:getCollisions()
 
-    -- TODO: don't have if / elses
-    for collision_event in collisions:members() do
-
-
-        if collision_event.a == world:getTaggedEntity(Tags.PLAYER) and
-           world:getGroupsContainingEntity(collision_event.b):contains(Tags.WALL_GROUP) then
-
-           collidePlayerWithWall(collision_event.a, collision_event.b)
-
-        elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
-           world:getGroupsContainingEntity(collision_event.b):contains(Tags.WALL_GROUP) then
-
-          collideBallWithWall(collision_event.a, collision_event.b)
-
-        elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
-           collision_event.b == world:getTaggedEntity(Tags.PLAYER) then
-
-           collideBallWithPaddle(collision_event.a, collision_event.b)
-      
-        elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
-           world:getGroupsContainingEntity(collision_event.b):contains(Tags.BRICK_GROUP) then
-
-          collideBallWithBrick(collision_event.a, collision_event.b)
-
-        end
-
-    end
-   
-
+    announceCollisions(world, collisions)
 
 end
 
@@ -216,5 +184,4 @@ function PlayScene:draw()
 
 
 end
-
 
