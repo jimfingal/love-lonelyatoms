@@ -33,8 +33,9 @@ require 'entitybuilders.walls'
 
 Collisions = require 'scripts.collisions'
 
-require 'behaviors.playerbehaviors'
-require 'behaviors.brickbehaviors'
+
+PlayerBehaviors = require 'behaviors.playerbehaviors'
+BrickBehaviors = require 'behaviors.brickbehaviors'
 
 
 PlayScene = class('Play', Scene)
@@ -147,12 +148,12 @@ function PlayScene:reset()
 
     -- TODO: add to brick reset
     if Settings.BRICKS_DROPIN then
-        dropInBricks(self.world)
+        BrickBehaviors.dropInBricks(self.world)
     end
 
     -- TODO: add to player reset
     if Settings.PLAYER_DROPIN then
-        dropInPlayer(self.world)
+        PlayerBehaviors.dropInPlayer(self.world)
     end
 
 end

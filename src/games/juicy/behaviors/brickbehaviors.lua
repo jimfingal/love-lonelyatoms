@@ -8,8 +8,9 @@ require 'enums.tags'
 require 'enums.events'
 
 
+BrickBehaviors = {}
 
-function dropInBricks(world)
+function BrickBehaviors.dropInBricks(world)
 
     local bricks = world:getEntitiesInGroup(Tags.BRICK_GROUP)
     local tween_system = world:getSystem(TweenSystem)
@@ -62,7 +63,7 @@ end
 
 
 
-function dispatchBrick(ball, brick)
+function  BrickBehaviors.dispatchBrick(ball, brick)
 
     local ball_position = ball:getComponent(Transform):getPosition()
     local ball_movement = ball:getComponent(Motion)
@@ -96,7 +97,7 @@ function dispatchBrick(ball, brick)
 
 end
 
-function playBrickSoundWithAdjustedPitch(brick, dt)
+function  BrickBehaviors.playBrickSoundWithAdjustedPitch(brick, dt)
 
     local sound_component = brick:getComponent(SoundComponent)
     local retrieved_sound = sound_component:getSound(Assets.BRICK_SOUND)
@@ -110,3 +111,5 @@ function playBrickSoundWithAdjustedPitch(brick, dt)
 
     love.audio.play(retrieved_sound)
 end
+
+return BrickBehaviors

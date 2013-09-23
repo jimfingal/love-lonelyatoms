@@ -1,5 +1,10 @@
 require 'enums.tags'
 
+
+PlayerBehaviors = require 'behaviors.playerbehaviors'
+BallBehaviors = require 'behaviors.ballbehaviors'
+
+
 Collisions = {}
 
 function Collisions.resetCollisionSystem(world)
@@ -28,7 +33,7 @@ function Collisions.announceCollisions(world, collisions)
             message_system:emitMessage(Events.PLAYER_COLLISION_WALL, collision_event.a, collision_event.b)
 
             -- TODO move 
-            collidePlayerWithWall(collision_event.a, collision_event.b)
+            PlayerBehaviors.collidePlayerWithWall(collision_event.a, collision_event.b)
 
         -- Collision of Ball with Wall
         elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
@@ -38,7 +43,7 @@ function Collisions.announceCollisions(world, collisions)
             message_system:emitMessage(Events.BALL_COLLISION_WALL, collision_event.a, collision_event.b)
 
             -- TODO move 
-            collideBallWithWall(collision_event.a, collision_event.b)
+           BallBehaviors.collideBallWithWall(collision_event.a, collision_event.b)
 
         -- Collision of Ball with Player
         elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
@@ -47,7 +52,7 @@ function Collisions.announceCollisions(world, collisions)
             message_system:emitMessage(Events.BALL_COLLISION_PLAYER, collision_event.a, collision_event.b)
 
             -- TODO move 
-            collideBallWithPaddle(collision_event.a, collision_event.b)
+            BallBehaviors.collideBallWithPaddle(collision_event.a, collision_event.b)
       
         -- Collision of Ball with Brick
         elseif collision_event.a == world:getTaggedEntity(Tags.BALL) and
@@ -56,7 +61,7 @@ function Collisions.announceCollisions(world, collisions)
             message_system:emitMessage(Events.BALL_COLLISION_BRICK, collision_event.a, collision_event.b)
 
             -- TODO move 
-            collideBallWithBrick(collision_event.a, collision_event.b)
+            BallBehaviors.collideBallWithBrick(collision_event.a, collision_event.b)
 
         end
 

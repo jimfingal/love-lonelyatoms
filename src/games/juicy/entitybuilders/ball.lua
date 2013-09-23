@@ -33,7 +33,6 @@ function BallBuilder:create()
     self.entity:addComponent(Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
     -- self.entity:addComponent(Behavior():addUpdateFunction(ballAutoResetOnNonexistence))
     self.entity:addComponent(InputResponse():addResponse(ballInputResponse))
-    self.entity:addComponent(Messaging(self.world:getSystem(MessageSystem)))
 
     self.entity:addToGroup(Tags.PLAY_GROUP)
     self.entity:tag(Tags.BALL)
@@ -42,6 +41,26 @@ function BallBuilder:create()
     ball_behavior:addUpdateFunction(constrainEntityToWorld)
     -- ball_behavior:addUpdateFunction(ballAutoResetOnNonexistence)
     self.entity:addComponent(ball_behavior)
+
+
+    local my_messaging = Messaging(self.world:getSystem(MessageSystem))
+    self.entity:addComponent(my_messaging)
+
+    -- Responsible for shaking self
+    my_messaging:registerMessageResponse(Events.BALL_COLLISION_PLAYER, function(ball, player)
+        EntityEffects.scaleEntity(ball, 2, 1.5)
+        EntityEffects.rotateEntity(ball)
+    end)
+
+    my_messaging:registerMessageResponse(Events.BALL_COLLISION_BRICK, function(ball, brick)
+        EntityEffects.scaleEntity(ball, 2, 1.5)
+        EntityEffects.rotateEntity(ball)
+    end)
+
+    my_messaging:registerMessageResponse(Events.BALL_COLLISION_WALL, function(ball, wall)
+        EntityEffects.scaleEntity(ball, 2, 1.5)
+        EntityEffects.rotateEntity(ball)
+    end)
 
 end 
 

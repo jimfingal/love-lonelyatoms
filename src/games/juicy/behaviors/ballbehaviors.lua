@@ -1,5 +1,7 @@
 
-function ballAutoResetOnNonexistence(ball, dt)
+BallBehaviors = {}
+
+function BallBehaviors.ballAutoResetOnNonexistence(ball, dt)
 
     local ball_transform = ball:getComponent(Transform)
     local ball_movement = ball:getComponent(Motion)
@@ -27,7 +29,7 @@ function ballAutoResetOnNonexistence(ball, dt)
 end
 
 
-function collideBallWithPaddle(ball, paddle)
+function BallBehaviors.collideBallWithPaddle(ball, paddle)
 
     -- ball:getComponent(Messaging):emitMessage(Events.BALL_COLLISION_PLAYER, ball, paddle)
 
@@ -93,7 +95,7 @@ end
 
 
 
-function collideBallWithWall(ball, wall)
+function BallBehaviors.collideBallWithWall(ball, wall)
 
     -- ball:getComponent(Messaging):emitMessage(Events.BALL_COLLISION_WALL, ball, wall)
 
@@ -135,7 +137,7 @@ function collideBallWithWall(ball, wall)
 end
 
 
-function collideBallWithBrick(ball, brick)
+function BallBehaviors.collideBallWithBrick(ball, brick)
 
     -- ball:getComponent(Messaging):emitMessage(Events.BALL_COLLISION_BRICK, ball, brick)
 
@@ -156,3 +158,5 @@ function collideBallWithBrick(ball, brick)
     end
 
 end
+
+return BallBehaviors

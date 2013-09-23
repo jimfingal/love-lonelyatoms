@@ -7,10 +7,9 @@ Easing = require 'external.easing'
 require 'enums.tags'
 require 'enums.events'
 
+PlayerBehaviors = {}
 
-
-
-function collidePlayerWithWall(player, wall)
+function PlayerBehaviors.collidePlayerWithWall(player, wall)
 
     local player_transform = player:getComponent(Transform)
     local player_movement = player:getComponent(Motion)
@@ -48,7 +47,7 @@ function collidePlayerWithWall(player, wall)
 end
 
 
-function dropInPlayer(world)
+function PlayerBehaviors.dropInPlayer(world)
 
     local player = world:getTaggedEntity(Tags.PLAYER)
     local tween_system = world:getSystem(TweenSystem)
@@ -87,4 +86,6 @@ function dropInPlayer(world)
     end
 
 end
+
+return PlayerBehaviors
 

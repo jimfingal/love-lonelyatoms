@@ -42,6 +42,16 @@ function PlayerBuilder:create()
     -- TODO Combine
     self.entity:addComponent(InputResponse():addResponse(playerInputResponse))
 
+    local my_messaging = Messaging(self.world:getSystem(MessageSystem))
+    
+    self.entity:addComponent(my_messaging)
+
+    -- Responsible for shaking self
+    my_messaging:registerMessageResponse(Events.BALL_COLLISION_PLAYER, function(ball, player)
+        EntityEffects.scaleEntity(player, 1.5, 1.3)
+    end)
+
+
 end 
 
 function PlayerBuilder:reset()

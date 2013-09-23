@@ -1,6 +1,8 @@
 require 'core.components.transform'
 
-function constrainEntityToWorld(entity)
+GenericBehaviors = {}
+
+function GenericBehaviors.constrainEntityToWorld(entity)
 
     local transform = entity:getComponent(Transform)
     
@@ -22,5 +24,4 @@ function constrainEntityToWorld(entity)
 
 end
 
-
-
+return GenericBehaviors
