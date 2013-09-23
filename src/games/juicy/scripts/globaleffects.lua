@@ -25,7 +25,7 @@ function GlobalEffects.cameraShake(world)
     assert(camera and schedule_system and tween_system, 
         "Camera shake effect only works with CameraSystem, ScheduleSystem, and TweenSystem initialized")
 
-    intensity = 3
+    local intensity = 3
 
     local jitter = function()
         camera.transform:move(math.random(-intensity, intensity), math.random(-intensity, intensity))

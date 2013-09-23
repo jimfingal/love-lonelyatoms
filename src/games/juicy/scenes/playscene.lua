@@ -22,80 +22,19 @@ require 'enums.assets'
 require 'enums.tags'
 require 'enums.palette'
 
+require 'entitybuilders.backgroundimage'
+require 'entitybuilders.backgroundsound'
 require 'entitybuilders.ball'
+require 'entitybuilders.bricks'
+require 'entitybuilders.eventslistener'
+require 'entitybuilders.globalinput'
 require 'entitybuilders.player'
 require 'entitybuilders.walls'
-require 'entitybuilders.bricks'
 
 GlobalEffects = require 'scripts.globaleffects'
 
-
 PlayScene = class('Play', Scene)
 
-
-
-
-local registerGlobalInputs = function (world)
-
-    local em = world:getEntityManager()
-    local input_system = world:getInputSystem()
-
-    input_system:registerInput('escape', Actions.RESET_BOARD)
-    input_system:registerInput('q', Actions.QUIT_GAME)
-
-    local globalInputResponse = function(entity, held_actions, pressed_actions, dt)
-
-        -- Reset the Board
-        if pressed_actions[Actions.RESET_BOARD] then
-            entity:getWorld():getSceneManager():changeScene(Scenes.PLAY)
-        end
-
-        -- Quit
-        if pressed_actions[Actions.QUIT_GAME] then
-            love.event.push("quit")
-        end
-
-    end
-
-    local global_input_responder = em:createEntity('globalinputresponse')
-    global_input_responder:addComponent(InputResponse():addResponse(globalInputResponse))
-    world:addEntityToGroup(Tags.PLAY_GROUP, global_input_responder)
-
-
-end
-
-local createBackgroundImage = function (world)
-
-
-    local em = world:getEntityManager()
-
-    local play_background = em:createEntity('play_background')
-    play_background:addComponent(Transform(0, 0):setLayerOrder(10))
-    play_background:addComponent(ShapeRendering():setColor(Palette.COLOR_BACKGROUND:unpack()):setShape(RectangleShape:new(love.graphics.getWidth(), love.graphics.getHeight())))
-    world:tagEntity(Tags.BACKGROUND, play_background)
-    world:addEntityToGroup(Tags.PLAY_GROUP, play_background)
-
-
-end
-
-local loadBackgroundSound = function (world)
-
-    local em = world:getEntityManager()
-
-    local asset_manager = world:getAssetManager()
-    local bsnd = "You_Kill_My_Brother_-_07_-_Micro_Invasion_-_You_Kill_My_Brother_-_Go_Go_Go.mp3"
-
-    local this_sound = asset_manager:loadSound(Assets.BACKGROUND_SOUND, bsnd)
-    this_sound:setVolume(0.25)
-    this_sound:setLooping(true)
-    this_sound:play()
-
-    local background_sound_entity = em:createEntity('background_sound')
-    background_sound_entity:addComponent(SoundComponent():addSound(Assets.BACKGROUND_SOUND, this_sound))
-    world:tagEntity(Tags.BACKGROUND_SOUND, background_sound_entity)
-    world:addEntityToGroup(Tags.PLAY_GROUP, background_sound_entity)
-
-end
 
 
 local resetCollisionSystem = function(world)
@@ -103,7 +42,6 @@ local resetCollisionSystem = function(world)
     local collision_system = world:getSystem(CollisionSystem)
 
     collision_system:reset()
-
     collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getEntitiesInGroup(Tags.BRICK_GROUP))
     collision_system:watchCollision(world:getTaggedEntity(Tags.PLAYER), world:getEntitiesInGroup(Tags.WALL_GROUP))
     collision_system:watchCollision(world:getTaggedEntity(Tags.BALL), world:getTaggedEntity(Tags.PLAYER))
@@ -111,66 +49,6 @@ local resetCollisionSystem = function(world)
 
 end
 
-local createGlobalEventListener = function(world)
-
-    local em = world:getEntityManager()
-    local message_system = world:getSystem(MessageSystem)
-
-    -- Global listener that sets effects
-    local panopticon = em:createEntity('panopticon')
-    world:tagEntity(Tags.PANOPTICON, panopticon)
-
-    local pan_message = Messaging(world:getSystem(MessageSystem))
-    panopticon:addComponent(pan_message)
-
-    pan_message:registerMessageResponse(Events.BALL_COLLISION_PLAYER, function(ball, player)
-
-        local statistics_system = world:getStatisticsSystem()
-        local time_system = world:getTimeSystem()
-
-        statistics_system:addToEventTally(Events.BALL_COLLISION_PLAYER)
-        statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_PLAYER, time_system:getTime())
-
-        GlobalEffects.cameraShake(world)
-        EffectDispatcher.allEffects(ball, 2, 1.5)
-        EffectDispatcher.scaleEntity(player, 1.5, 1.3)
-        --EffectDispatcher.rotateJitter(player, 1)
-
-    end)
-
-    pan_message:registerMessageResponse(Events.BALL_COLLISION_BRICK, function(ball, brick)
-
-
-        local statistics_system = world:getStatisticsSystem()
-        local time_system = world:getTimeSystem()
-
-        statistics_system:addToEventTally(Events.BALL_COLLISION_BRICK)
-        EffectDispatcher.playBrickSoundWithAdjustedPitch(brick, statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_BRICK, time_system:getTime()))
-        statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_BRICK, time_system:getTime())
-
-        EffectDispatcher.dispatchBrick(ball, brick)
-        GlobalEffects.cameraShake(world)
-        EffectDispatcher.allEffects(ball, 2, 1.5)
-        GlobalEffects.slowMo(world, 0.5)
-        --EffectDispatcher.cameraZoom(brick)
-
-    end)
-
-    pan_message:registerMessageResponse(Events.BALL_COLLISION_WALL, function(ball, wall)
-        
-        local statistics_system = world:getStatisticsSystem()
-        local time_system = world:getTimeSystem()
-
-        statistics_system:addToEventTally(Events.BALL_COLLISION_WALL)
-        statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_WALL, time_system:getTime())
-
-        GlobalEffects.cameraShake(world)
-        EffectDispatcher.allEffects(ball, 2, 1.5)
-        EffectDispatcher.scaleEntity(wall, 5, 5)
-
-
-    end)
-end
 
 function PlayScene:initialize(name, w)
 
@@ -180,26 +58,25 @@ function PlayScene:initialize(name, w)
 
     self.effects = EffectDispatcher(world)
 
-    registerGlobalInputs(world)
-
-    createBackgroundImage(world)
-
-    loadBackgroundSound(world)
-
-    -- Initialize complicated entities
-
+    -- Initialize entities
     self.ball_builder = BallBuilder(world)
     self.player_builder = PlayerBuilder(world)
     self.wall_builder = WallBuilder(world)
     self.brick_builder = BrickBuilder(world)
-
+    self.background_image_builder = BackgroundImageBuilder(world)
+    self.background_sound_builder = BackgroundSoundBuilder(world)
+    self.global_input_builder = GlobalInputBuilder(world)
+    self.events_listener_builder = EventsListenerBuilder(world)
 
     self.ball_builder:create()
     self.player_builder:create()
     self.wall_builder:create()
     self.brick_builder:create()
+    self.background_image_builder:create()
+    self.background_sound_builder:create()
+    self.global_input_builder:create()
+    self.events_listener_builder:create()
 
-    createGlobalEventListener(world)
 
   
 end
