@@ -229,6 +229,40 @@ function EntityManager:getAllEntitiesContainingComponents(first, ...)
 end
 
 
+function EntityManager:queryEntities(entity_query)
+
+	local anded_entities = Set()
+
+	local first = true
+
+	for i, or_set in  entity_query:getQuery():members() do
+
+		local or_entities = Set()
+
+		for component in or_set:members() do
+			local e = self:getAllEntitiesContainingComponent(component)
+			or_entities:addSet(e)
+		end
+
+		if first then
+			anded_entities:addSet(or_entities)
+			first = false
+		else
+
+			anded_entities = Set.intersection(anded_entities, or_entities)
+
+			if anded_entities:size() == 0 then
+				return anded_entities
+			end
+		end
+	end
+
+	return anded_entities
+
+end
+
+
+
 
 function EntityManager:killEntity(uuid)
 

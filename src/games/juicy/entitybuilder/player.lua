@@ -11,36 +11,46 @@ require 'behaviors.genericbehaviors'
 require 'enums.tags'
 require 'enums.palette'
 
-Player = {}
+require 'external.middleclass'
+require 'core.entity.entitybuilder'
 
-function Player.init(world)
+PlayerBuilder  = class('PlayerBuilder', EntityBuilder)
 
-    local em = world:getEntityManager()
+function PlayerBuilder:initialize(world)
+    EntityBuilder.initialize(self, world, 'player')
+    return self
+end
 
-    local player = world:getTaggedEntity(Tags.PLAYER)
+function PlayerBuilder:create()
 
-    if not player then 
-        player = em:createEntity('player')
-    end
+    EntityBuilder.create(self)
 
-    player:addComponent(Transform(350, 500))
-    player:addComponent(ShapeRendering():setColor(Palette.COLOR_PADDLE:unpack()):setShape(RectangleShape:new(100, 30)))
-    player:addComponent(Collider():setHitbox(RectangleShape:new(100, 30)))
-    player:addComponent(Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
-    -- player:addComponent(Behavior():addUpdateFunction(playerAI))
-    player:addComponent(InputResponse():addResponse(playerInputResponse))
+    self.entity:addComponent(Transform(350, 500))
+    self.entity:addComponent(ShapeRendering():setColor(Palette.COLOR_PADDLE:unpack()):setShape(RectangleShape:new(100, 30)))
+    self.entity:addComponent(Collider():setHitbox(RectangleShape:new(100, 30)))
+    self.entity:addComponent(Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
+    -- self.entity:addComponent(Behavior():addUpdateFunction(playerAI))
 
-    world:tagEntity(Tags.PLAYER, player)
-    world:addEntityToGroup(Tags.PLAY_GROUP, player)
+    self.entity:tag(Tags.PLAYER)
+    self.entity:addToGroup(Tags.PLAY_GROUP)
 
    local behavior = Behavior()
     behavior:addUpdateFunction(constrainEntityToWorld)
     -- behavior:addUpdateFunction(playerAI)
-    player:addComponent(behavior)
+    self.entity:addComponent(behavior)
 
+    -- TODO Combine
     registerPlayerInputs(world)
+    self.entity:addComponent(InputResponse():addResponse(playerInputResponse))
 
 end 
+
+function PlayerBuilder:reset()
+
+    -- TODO
+
+end
+
 
 
 
@@ -138,5 +148,3 @@ function playerInputResponse(player, held_actions, pressed_actions, dt)
     end
 
 end
-
-return Player

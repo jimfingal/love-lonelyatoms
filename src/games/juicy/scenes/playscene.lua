@@ -10,9 +10,11 @@ require 'core.components.behavior'
 require 'core.components.inputresponse'
 require 'core.components.soundcomponent'
 require 'core.shapedata'
-require 'behaviors.collisionbehaviors'
+require 'behaviors.ballbehaviors'
+require 'behaviors.playerbehaviors'
 require 'entitysets'
-require 'behaviors.effects'
+require 'scripts.oldeffects'
+
 require 'settings'
 
 require 'enums.actions'
@@ -20,12 +22,22 @@ require 'enums.assets'
 require 'enums.tags'
 require 'enums.palette'
 
-Ball = require 'entityinit.ball'
-Bricks = require 'entityinit.bricks'
-Player = require 'entityinit.player'
-Walls = require 'entityinit.walls'
+require 'entitybuilder.ball'
+require 'entitybuilder.player'
+
+Bricks = require 'entitybuilder.bricks'
+Walls = require 'entitybuilder.walls'
+
+GlobalEffects = require 'scripts.globaleffects'
+
 
 PlayScene = class('Play', Scene)
+
+
+local ball_builder = BallBuilder(world)
+local player_builder = PlayerBuilder(world)
+
+
 
 local registerGlobalInputs = function (world)
 
@@ -123,7 +135,7 @@ local createGlobalEventListener = function(world)
         statistics_system:addToEventTally(Events.BALL_COLLISION_PLAYER)
         statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_PLAYER, time_system:getTime())
 
-        EffectDispatcher.cameraShake()
+        GlobalEffects.cameraShake(world)
         EffectDispatcher.allEffects(ball, 2, 1.5)
         EffectDispatcher.scaleEntity(player, 1.5, 1.3)
         --EffectDispatcher.rotateJitter(player, 1)
@@ -141,9 +153,9 @@ local createGlobalEventListener = function(world)
         statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_BRICK, time_system:getTime())
 
         EffectDispatcher.dispatchBrick(ball, brick)
-        EffectDispatcher.cameraShake()
+        GlobalEffects.cameraShake(world)
         EffectDispatcher.allEffects(ball, 2, 1.5)
-        --EffectDispatcher.slowMo(0.5)
+        GlobalEffects.slowMo(world, 0.5)
         --EffectDispatcher.cameraZoom(brick)
 
     end)
@@ -156,7 +168,7 @@ local createGlobalEventListener = function(world)
         statistics_system:addToEventTally(Events.BALL_COLLISION_WALL)
         statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_WALL, time_system:getTime())
 
-        EffectDispatcher.cameraShake()
+        GlobalEffects.cameraShake(world)
         EffectDispatcher.allEffects(ball, 2, 1.5)
         EffectDispatcher.scaleEntity(wall, 5, 5)
 
@@ -182,8 +194,8 @@ function PlayScene:initialize(name, w)
 
     Walls.init(world)
 
-    local ball = BallInitializer(world)
-    ball:createEntity()
+    ball_builder:create()
+    player_builder:create()
 
     createGlobalEventListener(world)
 
@@ -192,33 +204,21 @@ end
 
 function PlayScene:reset()
 
-    love.audio.stop()
+    self.world:getTimeSystem():stop()
 
-    local world = self.world
+    Bricks.init(self.world)
 
-    world:getTimeSystem():stop()
-
-    Bricks.init(world)
-    Player.init(world)
-
-    resetCollisionSystem(world)
-
-    local sound_component =  world:getTaggedEntity(Tags.BACKGROUND_SOUND):getComponent(SoundComponent)
-    local retrieved_sound = sound_component:getSound(Assets.BACKGROUND_SOUND)
-    love.audio.play(retrieved_sound)
+    resetCollisionSystem(self.world)
     
-    local ball = world:getTaggedEntity(Tags.BALL)
-    local ball_collider = ball:getComponent(Collider)
-    local ball_rendering = ball:getComponent(ShapeRendering)
+    ball_builder:reset()
+    player_builder:reset()
 
-    ball_collider:disable()
-    ball_rendering:disable()
-
-
+    -- TODO: add to brick reset
     if Settings.BRICKS_DROPIN then
         self.effects:dropInBricks()
     end
 
+    -- TODO: add to player reset
     if Settings.PLAYER_DROPIN then
         self.effects:dropInPlayer()
     end

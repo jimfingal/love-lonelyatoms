@@ -12,18 +12,20 @@ require 'enums.tags'
 require 'enums.palette'
 require 'behaviors.genericbehaviors'
 
-require 'entityinit.entityinitializer'
+require 'core.entity.entitybuilder'
 
 require 'external.middleclass'
 
-BallInitializer  = class('BallInitializer', EntityInitializer)
+BallBuilder  = class('BallInitializer', EntityBuilder)
 
-function BallInitializer:initialize(world)
-    EntityInitializer.initialize(self, world, 'ball')
+function BallBuilder:initialize(world)
+    EntityBuilder.initialize(self, world, 'ball')
     return self
 end
 
-function BallInitializer:createEntity()
+function BallBuilder:create()
+
+    EntityBuilder.create(self)
 
     self.entity:addComponent(Transform(395, 485))
     self.entity:addComponent(ShapeRendering():setColor(Palette.COLOR_BALL:unpack()):setShape(RectangleShape:new(15, 15)))
@@ -42,6 +44,17 @@ function BallInitializer:createEntity()
     self.entity:addComponent(ball_behavior)
 
 end 
+
+function BallBuilder:reset()
+
+    local collider = self.entity:getComponent(Collider)
+    local rendering = self.entity:getComponent(ShapeRendering)
+
+    collider:disable()
+    rendering:disable()
+
+end
+
 
 function ballInputResponse(ball, held_actions, pressed_actions, dt)
 
@@ -66,33 +79,6 @@ function ballInputResponse(ball, held_actions, pressed_actions, dt)
 
         ball_transform:moveTo(player_transform:getPosition().x + player_render:getShape().width / 2, 
                             player_transform:getPosition().y - ball_collider:hitbox().height)
-
-    end
-
-end
-
-function ballAutoResetOnNonexistence(ball, dt)
-
-    local ball_transform = ball:getComponent(Transform)
-    local ball_movement = ball:getComponent(Motion)
-    local ball_collider = ball:getComponent(Collider)
-    local ball_rendering = ball:getComponent(ShapeRendering)
-
-    local player = ball:getWorld():getTaggedEntity(Tags.PLAYER)
-
-    local player_transform = player:getComponent(Transform)
-    local player_render = player:getComponent(ShapeRendering)
-
-
-   if ball_collider.active == false then
-
-        ball_collider:enable()
-        ball_rendering:enable()
-        ball_movement:setVelocity(200, -425)
-
-        ball_transform:moveTo(player_transform:getPosition().x + player_render:getShape().width / 2, 
-                            player_transform:getPosition().y - ball_collider:hitbox().height)
-
 
     end
 
