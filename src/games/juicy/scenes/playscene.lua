@@ -22,20 +22,16 @@ require 'enums.assets'
 require 'enums.tags'
 require 'enums.palette'
 
-require 'entitybuilder.ball'
-require 'entitybuilder.player'
-
-Bricks = require 'entitybuilder.bricks'
-Walls = require 'entitybuilder.walls'
+require 'entitybuilders.ball'
+require 'entitybuilders.player'
+require 'entitybuilders.walls'
+require 'entitybuilders.bricks'
 
 GlobalEffects = require 'scripts.globaleffects'
 
 
 PlayScene = class('Play', Scene)
 
-
-local ball_builder = BallBuilder(world)
-local player_builder = PlayerBuilder(world)
 
 
 
@@ -192,10 +188,16 @@ function PlayScene:initialize(name, w)
 
     -- Initialize complicated entities
 
-    Walls.init(world)
+    self.ball_builder = BallBuilder(world)
+    self.player_builder = PlayerBuilder(world)
+    self.wall_builder = WallBuilder(world)
+    self.brick_builder = BrickBuilder(world)
 
-    ball_builder:create()
-    player_builder:create()
+
+    self.ball_builder:create()
+    self.player_builder:create()
+    self.wall_builder:create()
+    self.brick_builder:create()
 
     createGlobalEventListener(world)
 
@@ -205,13 +207,12 @@ end
 function PlayScene:reset()
 
     self.world:getTimeSystem():stop()
-
-    Bricks.init(self.world)
+    
+    self.ball_builder:reset()
+    self.player_builder:reset()
+    self.brick_builder:reset()
 
     resetCollisionSystem(self.world)
-    
-    ball_builder:reset()
-    player_builder:reset()
 
     -- TODO: add to brick reset
     if Settings.BRICKS_DROPIN then

@@ -169,7 +169,7 @@ function EntityManager:getAllComponentsOnEntity(uuid)
 
 end
 
--- Returns a set
+-- Returns a set of all entities containing a particular component
 function EntityManager:getAllEntitiesContainingComponent(component_class)
 
 	assert(component_class, "Must have a component class parameter")
@@ -188,47 +188,7 @@ function EntityManager:getAllEntitiesContainingComponent(component_class)
 
 end
 
--- Returns a set
-function EntityManager:getAllEntitiesContainingComponents(first, ...)
-
-	local entities = Set()
-
-	-- Make slightly more efficient
-
-	if not first then
-		
-		return entities
-
-	elseif not arg then
-		
-		return self:getAllEntitiesContainingComponent(first)
-
-	else
-
-		entities = self:getAllEntitiesContainingComponent(first)
-
-		-- Continually narrow down to do intersection. If we get to the point of
-		-- No overlap, return empty set.
-
-		for _, class in ipairs(arg) do
-
-			local other_entities = self:getAllEntitiesContainingComponent(class)
-
-			entities = Set.intersection(entities, other_entities)
-
-			if entities:size() == 0 then
-				return entities
-			end
-
-		end
-
-	end
-
-	return entities
-
-end
-
-
+-- Otherwise, we use a query
 function EntityManager:queryEntities(entity_query)
 
 	local anded_entities = Set()

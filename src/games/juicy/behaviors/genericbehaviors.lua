@@ -21,3 +21,6 @@ function constrainEntityToWorld(entity)
     end
 
 end
+
+
+

@@ -22,6 +22,9 @@ function GlobalEffects.cameraShake(world)
     local schedule_system = world:getSystem(ScheduleSystem)
     local tween_system = world:getSystem(TweenSystem)
 
+    assert(camera and schedule_system and tween_system, 
+        "Camera shake effect only works with CameraSystem, ScheduleSystem, and TweenSystem initialized")
+
     intensity = 3
 
     local jitter = function()
@@ -40,7 +43,7 @@ end
 function GlobalEffects.slowMo(world, length)
 
     local time_system = world:getSystem(TimeSystem)
-
+    assert(time_system, "Slow-mo effect only works with TimeSystem initialized")
     time_system.dilation = 0.1
 
     world:getSystem(TweenSystem):addTween(length, time_system, {dilation = 1 }, Easing.outQuad)

@@ -9,10 +9,18 @@ require 'core.components.soundcomponent'
 require 'enums.tags'
 require 'enums.palette'
 
+require 'core.entity.entitybuilder'
 
-Walls = {}
+require 'external.middleclass'
 
-function Walls.init(world)
+WallBuilder  = class('WallBuilder', EntityBuilder)
+
+function WallBuilder:initialize(world)
+    EntityBuilder.initialize(self, world)
+    return self
+end
+
+function WallBuilder:create()
 
     local em = world:getEntityManager()
 
@@ -50,7 +58,9 @@ function Walls.init(world)
     world:tagEntity(Tags.LEFT_WALL, left_tile)
     world:tagEntity(Tags.RIGHT_WALL, right_tile)
 
+end
 
-end 
+function WallBuilder:reset()
+    -- Don't have anything to do here
+end
 
-return Walls
