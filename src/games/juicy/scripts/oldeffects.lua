@@ -14,21 +14,10 @@ require "settings"
 
 require 'math'
 
-EffectDispatcher = class("EffectsDispatcher")
+function dropInBricks(world)
 
-function EffectDispatcher:initialize(world)
-
-    self.world = world
-    self.tween_system = world:getSystem(TweenSystem)
-    self.schedule_system = world:getSystem(ScheduleSystem)
-
-end
-
-
-function EffectDispatcher:dropInBricks()
-
-    local bricks = self.world:getEntitiesInGroup(Tags.BRICK_GROUP)
-
+    local bricks = world:getEntitiesInGroup(Tags.BRICK_GROUP)
+    local tween_system = world:getSystem(TweenSystem)
     -- Send bricks up to sky and make them smaller
 
 
@@ -57,17 +46,17 @@ function EffectDispatcher:dropInBricks()
 
         end
 
-        self.tween_system:addTween(drop_tween, brick:getComponent(Transform):getPosition(), {x = oldx, y = oldy}, Easing.outBounce)
+        tween_system:addTween(drop_tween, brick:getComponent(Transform):getPosition(), {x = oldx, y = oldy}, Easing.outBounce)
 
         if Settings.BRICKS_ROTATE then
-            self.tween_system:addTween(rotate_tween, brick:getComponent(Transform), {rotation = 2 * math.pi }, Easing.outBounce)
+            tween_system:addTween(rotate_tween, brick:getComponent(Transform), {rotation = 2 * math.pi }, Easing.outBounce)
         end
 
         if Settings.BRICKS_SCALEIN then
 
             shape.width = 30
             shape.height = 10
-            self.tween_system:addTween(scale_tween, brick:getComponent(ShapeRendering):getShape(), {width = 50, height = 20}, Easing.outBounce)
+            tween_system:addTween(scale_tween, brick:getComponent(ShapeRendering):getShape(), {width = 50, height = 20}, Easing.outBounce)
 
         end
 
@@ -77,9 +66,11 @@ function EffectDispatcher:dropInBricks()
 end
 
 
-function EffectDispatcher:dropInPlayer()
+function dropInPlayer(world)
 
-    local player = self.world:getTaggedEntity(Tags.PLAYER)
+    local player = world:getTaggedEntity(Tags.PLAYER)
+    local tween_system = world:getSystem(TweenSystem)
+
 
     -- Send player up to sky and make them smaller
 
@@ -102,16 +93,16 @@ function EffectDispatcher:dropInPlayer()
     end
 
 
-    self.tween_system:addTween(drop_tween, player:getComponent(Transform):getPosition(), {x = 350, y = 500}, Easing.outBounce)
+    tween_system:addTween(drop_tween, player:getComponent(Transform):getPosition(), {x = 350, y = 500}, Easing.outBounce)
 
     if Settings.PLAYER_ROTATE then
-        self.tween_system:addTween(rotate_tween, player:getComponent(Transform), {rotation = 2 * math.pi }, Easing.outBounce)
+        tween_system:addTween(rotate_tween, player:getComponent(Transform), {rotation = 2 * math.pi }, Easing.outBounce)
     end
 
     if Settings.PLAYER_SCALEIN then
         shape.width = 50
         shape.height = 15
-        self.tween_system:addTween(scale_tween, player:getComponent(ShapeRendering):getShape(), {width = 100, height = 30}, Easing.outBounce)
+        tween_system:addTween(scale_tween, player:getComponent(ShapeRendering):getShape(), {width = 100, height = 30}, Easing.outBounce)
     end
 
 
@@ -119,7 +110,7 @@ end
 
 
 
-function EffectDispatcher.scaleEntity(entity, dx, dy)
+function scaleEntity(entity, dx, dy)
 
     local revert = 
         function()
@@ -140,7 +131,7 @@ function EffectDispatcher.scaleEntity(entity, dx, dy)
     scaleUp()
 end
 
-function EffectDispatcher.rotateEntity(entity)
+function rotateEntity(entity)
 
     local transform = entity:getComponent(Transform)
     local current_rotation = transform:getRotation()
@@ -176,14 +167,14 @@ function EffectDispatcher.rotateJitter(entity, intensity)
 end
 ]]
 
-function EffectDispatcher.allEffects(entity, dx, dy) 
-    EffectDispatcher.scaleEntity(entity, dx, dy) 
-    EffectDispatcher.rotateEntity(entity) 
+function allEffects(entity, dx, dy) 
+    scaleEntity(entity, dx, dy) 
+    rotateEntity(entity) 
 end
 
 
 
-function EffectDispatcher.dispatchBrick(ball, brick)
+function dispatchBrick(ball, brick)
 
     local ball_position = ball:getComponent(Transform):getPosition()
     local ball_movement = ball:getComponent(Motion)
@@ -217,7 +208,7 @@ function EffectDispatcher.dispatchBrick(ball, brick)
 
 end
 
-function EffectDispatcher.playBrickSoundWithAdjustedPitch(brick, dt)
+function playBrickSoundWithAdjustedPitch(brick, dt)
 
     local sound_component = brick:getComponent(SoundComponent)
     local retrieved_sound = sound_component:getSound(Assets.BRICK_SOUND)
@@ -261,6 +252,3 @@ function EffectDispatcher.cameraZoom(entity)
 
 end
 ]]
-
-
-return EffectDispatcher

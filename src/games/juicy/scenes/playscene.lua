@@ -31,7 +31,7 @@ require 'entitybuilders.globalinput'
 require 'entitybuilders.player'
 require 'entitybuilders.walls'
 
-GlobalEffects = require 'scripts.globaleffects'
+require 'scripts.globaleffects'
 require 'scripts.collisions'
 
 PlayScene = class('Play', Scene)
@@ -51,9 +51,6 @@ function PlayScene:initialize(name, w)
     input_system:registerInput(' ', Actions.RESET_BALL)
     input_system:registerInput('escape', Actions.RESET_BOARD)
     input_system:registerInput('q', Actions.QUIT_GAME)
-
-
-    self.effects = EffectDispatcher(world)
 
     -- Entities
     self.ball_builder = BallBuilder(world)
@@ -145,12 +142,12 @@ function PlayScene:reset()
 
     -- TODO: add to brick reset
     if Settings.BRICKS_DROPIN then
-        self.effects:dropInBricks()
+        dropInBricks(self.world)
     end
 
     -- TODO: add to player reset
     if Settings.PLAYER_DROPIN then
-        self.effects:dropInPlayer()
+        dropInPlayer(self.world)
     end
 
 end
