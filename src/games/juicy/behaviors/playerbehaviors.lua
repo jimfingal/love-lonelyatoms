@@ -26,11 +26,13 @@ function collidePlayerWithWall(player, wall)
     local wall_left_edge = wall_position.x
     local wall_right_edge = wall_position.x + wall_hitbox.width
 
+    local left_wall = wall:getWorld():getTaggedEntity(Tags.LEFT_WALL)
+    local right_wall = wall:getWorld():getTaggedEntity(Tags.RIGHT_WALL)
 
     -- If something is immovable, then I could only collide with it in the direction I'm going
 
     -- Left Edge collision
-    if player_left_edge <= wall_right_edge + 1 and player_right_edge >= wall_right_edge then
+    if wall == left_wall then
 
         -- Translate to be on the other side of it
 
@@ -48,7 +50,7 @@ function collidePlayerWithWall(player, wall)
         ]]
 
 
-    elseif player_right_edge >= wall_left_edge - 1 and player_left_edge <= wall_left_edge  then
+    elseif wall == right_wall then
 
         local new_x = wall_position.x - player_collider:hitbox().width - 1
 

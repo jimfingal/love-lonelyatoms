@@ -7,17 +7,17 @@ function constrainEntityToWorld(entity)
     -- Horizontally
 
     if transform.position.x < 0 then
-        transform.position.x = 0
+        transform.position.x = 1
     elseif transform.position.x > love.graphics.getWidth() then
-        transform.position.x = love.graphics.getWidth()
+        transform.position.x = love.graphics.getWidth() - 1
     end
 
     -- Vertically
 
     if transform.position.y < 0 then
-        transform.position.y = 0
+        transform.position.y = 1
     elseif transform.position.y > love.graphics.getHeight() then
-        transform.position.y = love.graphics.getHeight()
+        transform.position.y = love.graphics.getHeight() - 1
     end
 
 end
