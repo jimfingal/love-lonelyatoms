@@ -2,10 +2,11 @@
 require 'external.middleclass'
 require 'core.entity.entitybuilder'
 GlobalEffects = require 'scripts.globaleffects'
-require 'scripts.oldeffects'
-
+EntityEffects = require 'scripts.entityeffects'
 
 EventsListenerBuilder  = class('EventsListenerBuilder', EntityBuilder)
+require 'behaviors.brickbehaviors'
+
 
 function EventsListenerBuilder:initialize(world)
     EntityBuilder.initialize(self, world, 'panopticon')
@@ -33,9 +34,9 @@ function EventsListenerBuilder:create()
         statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_PLAYER, time_system:getTime())
 
         GlobalEffects.cameraShake(self.world)
-        allEffects(ball, 2, 1.5)
-        scaleEntity(player, 1.5, 1.3)
-        --EffectDispatcher.rotateJitter(player, 1)
+        EntityEffects.scaleEntity(ball, 2, 1.5)
+        EntityEffects.rotateEntity(ball)
+        EntityEffects.scaleEntity(player, 1.5, 1.3)
 
     end)
 
@@ -50,10 +51,11 @@ function EventsListenerBuilder:create()
         statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_BRICK, time_system:getTime())
 
         dispatchBrick(ball, brick)
+        
         GlobalEffects.cameraShake(self.world)
-        allEffects(ball, 2, 1.5)
+        EntityEffects.scaleEntity(ball, 2, 1.5)
+        EntityEffects.rotateEntity(ball)
         GlobalEffects.slowMo(self.world, 0.5)
-        -- cameraZoom(brick)
 
     end)
 
@@ -66,8 +68,10 @@ function EventsListenerBuilder:create()
         statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_WALL, time_system:getTime())
 
         GlobalEffects.cameraShake(self.world)
-        allEffects(ball, 2, 1.5)
-        scaleEntity(wall, 5, 5)
+        EntityEffects.scaleEntity(ball, 2, 1.5)
+        EntityEffects.rotateEntity(ball)
+        EntityEffects.scaleEntity(wall, 5, 5)
+
 
     end)
 

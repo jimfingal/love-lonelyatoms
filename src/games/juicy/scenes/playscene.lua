@@ -31,8 +31,11 @@ require 'entitybuilders.globalinput'
 require 'entitybuilders.player'
 require 'entitybuilders.walls'
 
-require 'scripts.globaleffects'
-require 'scripts.collisions'
+Collisions = require 'scripts.collisions'
+
+require 'behaviors.playerbehaviors'
+require 'behaviors.brickbehaviors'
+
 
 PlayScene = class('Play', Scene)
 
@@ -107,7 +110,7 @@ function PlayScene:update(dt)
     -- Detect and Announce collisions
     local collision_system = self.world:getCollisionSystem()
     local collisions = collision_system:getCollisions()
-    announceCollisions(self.world, collisions)
+    Collisions.announceCollisions(self.world, collisions)
 
 end
 
@@ -120,7 +123,6 @@ function PlayScene:draw()
     love.graphics.setBackgroundColor(Palette.COLOR_BRICK:unpack())
 
     self.world:getRenderingSystem():renderDrawables(entitiesWithDrawability(self.world))
-
 
     if Settings.DEBUG then
         self:outputDebugText()
@@ -138,7 +140,10 @@ function PlayScene:reset()
     self.player_builder:reset()
     self.brick_builder:reset()
 
-    resetCollisionSystem(self.world)
+    Collisions.resetCollisionSystem(self.world)
+
+    -- Send message to trigger any reactive effects
+    self.world:getMessageSystem():emitMessage(Events.GAME_RESET)
 
     -- TODO: add to brick reset
     if Settings.BRICKS_DROPIN then

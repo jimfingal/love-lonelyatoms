@@ -47,3 +47,44 @@ function collidePlayerWithWall(player, wall)
 
 end
 
+
+function dropInPlayer(world)
+
+    local player = world:getTaggedEntity(Tags.PLAYER)
+    local tween_system = world:getSystem(TweenSystem)
+
+
+    -- Send player up to sky and make them smaller
+
+    local vertical_translation = Vector(0, -300)
+    local transform = player:getComponent(Transform)
+    local shape = player:getComponent(ShapeRendering):getShape()
+
+    local new_position = transform:getPosition() + vertical_translation
+    transform:moveTo(new_position:unpack())
+
+    local rotate_tween = 1
+    local drop_tween = 1
+    local scale_tween = 1
+
+    if Settings.PLAYER_JITTER then
+        rotate_tween = 1 + math.random()
+        drop_tween = 1 + math.random()
+        scale_tween = 1 + math.random()
+
+    end
+
+    tween_system:addTween(drop_tween, player:getComponent(Transform):getPosition(), {x = 350, y = 500}, Easing.outBounce)
+
+    if Settings.PLAYER_ROTATE then
+        tween_system:addTween(rotate_tween, player:getComponent(Transform), {rotation = 2 * math.pi }, Easing.outBounce)
+    end
+
+    if Settings.PLAYER_SCALEIN then
+        shape.width = 50
+        shape.height = 15
+        tween_system:addTween(scale_tween, player:getComponent(ShapeRendering):getShape(), {width = 100, height = 30}, Easing.outBounce)
+    end
+
+end
+

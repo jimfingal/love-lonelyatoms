@@ -1,6 +1,8 @@
 require 'enums.tags'
 
-function resetCollisionSystem(world)
+Collisions = {}
+
+function Collisions.resetCollisionSystem(world)
 
     local collision_system = world:getSystem(CollisionSystem)
 
@@ -12,7 +14,7 @@ function resetCollisionSystem(world)
 
 end
 
-function announceCollisions(world, collisions) 
+function Collisions.announceCollisions(world, collisions) 
 
     local message_system = world:getMessageSystem()
 
@@ -60,3 +62,5 @@ function announceCollisions(world, collisions)
 
     end
 end
+
+return Collisions
