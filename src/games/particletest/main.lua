@@ -26,10 +26,18 @@ require 'core.components.emitter'
 require 'core.shapedata'
 
 
+require 'core.entity.entityquery'
 require 'core.entity.world'
 require 'external.slam'
 
 DEBUG = false
+
+
+local EMITTERS = EntityQuery():addOrSet(Emitter)
+local MOVABLE_ENTITIES = EntityQuery():addOrSet(Transform):addOrSet(Motion)
+local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(Transform, ShapeRendering):addOrSet(Transform, TextRendering):addOrSet(Transform, ImageRendering)
+
+
 
 function love.load()
  
@@ -45,7 +53,7 @@ function love.load()
     particle_emitter:addComponent(ShapeRendering():setColor(Color.fromHex("e97f02"):unpack()):setShape(RectangleShape:new(100, 30)))
 
     local emitter_component = Emitter()
-    emitter_component:setNumberOfEmissions(10)
+    emitter_component:setNumberOfEmissions(3)
 
     local emissionFunction = function()
 
@@ -54,7 +62,7 @@ function love.load()
 
         local emitted_entity =  em:createEntity()
         emitted_entity:addComponent(Transform(pe_transform:getPosition().x, pe_transform:getPosition().y))
-        emitted_entity:addComponent(ShapeRendering():setColor(Color.fromHex("bd1550"):unpack()):setShape(RectangleShape:new(10, 10)))
+        emitted_entity:addComponent(ShapeRendering():setColor(math.random(255), math.random(255), math.random(255)):setShape(RectangleShape:new(10, 10)))
         emitted_entity:addComponent(Motion():setVelocity(0, -30))
 
         local schedule_system = world:getSystem(ScheduleSystem)
@@ -69,7 +77,7 @@ function love.load()
 
         local pe_transform = particle_emitter:getComponent(Transform)
         emitted_entity:getComponent(Transform):moveTo(pe_transform:getPosition().x, pe_transform:getPosition().y)
-        emitted_entity:getComponent(Motion):setVelocity(0, -20)
+        emitted_entity:getComponent(Motion):setVelocity(0, -30)
         emitted_entity:getComponent(ShapeRendering):enable()
 
         local schedule_system = world:getSystem(ScheduleSystem)
@@ -96,7 +104,7 @@ function love.load()
 
     emitter_component:start()
 
-    schedule_system:doEvery(0.1, function() emitter_component:makeReady() end)
+    schedule_system:doEvery(1, function() emitter_component:makeReady() end)
 
     particle_emitter:addComponent(emitter_component)
     world:tagEntity("particle_emitter", particle_emitter)
@@ -218,25 +226,16 @@ end
 
 
 function entitiesWithMovement(world)
-    local em = world:getEntityManager()
-    return em:getAllEntitiesContainingComponents(Transform, Motion)
+    return world:getEntityManager():query(MOVABLE_ENTITIES)
 end
 
 
 function entitiesWithDrawability(world)
-   
-    local em = world:getEntityManager()
-
-    local drawables = Set()
-    drawables:addSet(em:getAllEntitiesContainingComponents(Transform, ShapeRendering))
-    drawables:addSet(em:getAllEntitiesContainingComponents(Transform, TextRendering))
-    drawables:addSet(em:getAllEntitiesContainingComponents(Transform, ImageRendering))    
-
-    return drawables
+    return world:getEntityManager():query(DRAWABLE_ENTITIES)
 end
 
 function entitiesWithEmitters(world)
    
-    return world:getEntityManager():getAllEntitiesContainingComponent(Emitter)
+    return world:getEntityManager():query(EMITTERS)
 
 end
