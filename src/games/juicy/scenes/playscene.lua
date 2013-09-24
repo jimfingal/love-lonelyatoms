@@ -12,8 +12,6 @@ require 'core.components.soundcomponent'
 require 'core.shapedata'
 require 'behaviors.ballbehaviors'
 require 'behaviors.playerbehaviors'
-require 'entitysets'
-require 'scripts.oldeffects'
 
 require 'settings'
 
@@ -30,11 +28,18 @@ require 'entitybuilders.eventslistener'
 require 'entitybuilders.globalinput'
 require 'entitybuilders.player'
 require 'entitybuilders.walls'
+require 'core.entity.entityquery'
+
 
 
 local Collisions = require 'scripts.collisions'
 local PlayerBehaviors = require 'behaviors.playerbehaviors'
 local BrickBehaviors = require 'behaviors.brickbehaviors'
+
+local INPUTTABLE_ENTITIES = EntityQuery():addOrSet(InputResponse)
+local BEHAVIOR_ENTITIES = EntityQuery():addOrSet(Behavior)
+local MOVABLE_ENTITIES = EntityQuery():addOrSet(Transform):addOrSet(Motion)
+local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(Transform, ShapeRendering):addOrSet(Transform, TextRendering):addOrSet(Transform, ImageRendering)
 
 
 PlayScene = class('Play', Scene)
@@ -99,13 +104,16 @@ function PlayScene:update(dt)
     self.world:getTweenSystem():update(game_world_dt)
 
     -- Update input
-    self.world:getInputSystem():processInputResponses(entitiesRespondingToInput(self.world), game_world_dt)
+    local inputtable = self.world:getEntityManager():query(INPUTTABLE_ENTITIES)
+    self.world:getInputSystem():processInputResponses(inputtable, game_world_dt)
     
     -- Update behaviors
-    self.world:getBehaviorSystem():processBehaviors(entitiesWithBehavior(self.world), game_world_dt) 
+    local behaviorals = self.world:getEntityManager():query(BEHAVIOR_ENTITIES)
+    self.world:getBehaviorSystem():processBehaviors(behaviorals, game_world_dt) 
 
     -- Update movement 
-    self.world:getMovementSystem():updateMovables(entitiesWithMovement(self.world), game_world_dt)
+    local movables = self.world:getEntityManager():query(MOVABLE_ENTITIES)
+    self.world:getMovementSystem():updateMovables(movables, game_world_dt)
     
     -- Detect and Announce collisions
     local collision_system = self.world:getCollisionSystem()
@@ -122,7 +130,8 @@ function PlayScene:draw()
 
     love.graphics.setBackgroundColor(Palette.COLOR_BRICK:unpack())
 
-    self.world:getRenderingSystem():renderDrawables(entitiesWithDrawability(self.world))
+    local drawables = self.world:getEntityManager():query(DRAWABLE_ENTITIES)
+    self.world:getRenderingSystem():renderDrawables(drawables)
 
     if Settings.DEBUG then
         self:outputDebugText()

@@ -189,7 +189,7 @@ function EntityManager:getAllEntitiesContainingComponent(component_class)
 end
 
 -- Otherwise, we use a query
-function EntityManager:queryEntities(entity_query)
+function EntityManager:query(entity_query)
 
 	local anded_entities = Set()
 

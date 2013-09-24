@@ -10,6 +10,7 @@ EntityQuery = class('EntityQuery')
 
 function EntityQuery:initialize()
 	self.cnf_query = List()
+	return self
 end
 
 function EntityQuery:addOrSet(...)
@@ -19,6 +20,7 @@ function EntityQuery:addOrSet(...)
 	end
 
 	self.cnf_query:append(or_set)
+	return self
 end
 
 function EntityQuery:getQuery()
@@ -28,6 +30,7 @@ end
 
 function EntityQuery:clear()
 	self.cnf_query = List()
+	return self
 end
 
 function EntityQuery:__tostring()
