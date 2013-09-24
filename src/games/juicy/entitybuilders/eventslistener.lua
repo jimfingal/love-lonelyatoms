@@ -36,6 +36,8 @@ function EventsListenerBuilder:create()
 
         GlobalEffects.cameraShake(self.world)
 
+
+
     end)
 
     my_messaging:registerMessageResponse(Events.BALL_COLLISION_BRICK, function(ball, brick)
@@ -49,9 +51,11 @@ function EventsListenerBuilder:create()
         statistics_system:registerTimedEventOccurence(Events.BALL_COLLISION_BRICK, time_system:getTime())
 
         BrickBehaviors.dispatchBrick(ball, brick)
-        
+        EntityEffects.glitchColors(ball)
+        EntityEffects.glitchColors(brick)
+
         GlobalEffects.cameraShake(self.world)
-        GlobalEffects.slowMo(self.world, 0.5)
+        -- GlobalEffects.slowMo(self.world, 0.5)
 
     end)
 
@@ -65,6 +69,10 @@ function EventsListenerBuilder:create()
 
         GlobalEffects.cameraShake(self.world)
         EntityEffects.scaleEntity(wall, 5, 5)
+
+        EntityEffects.glitchColors(ball)
+        local background = self.world:getTaggedEntity(Tags.BACKGROUND)
+        EntityEffects.glitchColors(background)
 
 
     end)

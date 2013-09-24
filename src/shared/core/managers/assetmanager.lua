@@ -39,9 +39,9 @@ function AssetManager:loadFont(key, font_name, font_size)
 	return font
 end
 
-function AssetManager:getFont(name)
-	assert(self.fonts[name], "Font must be registered")
-	return self.fonts[name]
+function AssetManager:getFont(key)
+	assert(self.fonts[key], "Font must be registered")
+	return self.fonts[key]
 end
 
 
@@ -61,9 +61,32 @@ function AssetManager:loadSound(key, sound_name)
 
 end
 
-function AssetManager:getSound(name)
-	assert(self.sounds[name], "sound must be registered")
-	return self.sounds[name]
+function AssetManager:getSound(key)
+	assert(self.sounds[key], "sound must be registered")
+	return self.sounds[key]
+end
+
+
+function AssetManager:loadImage(key, image_name)
+	assert(key, "Missing argument: key name of image")
+	assert(image_name, "Missing argument: image to register")
+
+	if self.images[key] then
+		return self.images[key] -- Don't double-load
+	end
+
+	local img  = love.graphics.newImage(self.image_path .. image_name)
+	img:setFilter("nearest", "linear")
+	
+	self.images[key] = img
+
+	return img
+
+end
+
+function AssetManager:getImage(key)
+	assert(self.images[key], "image must be registered")
+	return self.images[key]
 end
 
 

@@ -16,6 +16,8 @@ require 'math'
 
 EntityEffects = {}
 
+EntityEffects.glitchLock = {}
+
 function EntityEffects.scaleEntity(entity, dx, dy)
 
     local revert = 
@@ -48,7 +50,40 @@ function EntityEffects.rotateEntity(entity)
         target_rotation = 2 * math.pi
     end
 
-    entity:getWorld():getSystem(TweenSystem):addTween(0.1, transform, {rotation = target_rotation }, Easing.linear)
+    local tweener = entity:getWorld():getSystem(TweenSystem)
+    tweener:addTween(0.1, transform, {rotation = target_rotation }, Easing.linear)
+
+end
+
+
+function EntityEffects.glitchColors(entity)
+
+    -- If this effect is already happening, the entity will end up getting reset
+    -- to some other color
+    if not EntityEffects.glitchLock[entity] then
+
+        local rendering = entity:getComponent(ShapeRendering)
+
+        local previous_color = rendering:getColor()
+
+        local reset_color = function() 
+            rendering:setColor(previous_color:unpack()) 
+            EntityEffects.glitchLock[entity] = false
+        end
+
+
+        local schedule_system = entity:getWorld():getSystem(ScheduleSystem)
+        
+        schedule_system:doFor(0.3, 
+            function()
+                EntityEffects.glitchLock[entity] = true
+                rendering:setColor(math.random(255), math.random(255), math.random(255))
+            end,
+            reset_color
+        )
+
+    end
+
 
 end
 
