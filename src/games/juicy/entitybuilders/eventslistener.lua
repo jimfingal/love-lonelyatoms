@@ -36,7 +36,8 @@ function EventsListenerBuilder:create()
 
         GlobalEffects.cameraShake(self.world)
 
-
+        local confetti_maker = self.world:getTaggedEntity(Tags.CONFETTI_MAKER)
+        EntityEffects.emitConfetti(confetti_maker, ball)
 
     end)
 
@@ -57,6 +58,10 @@ function EventsListenerBuilder:create()
         GlobalEffects.cameraShake(self.world)
         -- GlobalEffects.slowMo(self.world, 0.5)
 
+        local confetti_maker = self.world:getTaggedEntity(Tags.CONFETTI_MAKER)
+        EntityEffects.emitConfetti(confetti_maker, ball)
+
+
     end)
 
     my_messaging:registerMessageResponse(Events.BALL_COLLISION_WALL, function(ball, wall)
@@ -74,6 +79,8 @@ function EventsListenerBuilder:create()
         local background = self.world:getTaggedEntity(Tags.BACKGROUND)
         EntityEffects.glitchColors(background)
 
+        local confetti_maker = self.world:getTaggedEntity(Tags.CONFETTI_MAKER)
+        EntityEffects.emitConfetti(confetti_maker, ball)
 
     end)
 

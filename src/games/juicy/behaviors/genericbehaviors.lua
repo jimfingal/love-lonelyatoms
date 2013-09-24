@@ -24,4 +24,5 @@ function GenericBehaviors.constrainEntityToWorld(entity)
 
 end
 
+
 return GenericBehaviors

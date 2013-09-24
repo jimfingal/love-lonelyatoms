@@ -54,7 +54,7 @@ end
 -- Retrieves an object from pool. Tries recycled items first; if
 -- there are none and we haven't reached our limit, create a new object.
 -- If we have reached our limit, 
-function Pool:getObject()
+function Pool:getObject(...)
 
 	-- If we have a recycled item, use that
 	if self.recycled_count > 0 then
@@ -62,7 +62,7 @@ function Pool:getObject()
 		local this_object = self.recycled_objects:popLeft()
 
 		if self.object_reset_function then 
-			self.object_reset_function(this_object)
+			self.object_reset_function(this_object, ...)
 		end
 	
 		self.used_objects:add(this_object)
@@ -76,7 +76,7 @@ function Pool:getObject()
 	elseif self.used_count < self.count_limit then
 
 		-- Create a new one
-		local this_object = self:create()
+		local this_object = self:create(...)
 		self.used_objects:add(this_object)
 
 		self.used_count = 	self.used_count + 1
@@ -92,17 +92,18 @@ end
 
 
 -- Create
-function Pool:create()
+function Pool:create(...)
 	assert(self.object_creation_function, "Must have a function to get us an object")
-	return self.object_creation_function()
+	return self.object_creation_function(...)
 end
 
 -- Recycle
 function Pool:recycle(object)
+	-- Ensure object is either currently used, or not already recycled
+	assert(self.used_objects:contains(object) or not self.recycled_objects:contains(object), "Object must either be used or not yet recycled: " .. tostring(object))
 
 	self.used_objects:remove(object)
 	self.recycled_objects:append(object)
-
 	self.used_count = self.used_count - 1
 	self.recycled_count = self.recycled_count + 1
 end

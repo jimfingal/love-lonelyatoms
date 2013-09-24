@@ -11,6 +11,8 @@ require 'core.systems.schedulesystem'
 require 'core.systems.messagesystem'
 require 'core.systems.timesystem'
 require 'core.systems.statisticssystem'
+require 'core.systems.emissionsystem'
+
 
 require 'core.entity.world'
 require 'scenes.playscene'
@@ -82,6 +84,8 @@ function loadSystems(world)
     local statistics_system = StatisticsSystem()
     world:setSystem(statistics_system)
 
+    local emission_system = EmissionSystem()
+    world:setSystem(emission_system)
 end
 
 

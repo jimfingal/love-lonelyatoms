@@ -12,8 +12,6 @@ function Emitter:initialize()
 	self.on = false
 	self.ready_to_emit = false
 
-	self.emission_life = math.huge
-
 	self.emission_limit = 1
 	self.emmision_function = nil
 	self.reset_function = nil
@@ -22,13 +20,6 @@ function Emitter:initialize()
 	self.object_pool = Pool()
 
 	-- TODO: pool of objects?
-end
-
-function Emitter:setEmissionLife(num)
-	assert(type(num) == 'number', "Must have a number input")
-	self.emission_life = num
-	return self
-
 end
 
 function Emitter:setNumberOfEmissions(num)
@@ -66,10 +57,12 @@ function Emitter:recycle(obj)
 	self.object_pool:recycle(obj)
 	return self
 end
-function Emitter:emit()
-	return self.object_pool:getObject()
+function Emitter:emit(...)
+	return self.object_pool:getObject(...)
 end
 
+
+-- For automated or timed emitters
 function Emitter:isActive()
 	return self.on
 end

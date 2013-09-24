@@ -24,6 +24,7 @@ require 'entitybuilders.backgroundimage'
 require 'entitybuilders.backgroundsound'
 require 'entitybuilders.ball'
 require 'entitybuilders.bricks'
+require 'entitybuilders.confetti'
 require 'entitybuilders.eventslistener'
 require 'entitybuilders.globalinput'
 require 'entitybuilders.player'
@@ -40,6 +41,7 @@ local INPUTTABLE_ENTITIES = EntityQuery():addOrSet(InputResponse)
 local BEHAVIOR_ENTITIES = EntityQuery():addOrSet(Behavior)
 local MOVABLE_ENTITIES = EntityQuery():addOrSet(Transform):addOrSet(Motion)
 local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(Transform, ShapeRendering):addOrSet(Transform, TextRendering):addOrSet(Transform, ImageRendering)
+local EMITTERS = EntityQuery():addOrSet(Emitter)
 
 
 PlayScene = class('Play', Scene)
@@ -80,6 +82,8 @@ function PlayScene:initialize(name, w)
     self.events_listener_builder:create()
 
 
+    self.confetti_builder = ConfettiBuilder(world)
+    self.confetti_builder:create()
   
 end
 
@@ -106,6 +110,10 @@ function PlayScene:update(dt)
     -- Update input
     local inputtable = self.world:getEntityManager():query(INPUTTABLE_ENTITIES)
     self.world:getInputSystem():processInputResponses(inputtable, game_world_dt)
+
+    -- Update Emitters 
+    local emitters = self.world:getEntityManager():query(EMITTERS)
+    self.world:getSystem(EmissionSystem):updateEmitters(emitters)
     
     -- Update behaviors
     local behaviorals = self.world:getEntityManager():query(BEHAVIOR_ENTITIES)
@@ -180,6 +188,13 @@ function PlayScene:outputDebugText()
     love.graphics.print("Time since ball hit player: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_PLAYER, timer_system:getTime()), 50, debugstart + 200)
     love.graphics.print("Time since ball hit wall: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_WALL, timer_system:getTime()), 50, debugstart + 220)
     love.graphics.print("Time since ball hit brick: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_BRICK, timer_system:getTime()), 50, debugstart + 240)
+
+
+    local confetti_maker = self.world:getTaggedEntity(Tags.CONFETTI_MAKER)
+    local emitter = confetti_maker:getComponent(Emitter)
+    love.graphics.print("Emitter Pool used: " .. emitter.object_pool.used_count, 50, debugstart + 260)
+    love.graphics.print("Emitter Pool recycled: " .. emitter.object_pool.recycled_count, 50, debugstart + 280)
+    love.graphics.print("Emitter Pool count limit: " .. emitter.object_pool.count_limit, 50, debugstart + 300)
 
 end
 

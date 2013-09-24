@@ -25,7 +25,7 @@ function Vector:unpack()
 end
 
 function Vector:__tostring()
-	return "("..tonumber(self.x)..","..tonumber(self.y)..")"
+	return "("..tostring(self.x)..","..tostring(self.y)..")"
 end
 
 --  unary - operation.
