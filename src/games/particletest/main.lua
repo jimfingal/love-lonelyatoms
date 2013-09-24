@@ -25,12 +25,13 @@ require 'core.components.emitter'
 
 require 'core.shapedata'
 
+require 'utils.mathutils'
 
 require 'core.entity.entityquery'
 require 'core.entity.world'
 require 'external.slam'
 
-DEBUG = false
+DEBUG = true
 
 
 local EMITTERS = EntityQuery():addOrSet(Emitter)
@@ -49,51 +50,50 @@ function love.load()
 
     local particle_emitter = em:createEntity('emitter')
 
-    particle_emitter:addComponent(Transform(350, 500))
+    particle_emitter:addComponent(Transform(350, 500):setLayerOrder(-1))
     particle_emitter:addComponent(ShapeRendering():setColor(Color.fromHex("e97f02"):unpack()):setShape(RectangleShape:new(100, 30)))
 
     local emitter_component = Emitter()
-    emitter_component:setNumberOfEmissions(3)
+    emitter_component:setNumberOfEmissions(100)
 
     local emissionFunction = function()
 
         local world = particle_emitter:getWorld()
         local pe_transform = particle_emitter:getComponent(Transform)
 
-        local emitted_entity =  em:createEntity()
-        emitted_entity:addComponent(Transform(pe_transform:getPosition().x, pe_transform:getPosition().y))
-        emitted_entity:addComponent(ShapeRendering():setColor(math.random(255), math.random(255), math.random(255)):setShape(RectangleShape:new(10, 10)))
-        emitted_entity:addComponent(Motion():setVelocity(0, -30))
-
+        local new_entity =  em:createEntity()
+        new_entity:addComponent(Transform(pe_transform:getPosition().x + 50, pe_transform:getPosition().y))
+        new_entity:addComponent(ShapeRendering():setColor(math.random(255), math.random(255), math.random(255)):setShape(CircleShape:new(5)))
+        new_entity:addComponent(Motion:new():setVelocity(300 * math.random() * randomPlusOrMinus(), -500 * math.random() - 50):setAcceleration(0, 500))
         local schedule_system = world:getSystem(ScheduleSystem)
-        schedule_system:doAfter(2, function() particle_emitter:getComponent(Emitter):recycle(emitted_entity) end)
+        
+        schedule_system:doAfter(5, function() particle_emitter:getComponent(Emitter):recycle(new_entity) end)
 
-        return emitted_entity
+        return new_entity
     end
 
     emitter_component:setEmissionFunction(emissionFunction)
 
-    local resetFunction = function(emitted_entity)
+    local resetFunction = function(reset_entity)
 
         local pe_transform = particle_emitter:getComponent(Transform)
-        emitted_entity:getComponent(Transform):moveTo(pe_transform:getPosition().x, pe_transform:getPosition().y)
-        emitted_entity:getComponent(Motion):setVelocity(0, -30)
-        emitted_entity:getComponent(ShapeRendering):enable()
+        reset_entity:getComponent(Transform):moveTo(pe_transform:getPosition().x + 50, pe_transform:getPosition().y)
+        reset_entity:getComponent(Motion):setVelocity(300 * math.random() * randomPlusOrMinus(), -500 * math.random() - 50)
+        reset_entity:getComponent(Motion):setAcceleration(0, 500)
+        reset_entity:getComponent(ShapeRendering):enable()
 
         local schedule_system = world:getSystem(ScheduleSystem)
-        schedule_system:doAfter(2, function() particle_emitter:getComponent(Emitter):recycle(emitted_entity) end)
+        schedule_system:doAfter(5, function() particle_emitter:getComponent(Emitter):recycle(reset_entity) end)
 
     end
 
     emitter_component:setResetFunction(resetFunction)
 
-    local recycleFunction = function(emitted_entity)
+    local recycleFunction = function(recycled_entity)
 
         local pe_transform = particle_emitter:getComponent(Transform)
-        emitted_entity:getComponent(ShapeRendering):disable()
-        emitted_entity:getComponent(Motion):stop()
-
-        local schedule_system = world:getSystem(ScheduleSystem)
+        recycled_entity:getComponent(ShapeRendering):disable()
+        recycled_entity:getComponent(Motion):stop()
 
     end
 
@@ -104,7 +104,7 @@ function love.load()
 
     emitter_component:start()
 
-    schedule_system:doEvery(1, function() emitter_component:makeReady() end)
+    schedule_system:doEvery(0.1, function() emitter_component:makeReady() end)
 
     particle_emitter:addComponent(emitter_component)
     world:tagEntity("particle_emitter", particle_emitter)
@@ -197,6 +197,7 @@ function love.draw()
         local e = pe:getComponent(Emitter)
         love.graphics.print("Emitter active: " .. tostring(e:isActive()), 50, debugstart + 20)
         love.graphics.print("Emitter ready: " .. tostring(e:isReady()), 50, debugstart + 40)
+        love.graphics.print("Vector Zero: " .. tostring(Vector.ZERO), 50, debugstart + 60)
 
         --[[
         love.graphics.print("Ball x: " .. ball_transform.position.x, 50, debugstart + 20)

@@ -93,10 +93,6 @@ local RenderingFunctions = {
 
 			love.graphics.pop()
 
-
-
-
-
 	end, 
 
 	text = function(transform, rendering) 

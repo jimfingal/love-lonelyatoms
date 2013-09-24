@@ -47,6 +47,9 @@ function MovementSystem:update(transform, movement, dt)
     movement:capVelocity()
 
     -- TODO - Verlet
+
+    movement.velocity = movement.velocity + (movement.acceleration * dt)
+
     local new_position = transform.position + (movement.velocity * dt) 
 
     transform:moveTo(new_position.x, new_position.y)

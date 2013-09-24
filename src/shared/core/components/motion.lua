@@ -75,6 +75,10 @@ function Motion:setMaxVelocity(x, y)
 	return self
 end
 
+
+function Motion:getAcceleration()
+	return self.acceleration
+end
 function Motion:setAcceleration(x, y)
 	self.acceleration.x = x
 	self.acceleration.y = y
@@ -111,8 +115,8 @@ function Motion:capVelocity()
 end
 
 function Motion:stop()
-	self.velocity = Vector.ZERO
-	self.acceleration = Vector.ZERO
+	self.velocity = Vector.ZERO:clone()
+	self.acceleration = Vector.ZERO:clone()
 	return self
 end
 
