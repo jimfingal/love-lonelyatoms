@@ -44,22 +44,32 @@ function BallBuilder:create()
 
 
     local my_messaging = Messaging(self.world:getSystem(MessageSystem))
+    
     self.entity:addComponent(my_messaging)
 
     -- Responsible for shaking self
     my_messaging:registerMessageResponse(Events.BALL_COLLISION_PLAYER, function(ball, player)
+
+        BallBehaviors.collideBallWithPaddle(ball, player)
         EntityEffects.scaleEntity(ball, 2, 1.5)
         EntityEffects.rotateEntity(ball)
+
     end)
 
     my_messaging:registerMessageResponse(Events.BALL_COLLISION_BRICK, function(ball, brick)
+
+        BallBehaviors.collideBallWithBrick(ball, brick)
         EntityEffects.scaleEntity(ball, 2, 1.5)
         EntityEffects.rotateEntity(ball)
+
     end)
 
     my_messaging:registerMessageResponse(Events.BALL_COLLISION_WALL, function(ball, wall)
+
+        BallBehaviors.collideBallWithWall(ball, wall)
         EntityEffects.scaleEntity(ball, 2, 1.5)
         EntityEffects.rotateEntity(ball)
+        
     end)
 
 end 

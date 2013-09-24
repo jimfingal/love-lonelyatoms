@@ -31,11 +31,10 @@ require 'entitybuilders.globalinput'
 require 'entitybuilders.player'
 require 'entitybuilders.walls'
 
-Collisions = require 'scripts.collisions'
 
-
-PlayerBehaviors = require 'behaviors.playerbehaviors'
-BrickBehaviors = require 'behaviors.brickbehaviors'
+local Collisions = require 'scripts.collisions'
+local PlayerBehaviors = require 'behaviors.playerbehaviors'
+local BrickBehaviors = require 'behaviors.brickbehaviors'
 
 
 PlayScene = class('Play', Scene)
@@ -143,18 +142,7 @@ function PlayScene:reset()
 
     Collisions.resetCollisionSystem(self.world)
 
-    -- Send message to trigger any reactive effects
     self.world:getMessageSystem():emitMessage(Events.GAME_RESET)
-
-    -- TODO: add to brick reset
-    if Settings.BRICKS_DROPIN then
-        BrickBehaviors.dropInBricks(self.world)
-    end
-
-    -- TODO: add to player reset
-    if Settings.PLAYER_DROPIN then
-        PlayerBehaviors.dropInPlayer(self.world)
-    end
 
 end
 

@@ -11,6 +11,7 @@ require 'behaviors.genericbehaviors'
 require 'enums.tags'
 require 'enums.palette'
 
+local PlayerBehaviors = require 'behaviors.playerbehaviors'
 require 'external.middleclass'
 require 'core.entity.entitybuilder'
 
@@ -49,6 +50,20 @@ function PlayerBuilder:create()
     -- Responsible for shaking self
     my_messaging:registerMessageResponse(Events.BALL_COLLISION_PLAYER, function(ball, player)
         EntityEffects.scaleEntity(player, 1.5, 1.3)
+    end)
+
+    my_messaging:registerMessageResponse(Events.BALL_COLLISION_PLAYER, function(ball, player)
+        EntityEffects.scaleEntity(player, 1.5, 1.3)
+    end)
+
+    my_messaging:registerMessageResponse(Events.PLAYER_COLLISION_WALL, function(player, wall)
+        PlayerBehaviors.collidePlayerWithWall(player, wall)
+    end)
+
+     my_messaging:registerMessageResponse(Events.GAME_RESET, function()
+        if Settings.PLAYER_DROPIN then
+            PlayerBehaviors.dropInPlayer(self.world)
+        end
     end)
 
 

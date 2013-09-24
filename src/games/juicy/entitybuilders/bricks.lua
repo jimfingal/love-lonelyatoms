@@ -8,6 +8,7 @@ require 'enums.tags'
 require 'enums.palette'
 
 require 'core.entity.entitybuilder'
+local BrickBehaviors = require 'behaviors.brickbehaviors'
 
 require 'external.middleclass'
 
@@ -62,6 +63,12 @@ function BrickBuilder:loadBricks()
 
             self.world:addEntityToGroup(Tags.BRICK_GROUP, brick)
             self.world:addEntityToGroup(Tags.PLAY_GROUP, brick)
+
+
+            local my_messaging = Messaging(self.world:getSystem(MessageSystem))
+            brick:addComponent(my_messaging)
+
+           
 
         end
     end

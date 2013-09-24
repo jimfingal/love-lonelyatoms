@@ -30,7 +30,6 @@ function BrickBehaviors.dropInBricks(world)
         local new_position = transform:getPosition() + vertical_translation
         transform:moveTo(new_position:unpack())
 
-
         local rotate_tween = 1
         local drop_tween = 1
         local scale_tween = 1

@@ -14,3 +14,4 @@ end
 function TagManager:getEntity(tag)
         return self.entities_by_tag[tag]
 end
+

@@ -1,14 +1,12 @@
 
 require 'external.middleclass'
 require 'core.entity.entitybuilder'
-GlobalEffects = require 'scripts.globaleffects'
-EntityEffects = require 'scripts.entityeffects'
 
-BrickBehaviors = require 'behaviors.brickbehaviors'
-
+local GlobalEffects = require 'scripts.globaleffects'
+local EntityEffects = require 'scripts.entityeffects'
+local BrickBehaviors = require 'behaviors.brickbehaviors'
 
 EventsListenerBuilder  = class('EventsListenerBuilder', EntityBuilder)
-require 'behaviors.brickbehaviors'
 
 
 function EventsListenerBuilder:initialize(world)
@@ -24,11 +22,11 @@ function EventsListenerBuilder:create()
 
     self.entity:tag(Tags.PANOPTICON)
 
-    local pan_message = Messaging(self.world:getSystem(MessageSystem))
+    local my_messaging = Messaging(self.world:getSystem(MessageSystem))
     
-    self.entity:addComponent(pan_message)
+    self.entity:addComponent(my_messaging)
 
-    pan_message:registerMessageResponse(Events.BALL_COLLISION_PLAYER, function(ball, player)
+    my_messaging:registerMessageResponse(Events.BALL_COLLISION_PLAYER, function(ball, player)
 
         local statistics_system = self.world:getStatisticsSystem()
         local time_system = self.world:getTimeSystem()
@@ -40,7 +38,7 @@ function EventsListenerBuilder:create()
 
     end)
 
-    pan_message:registerMessageResponse(Events.BALL_COLLISION_BRICK, function(ball, brick)
+    my_messaging:registerMessageResponse(Events.BALL_COLLISION_BRICK, function(ball, brick)
 
 
         local statistics_system = self.world:getStatisticsSystem()
@@ -57,7 +55,7 @@ function EventsListenerBuilder:create()
 
     end)
 
-    pan_message:registerMessageResponse(Events.BALL_COLLISION_WALL, function(ball, wall)
+    my_messaging:registerMessageResponse(Events.BALL_COLLISION_WALL, function(ball, wall)
         
         local statistics_system = self.world:getStatisticsSystem()
         local time_system = self.world:getTimeSystem()
@@ -69,6 +67,12 @@ function EventsListenerBuilder:create()
         EntityEffects.scaleEntity(wall, 5, 5)
 
 
+    end)
+
+    my_messaging:registerMessageResponse(Events.GAME_RESET, function()
+        if Settings.BRICKS_DROPIN then
+            BrickBehaviors.dropInBricks(self.world)
+        end
     end)
 
 end
