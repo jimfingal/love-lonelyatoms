@@ -49,7 +49,7 @@ function ConfettiBuilder:create()
 
         local new_entity =  self.world:getEntityManager():createEntity()
         new_entity:addComponent(Transform(x, y):setLayerOrder(-1))
-        new_entity:addComponent(ShapeRendering():setColor(255, 255, 255):setShape(CircleShape:new(2)))
+        new_entity:addComponent(ShapeRendering():setColor(255, 255, 255):setShape(RectangleShape:new(3, 3)))
         new_entity:addComponent(Motion:new():setVelocity(vx, vy):setAcceleration(0, 500))
         new_entity:addComponent(Behavior():addUpdateFunction(recycleWhenOffWorld))
         return new_entity
