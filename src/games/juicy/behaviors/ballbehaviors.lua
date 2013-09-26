@@ -120,6 +120,7 @@ function BallBehaviors.collideBallWithWall(ball, wall)
 
         ball_collider:disable()
         ball_rendering:disable()
+        ball_movement:stop()
 
     -- Left wall
     elseif wall == world:getTaggedEntity(Tags.LEFT_WALL) then

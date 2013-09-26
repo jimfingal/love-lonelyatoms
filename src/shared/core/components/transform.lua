@@ -16,7 +16,12 @@ function Transform:initialize(x, y)
 
 	self.scale = Vector(1, 1)
 
+	self.debug_objects_created = 0
+
+
 end
+
+
 
 --[[ Position ]]
 
@@ -101,3 +106,23 @@ function Transform:__tostring()
 					   ", rotation = " .. tostring(self.rotation) .. 
 					   ", scale = " .. tostring(self.scale) .."]" 
 end
+
+
+-- Snapshots the component into a data struct without the functions
+function Transform:snapshot(object)
+
+	local snapshot = object
+
+	if not snapshot then 
+		self.debug_objects_created = self.debug_objects_created + 1
+		snapshot = Transform()
+	end
+	
+	snapshot:moveTo(self.position.x, self.position.y)
+	snapshot:rotateTo(self.rotation)
+	snapshot:setLayerOrder(self.z)
+	snapshot:scaleTo(self.scale.x, self.scale.y)
+	return snapshot
+end
+
+

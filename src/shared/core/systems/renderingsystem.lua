@@ -138,7 +138,7 @@ function RenderingSystem:draw(entity)
 		rendering = entity:getComponent(ImageRendering)
 	end
 
-	assert (rendering, "Must be able to get a rendering")
+	assert (rendering, "Unable to get a rendering from " .. tostring(entity))
 
 	if rendering:isVisible() then
 		

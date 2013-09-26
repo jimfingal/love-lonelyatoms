@@ -17,6 +17,7 @@ function EntityManager:initialize(world)
 	self.entity_names = {}
 	self.component_stores = {}
 	self.world = world
+	self.query_cache = {}
 	
 end
 
@@ -191,6 +192,12 @@ end
 -- Otherwise, we use a query
 function EntityManager:query(entity_query)
 
+	--[[
+	if self.query_cache[entity_query] then
+		return self.query_cache[entity_query]
+	end
+	--]]
+
 	local anded_entities = Set()
 
 	local first = true
@@ -217,6 +224,8 @@ function EntityManager:query(entity_query)
 		end
 	end
 
+	-- self.query_cache[entity_query] = anded_entities
+	
 	return anded_entities
 
 end

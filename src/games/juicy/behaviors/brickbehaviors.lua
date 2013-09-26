@@ -74,6 +74,10 @@ function  BrickBehaviors.dispatchBrick(ball, brick)
     local brick_collider = brick:getComponent(Collider)
     local brick_rendering = brick:getComponent(ShapeRendering)
 
+    
+    local brick_state = brick:getComponent(StateComponent)
+    brick_state:setState(Tags.BRICK_ALIVE, false)
+    
     brick_collider:disable()
     
     -- death animation

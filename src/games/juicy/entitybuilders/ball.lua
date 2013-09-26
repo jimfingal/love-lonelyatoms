@@ -6,6 +6,7 @@ require 'core.components.behavior'
 require 'core.components.inputresponse'
 require 'core.components.soundcomponent'
 require 'core.components.messaging'
+require 'core.components.history'
 require 'core.systems.messagesystem'
 require 'enums.events'
 require 'enums.tags'
@@ -33,9 +34,7 @@ function BallBuilder:create()
     self.entity:addComponent(Motion():setMaxVelocity(600, 400):setMinVelocity(-600, -400):setVelocity(200, -425))
     -- self.entity:addComponent(Behavior():addUpdateFunction(ballAutoResetOnNonexistence))
     self.entity:addComponent(InputResponse():addResponse(ballInputResponse))
-
-    self.entity:addToGroup(Tags.PLAY_GROUP)
-    self.entity:tag(Tags.BALL)
+    self.entity:addComponent(History():setFramesTracked(10):trackComponent(Transform))
 
     local ball_behavior = Behavior()
     ball_behavior:addUpdateFunction(constrainEntityToWorld)
@@ -72,12 +71,18 @@ function BallBuilder:create()
         
     end)
 
+
+    self.entity:addToGroup(Tags.PLAY_GROUP)
+    self.entity:tag(Tags.BALL)
+
+
 end 
 
 function BallBuilder:reset()
 
     local collider = self.entity:getComponent(Collider)
     local rendering = self.entity:getComponent(ShapeRendering)
+    local history = self.entity:getComponent(History)
 
     collider:disable()
     rendering:disable()

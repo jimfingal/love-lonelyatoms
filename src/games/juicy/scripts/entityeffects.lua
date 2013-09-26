@@ -97,7 +97,7 @@ function EntityEffects.emitConfetti(emitter, from_entity)
     local emitter_component = emitter:getComponent(Emitter)
 
     for x = 1, 5 do
-        local e = emitter_component:emit(transform:getPosition().x, transform:getPosition().y, math. randomPlusOrMinus() * 200 * math.random(), -200 * math.random())
+        local e = emitter_component:emit(transform:getPosition().x, transform:getPosition().y, math.randomPlusOrMinus() * 200 * math.random(), -200 * math.random())
     end
 
 end

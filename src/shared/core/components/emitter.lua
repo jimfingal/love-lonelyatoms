@@ -57,6 +57,7 @@ function Emitter:recycle(obj)
 	self.object_pool:recycle(obj)
 	return self
 end
+
 function Emitter:emit(...)
 	return self.object_pool:getObject(...)
 end

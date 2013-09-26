@@ -2,6 +2,7 @@ require 'core.components.transform'
 require 'core.components.rendering'
 require 'core.components.collider'
 require 'core.components.soundcomponent'
+require 'core.components.statecomponent'
 
 require 'enums.assets'
 require 'enums.tags'
@@ -51,24 +52,27 @@ function BrickBuilder:loadBricks()
     local x_start = 80
     local x_end = 680
 
-    for y = 50, 290, 30 do
+    for y = 50, 50, 30 do
 
-        for x=x_start, x_end, 60 do
+    -- for y = 50, 290, 30 do
+
+        for x=300, 300, 60 do
+
+        -- for x=x_start, x_end, 60 do
 
             local brick = em:createEntity('brick' .. y .. x)
             brick:addComponent(Transform(x, y):setLayerOrder(2))
             brick:addComponent(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(50, 20)))
             brick:addComponent(Collider():setHitbox(RectangleShape:new(50, 20)))
             brick:addComponent(SoundComponent():addSound(Assets.BRICK_SOUND, asset_manager:getSound(Assets.BRICK_SOUND)))
+            brick:addComponent(StateComponent():setState(Tags.BRICK_ALIVE, true))
 
             self.world:addEntityToGroup(Tags.BRICK_GROUP, brick)
             self.world:addEntityToGroup(Tags.PLAY_GROUP, brick)
 
 
             local my_messaging = Messaging(self.world:getSystem(MessageSystem))
-            brick:addComponent(my_messaging)
-
-           
+            brick:addComponent(my_messaging)  
 
         end
     end

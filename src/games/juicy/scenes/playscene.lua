@@ -9,6 +9,7 @@ require 'core.components.motion'
 require 'core.components.behavior'
 require 'core.components.inputresponse'
 require 'core.components.soundcomponent'
+-- require 'core.components.statecomponent'
 require 'core.shapedata'
 require 'behaviors.ballbehaviors'
 require 'behaviors.playerbehaviors'
@@ -29,6 +30,7 @@ require 'entitybuilders.eventslistener'
 require 'entitybuilders.globalinput'
 require 'entitybuilders.player'
 require 'entitybuilders.walls'
+require 'entitybuilders.wintracker'
 require 'core.entity.entityquery'
 
 
@@ -40,11 +42,15 @@ local BrickBehaviors = require 'behaviors.brickbehaviors'
 local INPUTTABLE_ENTITIES = EntityQuery():addOrSet(InputResponse)
 local BEHAVIOR_ENTITIES = EntityQuery():addOrSet(Behavior)
 local MOVABLE_ENTITIES = EntityQuery():addOrSet(Transform):addOrSet(Motion)
-local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(Transform, ShapeRendering):addOrSet(Transform, TextRendering):addOrSet(Transform, ImageRendering)
+local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(TextRendering, ShapeRendering, ImageRendering):addOrSet(Transform)
 local EMITTERS = EntityQuery():addOrSet(Emitter)
 
 
 PlayScene = class('Play', Scene)
+
+local frame = 0
+local memsize = 0
+local win = false
 
 function PlayScene:initialize(name, w)
 
@@ -71,6 +77,9 @@ function PlayScene:initialize(name, w)
     self.background_sound_builder = BackgroundSoundBuilder(world)
     self.global_input_builder = GlobalInputBuilder(world)
     self.events_listener_builder = EventsListenerBuilder(world)
+    self.win_tracker_builder = WinTrackerBuilder(world)
+
+
 
     self.ball_builder:create()
     self.player_builder:create()
@@ -80,7 +89,7 @@ function PlayScene:initialize(name, w)
     self.background_sound_builder:create()
     self.global_input_builder:create()
     self.events_listener_builder:create()
-
+    self.win_tracker_builder:create()
 
     self.confetti_builder = ConfettiBuilder(world)
     self.confetti_builder:create()
@@ -128,6 +137,9 @@ function PlayScene:update(dt)
     local collisions = collision_system:getCollisions()
     Collisions.announceCollisions(self.world, collisions)
 
+
+    -- TODO behavior in a game state object
+
 end
 
 
@@ -140,6 +152,10 @@ function PlayScene:draw()
 
     local drawables = self.world:getEntityManager():query(DRAWABLE_ENTITIES)
     self.world:getRenderingSystem():renderDrawables(drawables)
+
+    if win then
+        love.graphics.print("You Win!", 300, 300)
+    end
 
     if Settings.DEBUG then
         self:outputDebugText()
@@ -189,13 +205,27 @@ function PlayScene:outputDebugText()
     love.graphics.print("Time since ball hit wall: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_WALL, timer_system:getTime()), 50, debugstart + 220)
     love.graphics.print("Time since ball hit brick: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_BRICK, timer_system:getTime()), 50, debugstart + 240)
 
+    local ball_history = self.world:getTaggedEntity(Tags.BALL):getComponent(History)
+    --ålove.graphics.print("Time spent in history: " .. debug_time_in_history, 50, debugstart + 260)
+    love.graphics.print("Ball History size: " .. ball_history:getComponentHistory(Transform):size(), 50, debugstart + 280)
+    love.graphics.print("New Transform Objects created: " .. ball_transform.debug_objects_created, 50, debugstart + 300)
 
+    frame = frame + 1
+
+    if frame % 10 == 0 then
+        memsize = collectgarbage('count')
+    end
+
+    love.graphics.print('Memory actually used (in kB): ' .. memsize, 50, debugstart + 320)
+
+
+    --[[
     local confetti_maker = self.world:getTaggedEntity(Tags.CONFETTI_MAKER)
     local emitter = confetti_maker:getComponent(Emitter)
     love.graphics.print("Emitter Pool used: " .. emitter.object_pool.used_count, 50, debugstart + 260)
     love.graphics.print("Emitter Pool recycled: " .. emitter.object_pool.recycled_count, 50, debugstart + 280)
     love.graphics.print("Emitter Pool count limit: " .. emitter.object_pool.count_limit, 50, debugstart + 300)
-
+    ]]
 end
 
 

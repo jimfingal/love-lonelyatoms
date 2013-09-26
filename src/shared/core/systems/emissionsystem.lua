@@ -32,6 +32,5 @@ end
 function EmissionSystem:processEmission(emitter)
 
 	local this_guy = emitter:emit()
-	emitter:makeUnready()
 
 end

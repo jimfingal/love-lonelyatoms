@@ -12,7 +12,6 @@ Tags.BACKGROUND_SOUND = "background_sound"
 
 Tags.CONFETTI_MAKER = "confetti"
 
-
 Tags.PANOPTICON = "panopticon"
 
 Tags.PLAY_GROUP = "playgroup"
@@ -21,5 +20,7 @@ Tags.TOP_WALL = "top"
 Tags.BOTTOM_WALL = "bottom"
 Tags.RIGHT_WALL = "right"
 Tags.LEFT_WALL = "left"
+
+Tags.BRICK_ALIVE = "alive"
 
 return Tags

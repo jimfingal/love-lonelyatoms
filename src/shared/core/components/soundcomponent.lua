@@ -8,11 +8,11 @@ function SoundComponent:initialize()
 
 	Component.initialize(self, 'SoundComponent')
 	self.sounds = {}
+	return self
 
 end
 
 function SoundComponent:addSound(key, sound)
-
 	self.sounds[key] = sound
 	return self
 end
@@ -23,6 +23,6 @@ end
 
 
 function SoundComponent:__tostring()
-	return "Behavior: [ sounds = " .. tostring(self.sounds) .. "]" 
+	return "Sound Component: [ sounds = " .. tostring(self.sounds) .. "]" 
 end
 
