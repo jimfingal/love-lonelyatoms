@@ -103,27 +103,4 @@ function EntityEffects.emitConfetti(emitter, from_entity)
 end
 
 
---[[
-function EntityEffects.rotateJitter(entity, intensity)
-
-    local transform = entity:getComponent(Transform)
-    local current_rotation = transform:getRotation() + 0
-
-    local rotate_jitter = function()
-        transform:rotate(math.random(-intensity, intensity))
-    end
-
-    world:getSystem(ScheduleSystem):doFor(0.2, 
-        rotate_jitter,
-        function()
-            world:getSystem(TweenSystem):addTween(0.1, transform, {rotation = current_rotation}, Easing.linear)
-        end
-    )
-
-end
-]]
-
-
-
-
 return EntityEffects

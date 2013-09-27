@@ -52,7 +52,6 @@ function PlayerBehaviors.dropInPlayer(world)
     local player = world:getTaggedEntity(Tags.PLAYER)
     local tween_system = world:getSystem(TweenSystem)
 
-
     -- Send player up to sky and make them smaller
 
     local vertical_translation = Vector(0, -300)
@@ -62,14 +61,14 @@ function PlayerBehaviors.dropInPlayer(world)
     local new_position = transform:getPosition() + vertical_translation
     transform:moveTo(new_position:unpack())
 
-    local rotate_tween = 1
-    local drop_tween = 1
-    local scale_tween = 1
+    local rotate_tween = 0.5
+    local drop_tween = 0.5
+    local scale_tween = 0.5
 
     if Settings.PLAYER_JITTER then
-        rotate_tween = 1 + math.random()
-        drop_tween = 1 + math.random()
-        scale_tween = 1 + math.random()
+        rotate_tween = 0.5 + math.random()
+        drop_tween = 0.5 + math.random()
+        scale_tween = 0.5 + math.random()
 
     end
 
@@ -86,6 +85,36 @@ function PlayerBehaviors.dropInPlayer(world)
     end
 
 end
+
+
+function PlayerBehaviors.playerInputResponse(player, held_actions, pressed_actions, dt)
+
+    local speed_delta = Vector(2300, 0)
+    local base_speed = Vector(200, 0)
+
+    local player_movement = player:getComponent(Motion)
+
+    if held_actions[Actions.PLAYER_RIGHT] then
+    
+        if player_movement.velocity < Vector.ZERO then 
+            player_movement.velocity = base_speed
+        end
+
+        player_movement.velocity = player_movement.velocity + (speed_delta * dt)
+
+    
+    elseif held_actions[Actions.PLAYER_LEFT] then
+    
+        if player_movement.velocity > Vector.ZERO then 
+            player_movement.velocity = -base_speed
+        end
+
+        player_movement.velocity = player_movement.velocity - (speed_delta * dt)
+
+    end
+
+end
+
 
 return PlayerBehaviors
 

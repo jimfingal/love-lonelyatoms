@@ -173,7 +173,6 @@ function PlayScene:reset()
     self.world:getTimeSystem():stop()
     
     self.ball_builder:reset()
-    self.player_builder:reset()
     self.brick_builder:reset()
 
     Collisions.resetCollisionSystem(self.world)

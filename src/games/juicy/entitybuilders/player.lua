@@ -30,24 +30,20 @@ function PlayerBuilder:create()
     self.entity:addComponent(ShapeRendering():setColor(Palette.COLOR_PADDLE:unpack()):setShape(RectangleShape:new(100, 30)))
     self.entity:addComponent(Collider():setHitbox(RectangleShape:new(100, 30)))
     self.entity:addComponent(Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
-    -- self.entity:addComponent(Behavior():addUpdateFunction(playerAI))
 
     self.entity:tag(Tags.PLAYER)
     self.entity:addToGroup(Tags.PLAY_GROUP)
 
-   local behavior = Behavior()
+    local behavior = Behavior()
     behavior:addUpdateFunction(constrainEntityToWorld)
-    -- behavior:addUpdateFunction(playerAI)
     self.entity:addComponent(behavior)
 
-    -- TODO Combine
-    self.entity:addComponent(InputResponse():addResponse(playerInputResponse))
+    self.entity:addComponent(InputResponse():addResponse(PlayerBehaviors.playerInputResponse))
 
     local my_messaging = Messaging(self.world:getSystem(MessageSystem))
     
     self.entity:addComponent(my_messaging)
 
-    -- Responsible for shaking self
     my_messaging:registerMessageResponse(Events.BALL_COLLISION_PLAYER, function(ball, player)
         EntityEffects.scaleEntity(player, 1.5, 1.3)
     end)
@@ -66,92 +62,4 @@ function PlayerBuilder:create()
         end
     end)
 
-
 end 
-
-function PlayerBuilder:reset()
-
-    -- TODO
-
-end
-
-
-function playerAI(player, dt)
-
-    local player_position = player:getComponent(Transform):getPosition()
-    local player_movement = player:getComponent(Motion)
-    local player_shape = player:getComponent(ShapeRendering):getShape()
-
-    local ball_position = player:getWorld():getTaggedEntity(Tags.BALL):getComponent(Transform):getPosition()
-    local ball_shape = player:getWorld():getTaggedEntity(Tags.BALL):getComponent(ShapeRendering):getShape()
-    local ball_movement = player:getWorld():getTaggedEntity(Tags.BALL):getComponent(Motion)
-
-
-    local paddle_origin = player_position.x
-    local paddle_width = player_shape.width
-    local third_of_paddle = paddle_width / 3
-
-    local middle_ball = ball_position.x + ball_shape.width/2
-
-    local first_third = paddle_origin + third_of_paddle
-    local second_third = first_third + third_of_paddle
-    local third_third = paddle_origin + paddle_width
-
-
-    local speed_delta = Vector(1500, 0)
-    local base_speed = Vector(200, 0)
-
-
-    if middle_ball < first_third or ball_movement.velocity.x == 0 then
-
-        -- TODO
-        -- player_movement:accelerateLeft(dt)
-        if player_movement.velocity > Vector.ZERO then 
-            player_movement.velocity = -base_speed
-        end
-
-        player_movement.velocity = player_movement.velocity - (speed_delta * dt)
-
-
-    elseif middle_ball > second_third then
-
-        -- TODO
-        -- self:accelerateRight(dt)
-        if player_movement.velocity < Vector.ZERO then 
-            player_movement.velocity = base_speed
-        end
-
-        player_movement.velocity = player_movement.velocity + (speed_delta * dt)
-
-    end
-
-
-end
-
-function playerInputResponse(player, held_actions, pressed_actions, dt)
-
-    local speed_delta = Vector(2300, 0)
-    local base_speed = Vector(200, 0)
-
-    local player_movement = player:getComponent(Motion)
-
-    if held_actions[Actions.PLAYER_RIGHT] then
-    
-        if player_movement.velocity < Vector.ZERO then 
-            player_movement.velocity = base_speed
-        end
-
-        player_movement.velocity = player_movement.velocity + (speed_delta * dt)
-
-    
-    elseif held_actions[Actions.PLAYER_LEFT] then
-    
-        if player_movement.velocity > Vector.ZERO then 
-            player_movement.velocity = -base_speed
-        end
-
-        player_movement.velocity = player_movement.velocity - (speed_delta * dt)
-
-    end
-
-end

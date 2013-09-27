@@ -71,23 +71,21 @@ function BallBuilder:create()
         
     end)
 
+    my_messaging:registerMessageResponse(Events.GAME_RESET, function()
+       
+        local collider = self.entity:getComponent(Collider)
+        local rendering = self.entity:getComponent(ShapeRendering)
+        local history = self.entity:getComponent(History)
+
+        collider:disable()
+        rendering:disable()
+    end)
+
 
     self.entity:addToGroup(Tags.PLAY_GROUP)
     self.entity:tag(Tags.BALL)
 
-
 end 
-
-function BallBuilder:reset()
-
-    local collider = self.entity:getComponent(Collider)
-    local rendering = self.entity:getComponent(ShapeRendering)
-    local history = self.entity:getComponent(History)
-
-    collider:disable()
-    rendering:disable()
-
-end
 
 
 function ballInputResponse(ball, held_actions, pressed_actions, dt)

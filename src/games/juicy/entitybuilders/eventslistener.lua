@@ -1,4 +1,3 @@
-
 require 'external.middleclass'
 require 'core.entity.entitybuilder'
 

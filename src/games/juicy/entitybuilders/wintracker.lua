@@ -10,7 +10,6 @@ function WinTrackerBuilder:initialize(world)
 end
 
 
-
 function checkWinCondition(world)
 		
 	local bricks = world:getEntitiesInGroup(Tags.BRICK_GROUP)

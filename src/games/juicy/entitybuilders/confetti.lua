@@ -78,9 +78,6 @@ function ConfettiBuilder:create()
 
     emitter_component:setRecycleFunction(recycleFunction)
 
-    -- emitter_component:start()
-    -- emitter_component:makeReady()
-
     self.entity:addComponent(emitter_component)
     self.entity:tag(Tags.CONFETTI_MAKER)
 
