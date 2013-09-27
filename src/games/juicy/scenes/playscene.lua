@@ -143,9 +143,6 @@ function PlayScene:update(dt)
     local collisions = collision_system:getCollisions()
     Collisions.announceCollisions(self.world, collisions)
 
-
-    -- TODO behavior in a game state object
-
 end
 
 

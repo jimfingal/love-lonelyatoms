@@ -6,7 +6,6 @@ require 'core.systems.behaviorsystem'
 require 'core.systems.camerasystem'
 require 'core.systems.inputsystem'
 require 'core.systems.tweensystem'
-require 'core.systems.menuguisystem'
 require 'core.systems.schedulesystem'
 require 'core.systems.messagesystem'
 require 'core.systems.timesystem'
@@ -68,9 +67,6 @@ function loadSystems(world)
 
     local tween_system = TweenSystem()
     world:setSystem(tween_system)
-
-    local menu_system = MenuGuiSystem(world)
-    world:setSystem(menu_system)
 
     local schedule_system = ScheduleSystem(world)
     world:setSystem(schedule_system)
