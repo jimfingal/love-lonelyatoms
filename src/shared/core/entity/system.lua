@@ -11,12 +11,6 @@ function System:initialize(name)
 	self.name = name
 end
 
-
-function System:update(dt)
-
-end
-
-
 function System:__tostring()
 	return "System: " .. self.name
 end

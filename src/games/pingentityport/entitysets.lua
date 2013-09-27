@@ -6,33 +6,34 @@ require 'core.components.behavior'
 require 'core.components.inputresponse'
 require 'core.components.soundcomponent'
 require 'core.vector'
+require 'core.entity.entityquery'
+
+
+local INPUTTABLE_ENTITIES = EntityQuery():addOrSet(InputResponse)
+local BEHAVIOR_ENTITIES = EntityQuery():addOrSet(Behavior)
+local MOVABLE_ENTITIES = EntityQuery():addOrSet(Transform):addOrSet(Motion)
+local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(TextRendering, ShapeRendering, ImageRendering):addOrSet(Transform)
 
 
 function entitiesRespondingToInput(world)
     local em = world:getEntityManager()
-    return em:getAllEntitiesContainingComponent(InputResponse)
+    return em:query(INPUTTABLE_ENTITIES)
 end
 
 function entitiesWithBehavior(world)
     local em = world:getEntityManager()
-    return em:getAllEntitiesContainingComponent(Behavior)
+    return em:query(BEHAVIOR_ENTITIES)
 end
 
 
 function entitiesWithMovement(world)
     local em = world:getEntityManager()
-    return em:getAllEntitiesContainingComponents(Transform, Motion)
+    return em:query(MOVABLE_ENTITIES)
 end
 
 function entitiesWithDrawability(world)
     local em = world:getEntityManager()
-
-    local drawables = Set()
-    drawables:addSet(em:getAllEntitiesContainingComponents(Transform, ShapeRendering))
-    drawables:addSet(em:getAllEntitiesContainingComponents(Transform, TextRendering))
-    drawables:addSet(em:getAllEntitiesContainingComponents(Transform, ImageRendering))    
-
-    return drawables
+    return em:query(DRAWABLE_ENTITIES)
 end
 
 
