@@ -103,9 +103,16 @@ local RenderingFunctions = {
 		    love.graphics.setFont(rendering:getFont())
 		end
 
-	    love.graphics.print(rendering:getText(), 
-	    					transform:getPosition().x + rendering:getPadding(), 
-	    					transform:getPosition().y + rendering:getPadding())
+		love.graphics.push()
+		love.graphics.translate(transform:getPosition().x + rendering:getPadding(), 
+								transform:getPosition().y + rendering:getPadding())
+		love.graphics.rotate(transform:getRotation())
+		love.graphics.scale(transform:unpackScale())
+
+	    love.graphics.print(rendering:getText(), 0, 0)
+
+		love.graphics.pop()
+
 
 	    if previous_font then 
 	    	love.graphics.setFont(previous_font)

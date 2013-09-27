@@ -9,6 +9,8 @@ Tags.WALL_GROUP = "walls"
 Tags.BRICK_GROUP = "bricks"
 Tags.BACKGROUND = "background"
 Tags.BACKGROUND_SOUND = "background_sound"
+Tags.TITLE = "title"
+Tags.INSTRUCTIONS = "instructions"
 
 Tags.CONFETTI_MAKER = "confetti"
 

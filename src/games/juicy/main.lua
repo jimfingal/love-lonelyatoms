@@ -14,6 +14,8 @@ require 'core.systems.statisticssystem'
 require 'core.systems.emissionsystem'
 require 'core.entity.world'
 require 'scenes.playscene'
+require 'scenes.splashscene'
+
 require 'enums.scenes'
 require 'external.slam'
 
@@ -94,10 +96,13 @@ function loadScenes(world)
     -- Only one scene here. TODO: Add Splash and Menu
     local scene_manager = world:getSceneManager()
 
+    local splash_scene = SplashScene(Scenes.SPLASH, world)
+    scene_manager:registerScene(splash_scene)
+
     local play_scene = PlayScene(Scenes.PLAY, world)
     scene_manager:registerScene(play_scene)
 
-    scene_manager:changeScene(Scenes.PLAY)
+    scene_manager:changeScene(Scenes.SPLASH)
     
 end
 

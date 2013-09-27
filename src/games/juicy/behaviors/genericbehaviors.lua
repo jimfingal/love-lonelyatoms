@@ -25,4 +25,24 @@ function GenericBehaviors.constrainEntityToWorld(entity)
 end
 
 
+function GenericBehaviors.dropIn(entity, world)
+
+    local tween_system = world:getSystem(TweenSystem)
+
+    local vertical_translation = Vector(0, -300)
+
+    local transform = entity:getComponent(Transform)
+    local oldx = transform:getPosition().x
+    local oldy = transform:getPosition().y
+
+    local new_position = transform:getPosition() + vertical_translation
+    transform:moveTo(new_position:unpack())
+
+    local drop_tween = 1 + math.random()
+
+    tween_system:addTween(drop_tween, entity:getComponent(Transform):getPosition(), {x = oldx, y = oldy}, Easing.outBounce)
+
+end
+
+
 return GenericBehaviors

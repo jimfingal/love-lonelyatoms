@@ -52,13 +52,9 @@ function BrickBuilder:loadBricks()
     local x_start = 80
     local x_end = 680
 
-    for y = 50, 50, 30 do
+    for y = 50, 290, 30 do
 
-    -- for y = 50, 290, 30 do
-
-        for x=300, 300, 60 do
-
-        -- for x=x_start, x_end, 60 do
+        for x=x_start, x_end, 60 do
 
             local brick = em:createEntity('brick' .. y .. x)
             brick:addComponent(Transform(x, y):setLayerOrder(2))

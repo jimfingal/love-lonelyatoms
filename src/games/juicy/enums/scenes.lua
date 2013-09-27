@@ -3,5 +3,6 @@
 Scenes = {}
 
 Scenes.PLAY = "play"
+Scenes.SPLASH = "splash"
 
 return Scenes

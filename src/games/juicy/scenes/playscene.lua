@@ -52,6 +52,8 @@ local frame = 0
 local memsize = 0
 local win = false
 
+local first_enter = true
+
 function PlayScene:initialize(name, w)
 
     Scene.initialize(self, name, w)
@@ -73,31 +75,36 @@ function PlayScene:initialize(name, w)
     self.player_builder = PlayerBuilder(world)
     self.wall_builder = WallBuilder(world)
     self.brick_builder = BrickBuilder(world)
-    self.background_image_builder = BackgroundImageBuilder(world)
-    self.background_sound_builder = BackgroundSoundBuilder(world)
     self.global_input_builder = GlobalInputBuilder(world)
     self.events_listener_builder = EventsListenerBuilder(world)
     self.win_tracker_builder = WinTrackerBuilder(world)
-
-
-
-    self.ball_builder:create()
-    self.player_builder:create()
-    self.wall_builder:create()
-    self.brick_builder:create()
-    self.background_image_builder:create()
-    self.background_sound_builder:create()
-    self.global_input_builder:create()
-    self.events_listener_builder:create()
-    self.win_tracker_builder:create()
-
     self.confetti_builder = ConfettiBuilder(world)
-    self.confetti_builder:create()
+    self.background_image_builder = BackgroundImageBuilder(world)
+
   
+    self.background_sound_builder = BackgroundSoundBuilder(world)
+    self.background_sound_builder:create()
+
 end
 
 
 function PlayScene:enter()
+
+    if first_enter then
+
+        first_enter = false
+
+        self.ball_builder:create()
+        self.player_builder:create()
+        self.wall_builder:create()
+        self.brick_builder:create()
+        self.global_input_builder:create()
+        self.events_listener_builder:create()
+        self.win_tracker_builder:create()
+        self.confetti_builder:create()
+        self.background_image_builder:create()
+
+    end
 
     self:reset()
 
@@ -153,10 +160,6 @@ function PlayScene:draw()
     local drawables = self.world:getEntityManager():query(DRAWABLE_ENTITIES)
     self.world:getRenderingSystem():renderDrawables(drawables)
 
-    if win then
-        love.graphics.print("You Win!", 300, 300)
-    end
-
     if Settings.DEBUG then
         self:outputDebugText()
     end
@@ -181,6 +184,10 @@ end
 
 
 function PlayScene:outputDebugText()
+
+    local asset_manager = self.world:getAssetManager()
+    local small_font = asset_manager:getFont(Assets.FONT_SMALL)
+    love.graphics.setFont(small_font)
 
     local debugstart = 50
     local player_transform =  self.world:getTaggedEntity(Tags.PLAYER):getComponent(Transform)

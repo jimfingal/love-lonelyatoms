@@ -9,89 +9,66 @@ function WinTrackerBuilder:initialize(world)
     return self
 end
 
+
+
+function checkWinCondition(world)
+		
+	local bricks = world:getEntitiesInGroup(Tags.BRICK_GROUP)
+    local all_disabled = true
+
+    for brick in bricks:members() do
+        local brick_state = brick:getComponent(StateComponent)
+        if brick_state:getState(Tags.BRICK_ALIVE) then
+            all_disabled = false
+            break
+        end 
+    end
+
+    return all_disabled
+end
+
+function enableWinDisplay(world)
+		
+	local em = world:getEntityManager()
+	local asset_manager = world:getAssetManager()
+
+	local win_display = em:createEntity('forthewin')
+    win_display:addComponent(Transform(300, 200):setLayerOrder(-1))
+
+    local text = TextRendering("You Win!")
+    text:setFont(asset_manager:getFont(Assets.FONT_LARGE))
+    text:setColor(255, 255, 255)
+    win_display:addComponent(text)
+
+    local schedule_system = world:getScheduleSystem()
+
+    schedule_system:doEvery(0.1, function()
+    	text:setColor(math.random(255), math.random(255), math.random(255))
+    end)
+
+end
+
+
 function WinTrackerBuilder:create()
 
 	EntityBuilder.create(self)
 
     self.entity:addComponent(Transform(0, 0):setLayerOrder(10))
 
-	local emitter_component = Emitter()
-    emitter_component:setNumberOfEmissions(50)
-
-
-  	local recycleWhenOffWorld = function(entity)
-    
-        local transform = entity:getComponent(Transform)
-
-        if transform.position.x < 0 or transform.position.x > love.graphics.getWidth() 
-            or transform.position.y < 0 or transform.position.y > love.graphics.getHeight() then
-
-            emitter_component:recycle(entity)
-        
-        end
-
-    end 
-
-    local emissionFunction = function()
-
-        local new_entity =  self.world:getEntityManager():createEntity()
-        new_entity:addComponent(Transform(400, 300):setLayerOrder(-1))
-        new_entity:addComponent(ShapeRendering():setColor(math.random(255), math.random(255), math.random(255)):setShape(CircleShape:new(10)))
-        new_entity:addComponent(Motion:new():setVelocity(math.randomPlusOrMinus() * 200 * math.random(), -200 * math.random()):setAcceleration(0, 500))
-        new_entity:addComponent(Behavior():addUpdateFunction(recycleWhenOffWorld))
-        return new_entity
-    end
-
-    emitter_component:setEmissionFunction(emissionFunction)
-
-    local resetFunction = function(reset_entity)
-
-        reset_entity:getComponent(Transform):moveTo(400, 300)
-        reset_entity:getComponent(Motion):setVelocity(math.randomPlusOrMinus() * 200 * math.random(), -200 * math.random())
-        reset_entity:getComponent(Motion):setAcceleration(0, 500)
-        reset_entity:getComponent(ShapeRendering):enable()
-
-    end
-
-    emitter_component:setResetFunction(resetFunction)
-
-    local recycleFunction = function(recycled_entity)
-
-        recycled_entity:getComponent(Transform):moveTo(0, 0)
-        recycled_entity:getComponent(ShapeRendering):disable()
-        recycled_entity:getComponent(Motion):stop()
-
-    end
-
-    emitter_component:setRecycleFunction(recycleFunction)
-
-    self.entity:addComponent(emitter_component)
-
-    -- Message Response
-
     local my_messaging = Messaging(self.world:getSystem(MessageSystem))
     self.entity:addComponent(my_messaging)
 
     my_messaging:registerMessageResponse(Events.BALL_COLLISION_BRICK, function(ball, brick)
 
-    	local bricks = self.world:getEntitiesInGroup(Tags.BRICK_GROUP)
-	    local all_disabled = true
-
-	    for brick in bricks:members() do
-	        local brick_state = brick:getComponent(StateComponent)
-	        if brick_state:getState(Tags.BRICK_ALIVE) then
-	            all_disabled = false
-	            break
-	        end 
-	    end
-
-	    if all_disabled then
-	       emitter_component:start()
-	       emitter_component:makeReady()
+	    if checkWinCondition(self.world) then
+	       enableWinDisplay(self.world)
 	    end
 
     end)
 
-
 end
+
+
+
+
 
