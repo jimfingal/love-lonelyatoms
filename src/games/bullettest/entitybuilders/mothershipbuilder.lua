@@ -6,6 +6,9 @@ require 'enums.palette'
 require 'enums.tags'
 
 
+require 'entitybuilders.emissionport'
+
+
 MotherShipBuilder  = class('MotherShipBuilder', EntityBuilder)
 
 function MotherShipBuilder:initialize(world)
@@ -22,8 +25,7 @@ function MotherShipBuilder:create()
     self.entity:tag(Tags.MOTHERSHIP)
    
     local emitter_component = Emitter(BulletSource(self.world))
-    emitter_component:setNumberOfEmissions(100)
-
+    emitter_component:setNumberOfEmissions(200)
 
 	local recycleEmissionWhenOffWorld = function(self)
     
@@ -51,6 +53,10 @@ end
 
 local _vector = Vector(0, 0)
 
+ local gun_port = EmissionPort()
+ gun_port:setOffset(0, 7.5)
+ gun_port:setRotation(0)
+
 function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
 
     if held_actions[Actions.FIRE] then
@@ -60,11 +66,13 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
 		local shape = ship:getComponent(ShapeRendering):getShape()
     	local center = shape:center(transform:getPosition())
 
-    	local theta = math.rad(math.random(360))
-    	-- Vector rotation
 
-    	_vector.x = math.randomPlusOrMinus() * 150
-    	_vector.y = math.randomPlusOrMinus() * 150
+    	local theta = gun_port:getRotation()
+    	gun_port:setRotation(theta + 0.1)
+
+    	-- Vector rotation
+    	_vector.x = 150
+    	_vector.y = 150
 
     	_vector:rotate(theta)
 
@@ -73,6 +81,8 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
     end
 
 end
+
+
 
 
 
