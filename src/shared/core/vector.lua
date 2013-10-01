@@ -36,9 +36,13 @@ local sqrt, cos, sin, atan2 = math.sqrt, math.cos, math.sin, math.atan2
 
 Vector = class('Vector')
 
+Vector.instances_created = 0
+
+
 function Vector:initialize(x, y)
 	self.x = x or 0
 	self.y = y or 0
+	Vector.instances_created = Vector.instances_created  + 1
 end
 
 Vector.ZERO = Vector(0,0)

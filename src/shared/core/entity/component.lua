@@ -10,5 +10,5 @@ end
 
 
 function Component:__tostring()
-	return "Component: " .. self.name
+	return "Component: " .. tostring(self.name)
 end

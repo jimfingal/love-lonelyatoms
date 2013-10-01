@@ -10,14 +10,13 @@ require 'enums.events'
 
 BrickBehaviors = {}
 
+local vertical_translation = Vector(0, -300)
+
 function BrickBehaviors.dropInBricks(world)
 
     local bricks = world:getEntitiesInGroup(Tags.BRICK_GROUP)
     local tween_system = world:getSystem(TweenSystem)
     -- Send bricks up to sky and make them smaller
-
-
-    local vertical_translation = Vector(0, -300)
 
     for brick in bricks:members() do
 

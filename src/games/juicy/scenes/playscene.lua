@@ -32,6 +32,7 @@ require 'entitybuilders.walls'
 require 'entitybuilders.wintracker'
 require 'core.entity.entityquery'
 
+require 'core.vector'
 
 
 local Collisions = require 'scripts.collisions'
@@ -112,10 +113,12 @@ end
 function PlayScene:update(dt)
 
     -- Update time system
+      -- [[
     local time_system = self.world:getTimeSystem()
     time_system:update(dt)
     local game_world_dt = time_system:getDt()
 
+  
     -- Update scheduled functions
     self.world:getScheduleSystem():update(game_world_dt)
 
@@ -143,6 +146,7 @@ function PlayScene:update(dt)
     local collisions = collision_system:getCollisions()
     Collisions.announceCollisions(self.world, collisions)
 
+    --]]
 end
 
 
@@ -207,10 +211,12 @@ function PlayScene:outputDebugText()
     love.graphics.print("Time since ball hit wall: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_WALL, timer_system:getTime()), 50, debugstart + 220)
     love.graphics.print("Time since ball hit brick: " .. statistics_system:timeSinceLastEventOccurence(Events.BALL_COLLISION_BRICK, timer_system:getTime()), 50, debugstart + 240)
 
+    --[[
     local ball_history = self.world:getTaggedEntity(Tags.BALL):getComponent(History)
     --ålove.graphics.print("Time spent in history: " .. debug_time_in_history, 50, debugstart + 260)
     love.graphics.print("Ball History size: " .. ball_history:getComponentHistory(Transform):size(), 50, debugstart + 280)
     love.graphics.print("New Transform Objects created: " .. ball_transform.debug_objects_created, 50, debugstart + 300)
+    ]]
 
     frame = frame + 1
 
@@ -219,6 +225,9 @@ function PlayScene:outputDebugText()
     end
 
     love.graphics.print('Memory actually used (in kB): ' .. memsize, 50, debugstart + 320)
+    love.graphics.print('Vector objects created: ' .. Vector.instances_created, 50, debugstart + 340)
+    love.graphics.print('Set objects created: ' .. Set.instances_created , 50, debugstart + 360)
+
 
 
     --[[

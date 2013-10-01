@@ -18,7 +18,6 @@ require 'scenes.splashscene'
 require 'enums.scenes'
 require 'external.slam'
 
-
 local world = nil
 
 function love.load()

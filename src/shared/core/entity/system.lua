@@ -12,5 +12,5 @@ function System:initialize(name)
 end
 
 function System:__tostring()
-	return "System: " .. self.name
+	return "System: " .. tostring(self.name)
 end

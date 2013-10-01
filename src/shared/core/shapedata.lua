@@ -23,6 +23,7 @@ CircleShape = class('CircleShape', Shape)
 function CircleShape:initialize(radius, x, y)
 	Shape.initialize(self, x, y)
 	self.radius = radius
+	self._c = Vector(0, 0)  -- Reused object
 end
 
 function CircleShape:draw(position, mode)
@@ -36,9 +37,16 @@ end
 
 function CircleShape:center(transform_position)
 
-	local new_position = transform_position + self.position_offset
+	-- Unwind frequently used vector operations
+	local new_position_x = transform_position.x + self.position_offset.x
+	local new_position_y = transform_position.y + self.position_offset.y
+
 	local half_radius = self.radius / 2
-	return Vector(new_position.x + half_radius, new_position.y + half_radius)
+
+	-- Reuse object
+	self._c.x = new_position_x + half_radius
+	self._c.y = new_position_y + half_radius
+	return self._c
 
 end
 
@@ -78,6 +86,7 @@ function RectangleShape:initialize(width, height, x, y)
 	Shape.initialize(self, x, y)
 	self.width = width
 	self.height = height
+	self._c = Vector(0, 0) -- Reused object
 
 end
 
@@ -92,8 +101,12 @@ end
 
 function RectangleShape:center(transform_position)
 
-	local upper_left = transform_position + self.position_offset
-	return Vector(upper_left.x + self.width/2, upper_left.y + self.height/2)
+	local upper_left_x = transform_position.x + self.position_offset.x
+	local upper_left_y = transform_position.y + self.position_offset.y
+	
+	self._c.x = upper_left_x + self.width/2
+	self._c.y = upper_left_y + self.height/2
+	return self._c
 
 end
 

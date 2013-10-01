@@ -67,6 +67,7 @@ function EntityManager:addComponent(uuid, component)
 	end
 
 	store[uuid] = component
+	self:invalidateQueryCache()
 
 end
 
@@ -118,6 +119,7 @@ function EntityManager:removeComponent(uuid, component_class)
 
 	store[uuid] = nil
 
+	self:invalidateQueryCache()
 end
 
 
@@ -192,7 +194,7 @@ end
 -- Otherwise, we use a query
 function EntityManager:query(entity_query)
 
-	--[[
+	-- [[
 	if self.query_cache[entity_query] then
 		return self.query_cache[entity_query]
 	end
@@ -215,16 +217,15 @@ function EntityManager:query(entity_query)
 			anded_entities:addSet(or_entities)
 			first = false
 		else
-
 			anded_entities = Set.intersection(anded_entities, or_entities)
-
 			if anded_entities:size() == 0 then
 				return anded_entities
 			end
 		end
+
 	end
 
-	-- self.query_cache[entity_query] = anded_entities
+	self.query_cache[entity_query] = anded_entities
 	
 	return anded_entities
 
@@ -244,5 +245,11 @@ function EntityManager:killEntity(uuid)
 	self:setEntityName(uuid, nil)
 	self.all_entities[uuid] = nil
 
+	self:invalidateQueryCache()
 end
+
+function EntityManager:invalidateQueryCache()
+	self.query_cache = {}
+end
+
 

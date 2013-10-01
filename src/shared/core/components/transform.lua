@@ -108,7 +108,7 @@ function Transform:__tostring()
 end
 
 
--- Snapshots the component into a data struct without the functions
+--[[ Snapshots the component into a data struct without the functions
 function Transform:snapshot(object)
 
 	local snapshot = object
@@ -124,5 +124,5 @@ function Transform:snapshot(object)
 	snapshot:scaleTo(self.scale.x, self.scale.y)
 	return snapshot
 end
-
+]]
 

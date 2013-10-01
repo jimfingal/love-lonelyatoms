@@ -33,7 +33,7 @@ function MovementSystem:update(transform, movement, dt)
 	        movement.velocity = movement.velocity - (movement.drag * dt)
 
 	        if movement.velocity < Vector.ZERO then
-	            movement.velocity = Vector.ZERO
+	            movement.velocity = Vector.ZERO:clone()
 	        end
 
 	    elseif movement.velocity < Vector.ZERO then
@@ -41,7 +41,7 @@ function MovementSystem:update(transform, movement, dt)
 	        movement.velocity = movement.velocity + (movement.drag * dt)
 
 	        if movement.velocity > Vector.ZERO then
-	            movement.velocity = Vector.ZERO
+	            movement.velocity = Vector.ZERO:clone()
 	        end
 
 	    end

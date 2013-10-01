@@ -45,7 +45,7 @@ end
 
 function TweenSystem:update(dt)
 
-	local handles_to_remove = Set()
+	-- local handles_to_remove = Set()
 
 	for handle, tweens in pairs(self.registry) do
 
@@ -61,14 +61,16 @@ function TweenSystem:update(dt)
 		end
 
 		if all_tweens_done then
-			handles_to_remove:add(handle)
+			self:finalizeHandle(handle)
 		end 
 	end
 
-	for handle in handles_to_remove:members() do
-		if handle.finished_func then
-			handle.finished_func()
-		end
-		self.registry[handle] = nil
-	end
 end
+
+function TweenSystem:finalizeHandle(handle)
+	if handle.finished_func then
+		handle.finished_func()
+	end
+	self.registry[handle] = nil
+end
+

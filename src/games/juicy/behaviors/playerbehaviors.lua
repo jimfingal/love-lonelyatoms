@@ -46,6 +46,7 @@ function PlayerBehaviors.collidePlayerWithWall(player, wall)
 
 end
 
+local vertical_translation = Vector(0, -300)
 
 function PlayerBehaviors.dropInPlayer(world)
 
@@ -54,7 +55,6 @@ function PlayerBehaviors.dropInPlayer(world)
 
     -- Send player up to sky and make them smaller
 
-    local vertical_translation = Vector(0, -300)
     local transform = player:getComponent(Transform)
     local shape = player:getComponent(ShapeRendering):getShape()
 
@@ -87,10 +87,10 @@ function PlayerBehaviors.dropInPlayer(world)
 end
 
 
-function PlayerBehaviors.playerInputResponse(player, held_actions, pressed_actions, dt)
+local speed_delta = Vector(2300, 0)
+local base_speed = Vector(200, 0)
 
-    local speed_delta = Vector(2300, 0)
-    local base_speed = Vector(200, 0)
+function PlayerBehaviors.playerInputResponse(player, held_actions, pressed_actions, dt)
 
     local player_movement = player:getComponent(Motion)
 
