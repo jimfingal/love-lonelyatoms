@@ -46,8 +46,6 @@ function PlayerBehaviors.collidePlayerWithWall(player, wall)
 
 end
 
-local vertical_translation = Vector(0, -300)
-
 function PlayerBehaviors.dropInPlayer(world)
 
     local player = world:getTaggedEntity(Tags.PLAYER)
@@ -58,8 +56,7 @@ function PlayerBehaviors.dropInPlayer(world)
     local transform = player:getComponent(Transform)
     local shape = player:getComponent(ShapeRendering):getShape()
 
-    local new_position = transform:getPosition() + vertical_translation
-    transform:moveTo(new_position:unpack())
+    transform:move(0, -300)
 
     local rotate_tween = 0.5
     local drop_tween = 0.5

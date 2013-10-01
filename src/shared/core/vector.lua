@@ -60,7 +60,16 @@ function Vector:__tostring()
 	return "("..tostring(self.x)..","..tostring(self.y)..")"
 end
 
+
+function Vector:add(other)
+	assert(Vector.isvector(other), 'argument must be a vector')
+	self.x = self.x + other.x
+	self.y = self.y + other.y
+end
+
+
 --  unary - operation.
+-- [[
 function Vector:__unm()
 	return Vector(-self.x, -self.y)
 end
@@ -84,6 +93,8 @@ function Vector:__div(divisor)
 	assert(type(divisor) == "number", "argument must be a number")
 	return Vector(self.x / divisor, self.y / divisor)
 end
+
+--]]
 
 function Vector:__eq(other)
 	assert(Vector.isvector(other), 'argument must be a vector')

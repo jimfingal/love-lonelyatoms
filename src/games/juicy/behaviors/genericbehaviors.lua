@@ -29,14 +29,11 @@ function GenericBehaviors.dropIn(entity, world)
 
     local tween_system = world:getSystem(TweenSystem)
 
-    local vertical_translation = Vector(0, -300)
-
     local transform = entity:getComponent(Transform)
     local oldx = transform:getPosition().x
     local oldy = transform:getPosition().y
 
-    local new_position = transform:getPosition() + vertical_translation
-    transform:moveTo(new_position:unpack())
+    transform:move(0, -300)
 
     local drop_tween = 1 + math.random()
 

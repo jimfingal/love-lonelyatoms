@@ -150,6 +150,7 @@ function CollisionSystem:checkCollision(entity_a, entity_b)
 
 end
 
+local _point = Vector(0, 0)
 
 function CollisionSystem:circleCollision(at, ac, bt, bc)
 	
@@ -176,16 +177,18 @@ function CollisionSystem:circleCollision(at, ac, bt, bc)
 		-- From: http://stackoverflow.com/a/1879223
 
 		local b_rectangle = bc:hitbox()
-		local b_upper_left = bt:getPosition() + b_rectangle:offset()
+		local b_upper_left_x = bt:getPosition().x + b_rectangle:offset().x
+		local b_upper_left_y = bt:getPosition().y + b_rectangle:offset().y
 
 		-- Find closest point
-		local closestX = clamp(a_center.x, b_upper_left.x, b_upper_left.x + b_rectangle.width)
-		local closestY = clamp(a_center.y, b_upper_left.y, b_upper_left.y + b_rectangle.height)
+		local closestX = clamp(a_center.x, b_upper_left_x, b_upper_left_x + b_rectangle.width)
+		local closestY = clamp(a_center.y, b_upper_left_y, b_upper_left_y + b_rectangle.height)
 
-		local closest_point = Vector(closestX, closestY)
+		_point.x = closestX
+		_point.y = closestY
 
 		-- Check to see if this point is within circle
-		return Vector.dist(a_center, closest_point) < a_circle.radius
+		return Vector.dist(a_center, _point) < a_circle.radius
 
 	end
 
@@ -245,25 +248,27 @@ function CollisionSystem:rectangleCollision(at, ac, bt, bc)
 
 
 		local a_rectangle = ac:hitbox()
-		local a_upper_left = at:getPosition() + a_rectangle:offset()
+		local a_upper_left_x = at:getPosition().x + a_rectangle:offset().x
+		local a_upper_left_y = at:getPosition().y + a_rectangle:offset().y
 
 		local b_rectangle = bc:hitbox()
-		local b_upper_left = bt:getPosition() + b_rectangle:offset()
+		local b_upper_left_x = bt:getPosition().x + b_rectangle:offset().x
+		local b_upper_left_y = bt:getPosition().y + b_rectangle:offset().y
 
 
 		-- If any of these are true, then they don't intersect, so return "not" of that.
 		-- 0, 0 is in upper left hand corner.
 		return not (
 			 		-- the X coord of my upper right is less than x coord of other upper left
-					a_upper_left.x + a_rectangle.width < b_upper_left.x or
+					a_upper_left_x + a_rectangle.width < b_upper_left_x or
 					-- the X coord of other's upper right is less than x coord of my upper left
-					b_upper_left.x + b_rectangle.width < a_upper_left.x or
+					b_upper_left_x + b_rectangle.width < a_upper_left_x or
 
 					-- the Y coord of my upper right is less than Y coord of other upper left
-					a_upper_left.y + a_rectangle.height < b_upper_left.y or 
+					a_upper_left_y + a_rectangle.height < b_upper_left_y  or 
 
 					-- the Y coord of other's upper right is less than than Y coord of my upper left
-					b_upper_left.y + b_rectangle.height < a_upper_left.y
+					b_upper_left_y  + b_rectangle.height < a_upper_left_y
 				)
 	end
 

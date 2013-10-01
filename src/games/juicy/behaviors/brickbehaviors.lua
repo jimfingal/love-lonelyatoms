@@ -10,7 +10,6 @@ require 'enums.events'
 
 BrickBehaviors = {}
 
-local vertical_translation = Vector(0, -300)
 
 function BrickBehaviors.dropInBricks(world)
 
@@ -26,8 +25,7 @@ function BrickBehaviors.dropInBricks(world)
         local oldx = transform:getPosition().x
         local oldy = transform:getPosition().y
 
-        local new_position = transform:getPosition() + vertical_translation
-        transform:moveTo(new_position:unpack())
+        transform:move(0, -300)
 
         local rotate_tween = 1
         local drop_tween = 1

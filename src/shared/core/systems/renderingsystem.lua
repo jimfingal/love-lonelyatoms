@@ -10,6 +10,10 @@ function RenderingSystem:initialize()
 	System.initialize(self, 'Rendering System')
 	self.camera_system = nil
 	self.canvas = love.graphics.newCanvas()
+
+	self._layers = {}
+	self.min_layer = math.huge
+	self.max_layer= 1
 end
 
 function RenderingSystem:setCamera(camera)
@@ -20,6 +24,11 @@ function RenderingSystem:clearCamera()
 	self.camera_system = nil
 end
 
+function RenderingSystem:clearLayers()
+	for i, set in pairs(self._layers) do
+		set:clear()
+	end
+end
 
 function RenderingSystem:renderDrawables(entities)
 
@@ -27,35 +36,33 @@ function RenderingSystem:renderDrawables(entities)
 		self.camera_system:attach()
 	end
 
-	local layers = {}
+	self:clearLayers()
 
-	local min = math.huge
-	local max = 1
 
 	for entity in entities:members() do
 
 		local layer_num = entity:getComponent(Transform):getLayerOrder()
-		local layer_set = layers[layer_num]
+		local layer_set = self._layers[layer_num]
 
 		if not layer_set then
 			layer_set = Set()
-			layers[layer_num] = layer_set
+			self._layers[layer_num] = layer_set
 		end
 
 		layer_set:add(entity)
 
-		if layer_num < min then
-			min = layer_num
-		elseif layer_num > max then
-			max = layer_num
+		if layer_num < self.min_layer then
+			self.min_layer = layer_num
+		elseif layer_num > self.max_layer then
+			self.max_layer = layer_num
 		end
 
     end
 
-    if #layers then
-	    for i = max, min, -1 do
+    if #self._layers then
+	    for i = self.max_layer, self.min_layer, -1 do
 
-	    	local layer_set = layers[i]
+	    	local layer_set = self._layers[i]
 
 	    	if layer_set then
 	    		for entity in layer_set:members() do
