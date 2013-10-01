@@ -227,7 +227,9 @@ function EntityManager:query(entity_query)
 
 	end
 
+	-- [[
 	self.query_cache[entity_query] = anded_entities
+	--]]
 	
 	return anded_entities
 
