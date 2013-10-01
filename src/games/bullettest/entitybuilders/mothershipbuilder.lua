@@ -25,7 +25,7 @@ function MotherShipBuilder:create()
     self.entity:tag(Tags.MOTHERSHIP)
    
     local emitter_component = Emitter(BulletSource(self.world))
-    emitter_component:setNumberOfEmissions(200)
+    emitter_component:setNumberOfEmissions(100)
 
 	local recycleEmissionWhenOffWorld = function(self)
     
@@ -58,6 +58,12 @@ end
  local gun_port2 = EmissionPort()
  gun_port2:setRotation(math.pi)
 
+ local gun_port3 = EmissionPort()
+ gun_port3:setRotation(math.pi / 2)
+
+ local gun_port4 = EmissionPort()
+ gun_port4:setRotation(math.pi + math.pi / 2)
+
 function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
 
     if held_actions[Actions.FIRE] then
@@ -68,7 +74,9 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
     	local center = shape:center(transform:getPosition())
 
     	emitFromPortThenRotate(gun_port1, center, emitter_component, 0.1)
-    	emitFromPortThenRotate(gun_port2, center, emitter_component, -0.1)
+    	emitFromPortThenRotate(gun_port2, center, emitter_component, 0.1)
+    	emitFromPortThenRotate(gun_port3, center, emitter_component, 0.1)
+    	emitFromPortThenRotate(gun_port4, center, emitter_component, 0.1)
 
     end
 
