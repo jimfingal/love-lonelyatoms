@@ -13,7 +13,7 @@ function CollisionSystem:initialize(world)
 
 	self.world = world
 	self.collisions_to_watch = Set()
-
+	self._frame_collisions = Set()
 end
 
 
@@ -37,63 +37,61 @@ end
 -- TODO: take entity set input
 function CollisionSystem:getCollisions()
 
-	local collisions = Set()
+	self._frame_collisions:clear()
 
 	for config in self.collisions_to_watch:members() do
 	
-		-- Could be empty
-		local collision_events = self:getCollisionEvents(config.a, config.b)		
-		collisions:addSet(collision_events)
+		local a = config.a
+		local b = config.b
 
-	end
+		-- First has many, second has one
+		if instanceOf(Set, a) then
 
-	return collisions
+			if instanceOf(Set, b) then
+				self:checkGroupToGroup(a, b, self._frame_collisions)
+			else 
+				self:checkGroupToOne(a, b, self._frame_collisions)
+			end
+			
+		elseif instanceOf(Set, b) then
 
-end
-
--- 
-function CollisionSystem:getCollisionEvents(a, b)
-
-	-- If A is not active and B is not active
-
-	local collision_events = Set()
-
-	if instanceOf(Set, a) then
-		
-		-- Should work whether or not other is a group
-		-- TODO inconsistent method of iterating
-		for member in a:members() do
-
-			local child_collisions = self:getCollisionEvents(member, b)
-			collision_events:addSet(child_collisions)
-	 
-		end
-	
-	else
-
-		if instanceOf(Set, b) then
-
+			-- TODO: feels hacky that the order matters in our handling
 			for member in b:members() do
-
-				local child_collisions = self:getCollisionEvents(a, member)
-				collision_events:addSet(child_collisions)
-
+				self:addCollisionToFrameIfExists(a, member, self._frame_collisions)
 			end
 
 		else
-			-- If collision occurs
-
-			local collision_event = self:checkCollision(a, b)
-
-			if collision_event then
-				collision_events:add(collision_event)
-			end
+			self:addCollisionToFrameIfExists(a, b, self._frame_collisions)
 		end
 
 	end
 
-	return collision_events
 
+	return self._frame_collisions
+
+end
+
+function CollisionSystem:checkGroupToGroup(group1, group2, set)
+	for member1 in group1:members() do
+		for member2 in group2:members() do
+			self:addCollisionToFrameIfExists(member1, member2, set)
+		end
+	end
+end
+
+function CollisionSystem:checkGroupToOne(group, single, set)
+	for member in group:members() do
+		self:addCollisionToFrameIfExists(member, single, set)
+	end
+end
+
+function CollisionSystem:addCollisionToFrameIfExists(a, b, set)
+
+	local collision_event = self:checkCollision(a, b)
+
+	if collision_event then
+		set:add(collision_event)
+	end
 end
 
 

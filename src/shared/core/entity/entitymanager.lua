@@ -19,6 +19,7 @@ function EntityManager:initialize(world)
 	self.world = world
 	self.query_cache = {}
 	
+	self._query_result = Set()
 end
 
 -- Creates a UUID and registers it to our list of entities
@@ -67,6 +68,7 @@ function EntityManager:addComponent(uuid, component)
 	end
 
 	store[uuid] = component
+
 	self:invalidateQueryCache()
 
 end
@@ -137,17 +139,17 @@ function EntityManager:getAllComponentsOfType(component_class)
 
 	assert(component_class, "Must have a component class parameter")
 
-	local components = Set()
+	self._query_result:clear()
 
 	local store = self.component_stores[component_class]
 
 	if store then
 		for uuid, component in pairs(store) do
-			components:add(component)
+			self._query_result:add(component)
 		end
 	end
 
-	return components
+	return self._query_result
 
 end
 
@@ -156,19 +158,19 @@ function EntityManager:getAllComponentsOnEntity(uuid)
 
 	assert(uuid, "Must have a uuid parameter")
 
-	local components = Set()
+	self._query_result:clear()
 
 	for class, store in pairs(self.component_stores) do
 
 		local component = store[uuid]
 
 		if component then
-			components:add(component)
+			self._query_result:add(component)
 		end
 
 	end
 
-	return components
+	return self._query_result
 
 end
 
@@ -177,17 +179,17 @@ function EntityManager:getAllEntitiesContainingComponent(component_class)
 
 	assert(component_class, "Must have a component class parameter")
 
-	local entities = Set()
+	self._query_result:clear()
 
 	local store = self.component_stores[component_class]
 
 	if store then
 		for uuid, component in pairs(store) do
-			entities:add(self.all_entities[uuid])
+			self._query_result:add(self.all_entities[uuid])
 		end
 	end
 
-	return entities
+	return self._query_result
 
 end
 

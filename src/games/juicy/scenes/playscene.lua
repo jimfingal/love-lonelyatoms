@@ -113,26 +113,26 @@ end
 function PlayScene:update(dt)
 
     -- Update time system
-      -- [[
+   
     local time_system = self.world:getTimeSystem()
     time_system:update(dt)
     local game_world_dt = time_system:getDt()
 
-  
+   -- [[
     -- Update scheduled functions
     self.world:getScheduleSystem():update(game_world_dt)
-
+    
     -- Update tweens 
     self.world:getTweenSystem():update(game_world_dt)
 
     -- Update input
     local inputtable = self.world:getEntityManager():query(INPUTTABLE_ENTITIES)
     self.world:getInputSystem():processInputResponses(inputtable, game_world_dt)
-
     -- Update Emitters 
     local emitters = self.world:getEntityManager():query(EMITTERS)
     self.world:getSystem(EmissionSystem):updateEmitters(emitters)
     
+
     -- Update behaviors
     local behaviorals = self.world:getEntityManager():query(BEHAVIOR_ENTITIES)
     self.world:getBehaviorSystem():processBehaviors(behaviorals, game_world_dt) 
@@ -140,7 +140,7 @@ function PlayScene:update(dt)
     -- Update movement 
     local movables = self.world:getEntityManager():query(MOVABLE_ENTITIES)
     self.world:getMovementSystem():updateMovables(movables, game_world_dt)
-    
+  
     -- Detect and Announce collisions
     local collision_system = self.world:getCollisionSystem()
     local collisions = collision_system:getCollisions()
@@ -225,8 +225,9 @@ function PlayScene:outputDebugText()
     end
 
     love.graphics.print('Memory actually used (in kB): ' .. memsize, 50, debugstart + 320)
-    love.graphics.print('Vector objects created: ' .. Vector.instances_created, 50, debugstart + 340)
-    love.graphics.print('Set objects created: ' .. Set.instances_created , 50, debugstart + 360)
+    love.graphics.print('Vector objects created per second: ' .. ClassCounter[Vector] / (timer_system:getTime() * 100), 50, debugstart + 340)
+    love.graphics.print('Set objects created per second: ' .. ClassCounter[Set] / (timer_system:getTime() * 100), 50, debugstart + 360)
+    love.graphics.print('List objects created  per second: ' .. ClassCounter[List] / (timer_system:getTime() * 100), 50, debugstart + 380)
 
 
 

@@ -3,12 +3,7 @@ require 'socket'
 
 Set = class('Set')
 
-Set.instances_created = 0
-
-
 function Set:initialize(list)
-
-	local start = socket.gettime()*1000
 
 	self.set = {}
 
@@ -17,9 +12,6 @@ function Set:initialize(list)
 			self.set[l] = true 
 		end
 	end
-
-	Set.instances_created = Set.instances_created  + 1
-
 end
 
 -- Clones the set, but not the members within
@@ -88,7 +80,11 @@ function Set:intersection(b)
     return intersection
 end
 
-
+function Set:clear()
+	for member in self:members() do
+		self:remove(member)
+	end
+end
 
 function Set:__tostring()
 	local l = {} -- List of elements

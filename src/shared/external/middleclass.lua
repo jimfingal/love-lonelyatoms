@@ -89,6 +89,10 @@ end
 function Object.static:new(...)
   local instance = self:allocate()
   instance:initialize(...)
+
+  -- JLF -- debug
+  incrementClassCounter(instance)
+  
   return instance
 end
 
@@ -137,4 +141,17 @@ function includes(mixin, aClass)
   if not _classes[aClass] then return false end
   if aClass.__mixins[mixin] then return true end
   return includes(mixin, aClass.super)
+end
+
+
+
+ClassCounter = {}
+
+
+function incrementClassCounter(object)
+  if ClassCounter[object.class] then 
+    ClassCounter[object.class] = ClassCounter[object.class] + 1
+  else 
+    ClassCounter[object.class] = 1 
+  end
 end

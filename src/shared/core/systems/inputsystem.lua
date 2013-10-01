@@ -11,8 +11,10 @@ function InputSystem:initialize(world)
 	self.world = world
 
 	self.input_to_action = {} -- Key to action map
-  	self.held = {} -- Actions that have been held for more than one frame
-  	self.pressed = {} -- Actions that have been initiated just this frame
+  self.held = {} -- Actions that have been held for more than one frame
+  self.pressed = {} -- Actions that have been initiated just this frame
+
+  self._actions_seen = Set()
 
 end
 
@@ -50,7 +52,8 @@ end
 
 function InputSystem:update(dt)
 
-  local actions_seen = {}
+  self._actions_seen:clear()
+
   self.pressed = {}
 
   for key, action_constant in pairs(self.input_to_action) do
@@ -62,20 +65,19 @@ function InputSystem:update(dt)
 
       -- If it was pressed the last time we checked, add on to the time it's been held, and 
       -- remove it from the "just pressed" map
-      if previous_dt and not actions_seen[action_constant] then
+      if previous_dt and not self._actions_seen:contains(action_constant) then
 
         self.held[action_constant] = dt + previous_dt
 
       else
 
         -- Otherwise, register it in just pressed and that it has been held for dt seconds
-        actions_seen[action_constant] = true
         self.pressed[action_constant] = true
         self.held[action_constant] = dt
 
       end
 
-      actions_seen[action_constant] = true
+      self._actions_seen:add(action_constant)
 
 
     end
@@ -85,7 +87,7 @@ function InputSystem:update(dt)
   -- At the end of it, loop through again; If haven't seen action, nil out "held"
   for key, action_constant in pairs(self.input_to_action) do
 
-      if not actions_seen[action_constant] then
+      if not self._actions_seen:contains(action_constant) then
         self.held[action_constant] = nil
       end
 
