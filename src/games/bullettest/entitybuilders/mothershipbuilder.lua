@@ -17,12 +17,12 @@ function MotherShipBuilder:create()
 
 	EntityBuilder.create(self)
 
-    self.entity:addComponent(Transform(375, 275):setLayerOrder(10))
-    self.entity:addComponent(ShapeRendering():setColor(Palette.COLOR_SHIP:unpack()):setShape(RectangleShape:new(50, 50)))
+    self.entity:addComponent(Transform(397, 297):setLayerOrder(10))
+    self.entity:addComponent(ShapeRendering():setColor(Palette.COLOR_SHIP:unpack()):setShape(CircleShape:new(15)))
     self.entity:tag(Tags.MOTHERSHIP)
    
     local emitter_component = Emitter(BulletSource(self.world))
-    emitter_component:setNumberOfEmissions(5)
+    emitter_component:setNumberOfEmissions(100)
 
 
 	local recycleEmissionWhenOffWorld = function(self)
@@ -49,13 +49,26 @@ function MotherShipBuilder:create()
 
 end
 
+local _vector = Vector(0, 0)
+
 function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
 
-    if pressed_actions[Actions.FIRE] then
+    if held_actions[Actions.FIRE] then
     
     	local emitter_component = ship:getComponent(Emitter)
     	local transform = ship:getComponent(Transform)    
-        local e = emitter_component:emit(transform:getPosition().x, transform:getPosition().y, math.randomPlusOrMinus() * 200 * math.random(), -200 * math.random())
+		local shape = ship:getComponent(ShapeRendering):getShape()
+    	local center = shape:center(transform:getPosition())
+
+    	local theta = math.rad(math.random(360))
+    	-- Vector rotation
+
+    	_vector.x = math.randomPlusOrMinus() * 150
+    	_vector.y = math.randomPlusOrMinus() * 150
+
+    	_vector:rotate(theta)
+
+        local e = emitter_component:emit(center.x, center.y, _vector.x, _vector.y)
 
     end
 

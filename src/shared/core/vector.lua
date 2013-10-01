@@ -134,6 +134,21 @@ function Vector.dist2(a, b)
 	return (dx * dx + dy * dy)
 end
 
+function Vector:rotate(theta)
+
+	local c = math.cos(theta);
+	local s = math.sin(theta);
+
+	local new_x = c * self.x - s * self.y
+  	local new_y = s * self.x + c * self.y
+
+  	self.x = new_x
+  	self.y = new_y
+
+  	return self
+end
+
+
 function Vector:normalize_inplace()
 	local l = self:len()
 	if l > 0 then

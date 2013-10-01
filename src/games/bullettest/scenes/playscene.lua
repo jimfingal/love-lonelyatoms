@@ -26,6 +26,8 @@ local MOVABLE_ENTITIES = EntityQuery():addOrSet(Transform):addOrSet(Motion)
 local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(TextRendering, ShapeRendering, ImageRendering):addOrSet(Transform)
 local EMITTERS = EntityQuery():addOrSet(Emitter)
 
+local frame = 0
+local memsize = 0
 
 PlayScene = class('Play', Scene)
 
@@ -90,10 +92,15 @@ function PlayScene:draw()
     -- If we're currently paused, unpause
     self.world:getTimeSystem():go()
 
+    love.graphics.setBackgroundColor(Palette.COLOR_BACKGROUND:unpack())
+
+
     local drawables = self.world:getEntityManager():query(DRAWABLE_ENTITIES)
     self.world:getRenderingSystem():renderDrawables(drawables)
 
     if Settings.DEBUG then
+
+        frame = frame + 1
         self:outputDebugText()
     end
 
@@ -104,6 +111,19 @@ end
 function PlayScene:outputDebugText()
     local debugstart = 50
     love.graphics.print("FPS: " .. love.timer.getFPS(), 50, debugstart + 20)
+
+    frame = frame + 1
+
+    if frame % 10 == 0 then
+        memsize = collectgarbage('count')
+    end
+
+    love.graphics.print('Memory actually used (in kB): ' .. memsize, 50, debugstart + 320)
+    love.graphics.print('Vector objects created: ' .. ClassCounter[Vector], 50, debugstart + 340)
+    love.graphics.print('Set objects created: ' .. ClassCounter[Set], 50, debugstart + 360)
+    love.graphics.print('List objects created: ' .. ClassCounter[List], 50, debugstart + 380)
+
+
 end
 
 
