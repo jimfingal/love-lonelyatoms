@@ -18,8 +18,9 @@ function MovementSystem:updateMovables(entities, dt)
         assert(m.velocity and m.velocity.x and m.velocity.y, "Entity should have velocity... " .. tostring(entity))
         assert(m.acceleration, "Entity should have acceleration... " .. tostring(entity))
 
-        self:update(t, m, dt)
-
+        if m:isActive() then
+        	self:update(t, m, dt)
+    	end
 	end
 
 end

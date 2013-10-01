@@ -40,6 +40,8 @@ function Motion:initialize()
 	-- Property: drag
 	self.drag = Vector(0, 0)
 
+	self.active = true
+
 end
 
 function Motion:getVelocity()
@@ -121,6 +123,19 @@ function Motion:stop()
 	self.acceleration.y = 0
 	return self
 end
+
+function Motion:isActive()
+	return self.active
+end	
+
+function Motion:activate()
+	self.active = true
+	return self
+end	
+
+function Motion:deactivate()
+	self.active = false
+end	
 
 
 function Motion:__tostring()

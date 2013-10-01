@@ -51,11 +51,12 @@ function MotherShipBuilder:create()
 
 end
 
-local _vector = Vector(0, 0)
 
- local gun_port = EmissionPort()
- gun_port:setOffset(0, 7.5)
- gun_port:setRotation(0)
+ local gun_port1 = EmissionPort()
+ gun_port1:setRotation(0)
+
+ local gun_port2 = EmissionPort()
+ gun_port2:setRotation(math.pi)
 
 function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
 
@@ -66,20 +67,26 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
 		local shape = ship:getComponent(ShapeRendering):getShape()
     	local center = shape:center(transform:getPosition())
 
-
-    	local theta = gun_port:getRotation()
-    	gun_port:setRotation(theta + 0.1)
-
-    	-- Vector rotation
-    	_vector.x = 150
-    	_vector.y = 150
-
-    	_vector:rotate(theta)
-
-        local e = emitter_component:emit(center.x, center.y, _vector.x, _vector.y)
+    	emitFromPortThenRotate(gun_port1, center, emitter_component, 0.1)
+    	emitFromPortThenRotate(gun_port2, center, emitter_component, -0.1)
 
     end
 
+end
+
+local _vector = Vector(0, 0)
+
+function emitFromPortThenRotate(port, position, emitter, port_rot)
+	local theta = port:getRotation()
+    port:setRotation(theta + port_rot)
+
+    -- Vector rotation
+    _vector.x = 150
+    _vector.y = 150
+
+    _vector:rotate(theta)
+
+    local e = emitter:emit(position.x, position.y, _vector.x, _vector.y)
 end
 
 
@@ -103,12 +110,12 @@ end
 function BulletSource:recycle(recycled_entity)
     recycled_entity:getComponent(Transform):moveTo(0, 0)
     recycled_entity:getComponent(ShapeRendering):disable()
-    recycled_entity:getComponent(Motion):stop()
+    recycled_entity:getComponent(Motion):deactivate()
 end
 
 function BulletSource:reset(reset_entity, x, y, vx, vy)
     reset_entity:getComponent(Transform):moveTo(x, y)
-    reset_entity:getComponent(Motion):setVelocity(vx, vy)
+    reset_entity:getComponent(Motion):activate():setVelocity(vx, vy)
     reset_entity:getComponent(ShapeRendering):enable()
 end
 
