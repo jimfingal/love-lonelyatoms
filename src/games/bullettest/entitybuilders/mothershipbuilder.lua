@@ -7,7 +7,7 @@ require 'enums.tags'
 
 
 require 'entitybuilders.emissionport'
-
+require 'bulletparticle'
 
 MotherShipBuilder  = class('MotherShipBuilder', EntityBuilder)
 
@@ -24,29 +24,27 @@ function MotherShipBuilder:create()
     self.entity:addComponent(ShapeRendering():setColor(Palette.COLOR_SHIP:unpack()):setShape(CircleShape:new(15)))
     self.entity:tag(Tags.MOTHERSHIP)
    
-    local emitter_component = Emitter(BulletSource(self.world))
-    emitter_component:setNumberOfEmissions(100)
+    local particle_system = self.world:getSystem(ParticleSystem)
+    particle_system:addParticleType(BulletParticle(world), 500)
 
 	local recycleEmissionWhenOffWorld = function(self)
     
-        local emitter_component = self:getComponent(Emitter)
+        local particle_system = self.world:getSystem(ParticleSystem)
+        local pool = particle_system:getParticlePool(BulletParticle)
 
-        for entity in emitter_component.object_pool.used_objects:members() do
+        for particle in pool.used_objects:members() do
 
-            local transform = entity:getComponent(Transform)
+            if particle.x < 0 or particle.x > love.graphics.getWidth() 
+                or particle.y < 0 or particle.y > love.graphics.getHeight() then
 
-            if transform.position.x < 0 or transform.position.x > love.graphics.getWidth() 
-                or transform.position.y < 0 or transform.position.y > love.graphics.getHeight() then
-
-                emitter_component:recycle(entity)
+                pool:recycle(particle)
             
             end
         end
     end 
 
     self.entity:addComponent(Behavior():addUpdateFunction(recycleEmissionWhenOffWorld))
-    self.entity:addComponent(emitter_component)
-
+    
     self.entity:addComponent(InputResponse():addResponse(mothershipInputResponse))
 
 end
@@ -68,15 +66,14 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
 
     if held_actions[Actions.FIRE] then
     
-    	local emitter_component = ship:getComponent(Emitter)
     	local transform = ship:getComponent(Transform)    
 		local shape = ship:getComponent(ShapeRendering):getShape()
     	local center = shape:center(transform:getPosition())
 
-    	emitFromPortThenRotate(gun_port1, center, emitter_component, 0.1)
-    	emitFromPortThenRotate(gun_port2, center, emitter_component, 0.1)
-    	emitFromPortThenRotate(gun_port3, center, emitter_component, 0.1)
-    	emitFromPortThenRotate(gun_port4, center, emitter_component, 0.1)
+    	emitFromPortThenRotate(ship:getWorld(), gun_port1, center, 0.1)
+    	emitFromPortThenRotate(ship:getWorld(), gun_port2, center, 0.1)
+    	emitFromPortThenRotate(ship:getWorld(), gun_port3, center, 0.1)
+    	emitFromPortThenRotate(ship:getWorld(), gun_port4, center, 0.1)
 
     end
 
@@ -84,7 +81,7 @@ end
 
 local _vector = Vector(0, 0)
 
-function emitFromPortThenRotate(port, position, emitter, port_rot)
+function emitFromPortThenRotate(world, port, position, port_rot)
 	local theta = port:getRotation()
     port:setRotation(theta + port_rot)
 
@@ -94,12 +91,14 @@ function emitFromPortThenRotate(port, position, emitter, port_rot)
 
     _vector:rotate(theta)
 
-    local e = emitter:emit(position.x, position.y, _vector.x, _vector.y)
+    local particle_system = world:getSystem(ParticleSystem)
+    local p = particle_system:getParticle(BulletParticle, position.x, position.y, _vector.x, _vector.y)
+
 end
 
 
 
-
+--[[
 
 BulletSource = class('BulletSource', PoolSource)
 
@@ -126,4 +125,4 @@ function BulletSource:reset(reset_entity, x, y, vx, vy)
     reset_entity:getComponent(Motion):activate():setVelocity(vx, vy)
     reset_entity:getComponent(ShapeRendering):enable()
 end
-
+]]

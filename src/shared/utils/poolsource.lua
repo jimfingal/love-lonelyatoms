@@ -23,9 +23,3 @@ end
 function PoolSource:reset(reset_item)
 
 end
-
--- Behavior function that gets added to new objects that tells them when to die in the absence of other things
--- killing them
-function PoolSource:mortalityBehavior(reset_item)
-
-end

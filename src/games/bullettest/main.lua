@@ -11,6 +11,8 @@ require 'core.systems.messagesystem'
 require 'core.systems.timesystem'
 require 'core.systems.statisticssystem'
 require 'core.systems.emissionsystem'
+require 'core.systems.particlesystem'
+
 require 'core.entity.world'
 require 'scenes.playscene'
 
@@ -73,6 +75,9 @@ function loadSystems(world)
 
     local emission_system = EmissionSystem()
     world:setSystem(emission_system)
+    
+    local particle_system = ParticleSystem()
+    world:setSystem(particle_system)
     
 end
 

@@ -83,6 +83,10 @@ function PlayScene:update(dt)
     local movables = self.world:getEntityManager():query(MOVABLE_ENTITIES)
     self.world:getMovementSystem():updateMovables(movables, game_world_dt)
   
+
+    local particle_system =  self.world:getSystem(ParticleSystem)
+    particle_system:updateParticles(game_world_dt)
+
     --]]
 end
 
@@ -97,6 +101,11 @@ function PlayScene:draw()
 
     local drawables = self.world:getEntityManager():query(DRAWABLE_ENTITIES)
     self.world:getRenderingSystem():renderDrawables(drawables)
+    
+    -- Should be moved into rendering system probably
+    local particle_system =  self.world:getSystem(ParticleSystem)
+    particle_system:drawParticles()
+
 
     if Settings.DEBUG then
 

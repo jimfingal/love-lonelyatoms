@@ -111,9 +111,7 @@ end
 
 
 function Pool:__tostring()
-	return "Pool with function " .. tostring(self.object_creation_function) .. " [" ..
-			"object reset function = " .. tostring(self.object_reset_function) ..
-			"count_limit = " .. self.count_limit ..
+	return "Pool with [count_limit = " .. self.count_limit ..
 			"; used_count = " .. self.used_count ..
 			"; recycled_count = " .. self.recycled_count ..
 			"; used_objects = " .. tostring(self.used_objects) ..
