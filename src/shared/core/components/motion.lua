@@ -115,8 +115,10 @@ function Motion:capVelocity()
 end
 
 function Motion:stop()
-	self.velocity = Vector.ZERO:clone()
-	self.acceleration = Vector.ZERO:clone()
+	self.velocity.x = 0
+	self.velocity.y = 0
+	self.acceleration.x = 0
+	self.acceleration.y = 0
 	return self
 end
 

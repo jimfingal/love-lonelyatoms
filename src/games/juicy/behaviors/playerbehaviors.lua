@@ -26,14 +26,14 @@ function PlayerBehaviors.collidePlayerWithWall(player, wall)
     -- Left Edge collision
     if wall == left_wall then
 
-        local new_x = wall_position.x + wall_hitbox.width + 1
+        local new_x = wall_position.x + wall_hitbox.width + 2
 
         player_transform:moveTo(new_x, player_transform:getPosition().y)
         player_movement.velocity = -player_movement.velocity / 2
 
     elseif wall == right_wall then
 
-        local new_x = wall_position.x - player_collider:hitbox().width - 1
+        local new_x = wall_position.x - player_collider:hitbox().width - 2
 
         player_transform:moveTo(new_x, player_transform:getPosition().y)
         player_movement.velocity = -player_movement.velocity / 2
