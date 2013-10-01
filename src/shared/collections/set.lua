@@ -3,6 +3,8 @@ require 'socket'
 
 Set = class('Set')
 
+Set.EMPTY_SET = Set()
+
 function Set:initialize(list)
 
 	self.set = {}

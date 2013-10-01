@@ -221,7 +221,7 @@ function EntityManager:query(entity_query)
 		else
 			anded_entities = Set.intersection(anded_entities, or_entities)
 			if anded_entities:size() == 0 then
-				return anded_entities
+				break
 			end
 		end
 

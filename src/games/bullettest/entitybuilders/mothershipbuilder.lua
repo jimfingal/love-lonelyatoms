@@ -87,7 +87,6 @@ function BulletSource:create(x, y, vx, vy)
     new_entity:addComponent(Transform(x, y):setLayerOrder(-1))
     new_entity:addComponent(ShapeRendering():setColor(255, 255, 255):setShape(CircleShape:new(3)))
     new_entity:addComponent(Motion:new():setVelocity(vx, vy))
-
     return new_entity
 end
 
