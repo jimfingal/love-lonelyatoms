@@ -3,14 +3,9 @@ require 'collections.list'
 
 Pool = class('Pool')
 
-function Pool:initialize(object_creation_function, object_limit)
+function Pool:initialize(pool_source, object_limit)
 
-	-- A function which gets us an object. Generally a factory method or other initializer
-	self.object_creation_function = object_creation_function or nil
-
-	-- A function called on the object when we get it back from the recycler. Could re-initialize
-	-- components, zero out values we want to reset, etc.
-	self.object_reset_function = nil
+	self.pool_source = pool_source
 
 	-- Limit of objects to have in the pool
 	self.count_limit = object_limit or 0
@@ -23,14 +18,6 @@ function Pool:initialize(object_creation_function, object_limit)
 	self.recycled_objects = List()
 	self.recycled_count = 0
 
-end
-
-function Pool:setObjectCreationFunction(object_creation_function)
-	self.object_creation_function = object_creation_function
-end
-
-function Pool:setObjectResetFunction(object_reset_function)
-	self.object_reset_function = object_reset_function
 end
 
 function Pool:setObjectLimit(num)
@@ -59,29 +46,13 @@ function Pool:getObject(...)
 	-- If we have a recycled item, use that
 	if self.recycled_count > 0 then
 
-		local this_object = self.recycled_objects:popLeft()
-
-		if self.object_reset_function then 
-			self.object_reset_function(this_object, ...)
-		end
-	
-		self.used_objects:add(this_object)
-		self.used_count = 	self.used_count + 1
-		self.recycled_count = self.recycled_count - 1
-
-		return this_object
+		return self:getRecycledObject(...)
 	
 	-- Otherwise, if we haven't reached our limit, create a new one
 
 	elseif self.used_count < self.count_limit then
 
-		-- Create a new one
-		local this_object = self:create(...)
-		self.used_objects:add(this_object)
-
-		self.used_count = 	self.used_count + 1
-
-		return this_object
+		return self:createNewObject(...)
 
 	-- Return nil if we've reached our limit and none to recycle
 	else 
@@ -91,17 +62,47 @@ function Pool:getObject(...)
 end
 
 
+function Pool:createNewObject(...)
+	
+	-- Create a new one
+	local this_object = self:create(...)
+	self.used_objects:add(this_object)
+
+	self.used_count = 	self.used_count + 1
+
+	return this_object
+end
+
+function Pool:getRecycledObject(...)
+	
+	local this_object = self.recycled_objects:popLeft()
+
+	self:reset(this_object, ...)
+	self.used_objects:add(this_object)
+	self.used_count = self.used_count + 1
+	self.recycled_count = self.recycled_count - 1
+
+	return this_object
+
+end
+
+
 -- Create
 function Pool:create(...)
-	assert(self.object_creation_function, "Must have a function to get us an object")
-	return self.object_creation_function(...)
+	return self.pool_source:create(...)
+end
+
+-- Reset
+function Pool:reset(object, ...)
+	self.pool_source:reset(object, ...)
 end
 
 -- Recycle
-function Pool:recycle(object)
+function Pool:recycle(object, ...)
 	-- Ensure object is either currently used, or not already recycled
 	assert(self.used_objects:contains(object) or not self.recycled_objects:contains(object), "Object must either be used or not yet recycled: " .. tostring(object))
 
+	self.pool_source:recycle(object, ...)
 	self.used_objects:remove(object)
 	self.recycled_objects:append(object)
 	self.used_count = self.used_count - 1
