@@ -16,6 +16,7 @@ require 'settings'
 require 'enums.actions'
 
 require 'entitybuilders.mothershipbuilder'
+require 'entitybuilders.opponentbuilder'
 
 require 'core.entity.entityquery'
 require 'core.vector'
@@ -46,6 +47,7 @@ function PlayScene:initialize(name, w)
     input_system:registerInput('down', Actions.DOWN)
 
     self.mothership_builder = MotherShipBuilder(world)
+    self.opponent_builder = OpponentBuilder(world)
 
 end
 
@@ -53,6 +55,7 @@ end
 function PlayScene:enter()
 
     self.mothership_builder:create()
+    self.opponent_builder:create()
 
 end
 

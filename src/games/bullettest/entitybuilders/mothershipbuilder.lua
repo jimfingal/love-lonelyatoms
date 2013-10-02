@@ -23,7 +23,7 @@ function MotherShipBuilder:create()
 
     self.entity:addComponent(Transform(397, 297):setLayerOrder(10))
     self.entity:addComponent(ShapeRendering():setColor(Palette.COLOR_SHIP:unpack()):setShape(CircleShape:new(15)))
-    self.entity:addComponent(Motion():setDrag(50, 50))
+    self.entity:addComponent(Motion():setDrag(50, 50):setMaxAcceleration(500, 500))
 
     self.entity:tag(Tags.MOTHERSHIP)
    
@@ -66,7 +66,7 @@ function MotherShipBuilder:create()
 
     local behavior = Behavior()
     behavior:addUpdateFunction(recycleEmissionWhenOffWorld)
-    behavior:addUpdateFunction(rotateInCircle)
+    --behavior:addUpdateFunction(rotateInCircle)
 
     self.entity:addComponent(behavior)
     
@@ -100,6 +100,36 @@ end
  local gun_port8 = EmissionPort()
  gun_port8:setRotation(math.pi + math.pi / 2)
 
+local _vector = Vector(0, 0)
+
+local emitFromPort = function(world, port, position)
+    local theta = port:getRotation()
+    -- Vector rotation
+    _vector.x = 300
+    _vector.y = 0
+    _vector:rotate(theta)
+    local particle_system = world:getSystem(ParticleSystem)
+    local p = particle_system:getParticle(BulletParticle, position.x, position.y, _vector.x, _vector.y)
+
+end
+
+local emitFromPortThenRotate = function(world, port, position, port_rot)
+    local theta = port:getRotation()
+    port:setRotation(theta + port_rot)
+
+    -- Vector rotation
+    _vector.x = 150
+    _vector.y = 150
+
+    -- _vector.x = 150 + math.random(30)
+    -- _vector.y = 150 + math.random(30)
+
+    _vector:rotate(theta)
+
+    local particle_system = world:getSystem(ParticleSystem)
+    local p = particle_system:getParticle(BulletParticle, position.x, position.y, _vector.x, _vector.y)
+end
+
 function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
    
     local transform = ship:getComponent(Transform)    
@@ -131,11 +161,17 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
     if held_actions[Actions.RIGHT] then
 
         ship_movement.velocity.x = base_speed
+
+        --ship_movement.acceleration.x = acceleration
+
         emitFromPort(world, gun_port6, center)
 
     elseif held_actions[Actions.LEFT] then
 
         ship_movement.velocity.x = -base_speed
+
+        --ship_movement.acceleration.x = -acceleration
+
         emitFromPort(world, gun_port5, center)
 
         -- player_movement.velocity.x = player_movement.velocity.x - (speed_delta.x * dt)
@@ -144,74 +180,20 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
     if held_actions[Actions.UP] then
     
         ship_movement.velocity.y = -base_speed
+
+        --ship_movement.acceleration.y = -acceleration
+
+
         emitFromPort(world, gun_port7, center)
 
     elseif held_actions[Actions.DOWN] then
     
-        ship_movement.velocity.y = base_speed    
+        ship_movement.velocity.y = base_speed 
+
+        -- ship_movement.acceleration.y = acceleration
+  
         emitFromPort(world, gun_port8, center)
 
     end
 end
 
-local _vector = Vector(0, 0)
-
-function emitFromPort(world, port, position)
-    local theta = port:getRotation()
-    -- Vector rotation
-    _vector.x = 300
-    _vector.y = 0
-    _vector:rotate(theta)
-    local particle_system = world:getSystem(ParticleSystem)
-    local p = particle_system:getParticle(BulletParticle, position.x, position.y, _vector.x, _vector.y)
-
-end
-
-function emitFromPortThenRotate(world, port, position, port_rot)
-	local theta = port:getRotation()
-    port:setRotation(theta + port_rot)
-
-    -- Vector rotation
-    _vector.x = 150
-    _vector.y = 150
-
-    -- _vector.x = 150 + math.random(30)
-    -- _vector.y = 150 + math.random(30)
-
-    _vector:rotate(theta)
-
-    local particle_system = world:getSystem(ParticleSystem)
-    local p = particle_system:getParticle(BulletParticle, position.x, position.y, _vector.x, _vector.y)
-
-end
-
-
-
---[[
-
-BulletSource = class('BulletSource', PoolSource)
-
-function BulletSource:initialize(world)
-    self.world = world    
-end
-
-function BulletSource:create(x, y, vx, vy)
-    local new_entity =  self.world:getEntityManager():createEntity()
-    new_entity:addComponent(Transform(x, y):setLayerOrder(-1))
-    new_entity:addComponent(ShapeRendering():setColor(255, 255, 255):setShape(CircleShape:new(3)))
-    new_entity:addComponent(Motion:new():setVelocity(vx, vy))
-    return new_entity
-end
-
-function BulletSource:recycle(recycled_entity)
-    recycled_entity:getComponent(Transform):moveTo(0, 0)
-    recycled_entity:getComponent(ShapeRendering):disable()
-    recycled_entity:getComponent(Motion):deactivate()
-end
-
-function BulletSource:reset(reset_entity, x, y, vx, vy)
-    reset_entity:getComponent(Transform):moveTo(x, y)
-    reset_entity:getComponent(Motion):activate():setVelocity(vx, vy)
-    reset_entity:getComponent(ShapeRendering):enable()
-end
-]]
