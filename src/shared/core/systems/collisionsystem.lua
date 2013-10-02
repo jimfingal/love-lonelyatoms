@@ -264,10 +264,10 @@ function CollisionSystem:rectangleCollision(at, ac, bt, bc)
 					-- the X coord of other's upper right is less than x coord of my upper left
 					b_upper_left_x + b_rectangle.width < a_upper_left_x or
 
-					-- the Y coord of my upper right is less than Y coord of other upper left
+					-- the Y coord of my lower right is less than Y coord of other upper left
 					a_upper_left_y + a_rectangle.height < b_upper_left_y  or 
 
-					-- the Y coord of other's upper right is less than than Y coord of my upper left
+					-- the Y coord of other's lower right is less than than Y coord of my upper left
 					b_upper_left_y  + b_rectangle.height < a_upper_left_y
 				)
 	end
