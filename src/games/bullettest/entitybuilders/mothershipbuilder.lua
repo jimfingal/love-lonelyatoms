@@ -46,7 +46,29 @@ function MotherShipBuilder:create()
         end
     end 
 
-    self.entity:addComponent(Behavior():addUpdateFunction(recycleEmissionWhenOffWorld))
+    local unit_vector = Vector(5, 5)
+
+    local rotateInCircle = function(self)
+    
+        local transform = self:getComponent(Transform)
+        local rot = transform:getRotation()
+
+        unit_vector.x = 50
+        unit_vector.y = 50
+
+        unit_vector:rotate(rot)
+
+        transform.position.x = 400 + unit_vector.x
+        transform.position.y = 300 + unit_vector.y
+
+        transform:rotate(0.05)
+    end 
+
+    local behavior = Behavior()
+    behavior:addUpdateFunction(recycleEmissionWhenOffWorld)
+    behavior:addUpdateFunction(rotateInCircle)
+
+    self.entity:addComponent(behavior)
     
     self.entity:addComponent(InputResponse():addResponse(mothershipInputResponse))
 
@@ -93,12 +115,11 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
     	emitFromPortThenRotate(ship:getWorld(), gun_port3, center, 0.1)
     	emitFromPortThenRotate(ship:getWorld(), gun_port4, center, 0.1)
 
-        --[[
+   
         emitFromPortThenRotate(ship:getWorld(), gun_port5, center, -0.1)
         emitFromPortThenRotate(ship:getWorld(), gun_port6, center, -0.1)
         emitFromPortThenRotate(ship:getWorld(), gun_port7, center, -0.1)
         emitFromPortThenRotate(ship:getWorld(), gun_port8, center, -0.1)
-        ]]
     end
 
 
@@ -153,6 +174,9 @@ function emitFromPortThenRotate(world, port, position, port_rot)
     -- Vector rotation
     _vector.x = 150
     _vector.y = 150
+
+    -- _vector.x = 150 + math.random(30)
+    -- _vector.y = 150 + math.random(30)
 
     _vector:rotate(theta)
 
