@@ -35,7 +35,7 @@ function MotherShipBuilder:create()
     self.entity:tag(Tags.MOTHERSHIP)
    
     local particle_system = self.world:getSystem(ParticleSystem)
-    particle_system:addParticleType(BulletParticle(world), 1000)
+    particle_system:addParticleType(BulletParticle(world), 2000)
 
 	local recycleEmissionWhenOffWorld = function(self)
     

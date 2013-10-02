@@ -22,7 +22,7 @@ require 'external.slam'
 local world = nil
 
 function love.load()
- 
+
     world = World()
 
     loadAssets(world)
