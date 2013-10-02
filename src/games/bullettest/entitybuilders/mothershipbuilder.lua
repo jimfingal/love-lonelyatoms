@@ -25,7 +25,7 @@ function MotherShipBuilder:create()
     self.entity:tag(Tags.MOTHERSHIP)
    
     local particle_system = self.world:getSystem(ParticleSystem)
-    particle_system:addParticleType(BulletParticle(world), 500)
+    particle_system:addParticleType(BulletParticle(world), 1000)
 
 	local recycleEmissionWhenOffWorld = function(self)
     
@@ -47,6 +47,7 @@ function MotherShipBuilder:create()
     
     self.entity:addComponent(InputResponse():addResponse(mothershipInputResponse))
 
+
 end
 
 
@@ -62,6 +63,18 @@ end
  local gun_port4 = EmissionPort()
  gun_port4:setRotation(math.pi + math.pi / 2)
 
+ local gun_port5 = EmissionPort()
+ gun_port5:setRotation(0)
+
+ local gun_port6 = EmissionPort()
+ gun_port6:setRotation(math.pi)
+
+ local gun_port7 = EmissionPort()
+ gun_port7:setRotation(math.pi / 2)
+
+ local gun_port8 = EmissionPort()
+ gun_port8:setRotation(math.pi + math.pi / 2)
+
 function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
 
     if held_actions[Actions.FIRE] then
@@ -74,6 +87,12 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
     	emitFromPortThenRotate(ship:getWorld(), gun_port2, center, 0.1)
     	emitFromPortThenRotate(ship:getWorld(), gun_port3, center, 0.1)
     	emitFromPortThenRotate(ship:getWorld(), gun_port4, center, 0.1)
+
+        emitFromPortThenRotate(ship:getWorld(), gun_port5, center, -0.1)
+        emitFromPortThenRotate(ship:getWorld(), gun_port6, center, -0.1)
+        emitFromPortThenRotate(ship:getWorld(), gun_port7, center, -0.1)
+        emitFromPortThenRotate(ship:getWorld(), gun_port8, center, -0.1)
+
 
     end
 
