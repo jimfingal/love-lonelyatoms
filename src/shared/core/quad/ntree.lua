@@ -187,21 +187,52 @@ function QuadTree:getNodeEntityIsIn(entity)
 	return nil
 end	
 
-function QuadTree:getAllChildObjects()
+function QuadTree:addAllChildObjects(set)
 
-	local o = Set()
+	set:addAll(self.objects)
 
-	o:addAll(self.objects)
+	for node in self.child_nodes:members() do
+		node:addAllChildObjects(set)
+	end
 
-	if self.child_nodes:size() > 0 then
-		for node in self.child_nodes:members() do
-			o.addAll(node:getAllChildObjects())
+	return set
+
+end
+
+
+function QuadTree:getPossibleOverlaps(object)
+
+	-- Get the lowermost node an entity is in
+	local node = self:getNodeEntityIsIn(object)
+
+	local set = Set()
+
+	-- Insert all children of that node into possible overlaps
+	node:insertPossibleOverlaps(set, object)
+
+	-- Don't intersect with self
+	set:remove(object)
+
+	return set
+
+end
+
+function QuadTree:insertPossibleOverlaps(set, object)
+
+	assert(self.aabb:intersects(object.aabb), "Should only be called if we know this qt contains the object")
+
+	set:addSet(self.objects)
+
+	for node in self.child_nodes:members() do
+
+		if object.aabb:intersects(node.aabb) then
+			node:insertPossibleOverlaps(set, object)
 		end
 	end
 
-	return o
-
+	return set
 end
+
 
 
 
