@@ -10,7 +10,7 @@ require 'enums.actions'
 
 require 'behaviors.genericbehaviors'
 require 'entitybuilders.emissionport'
-require 'bulletparticle'
+require 'particles.bulletparticle'
 
 MotherShipBuilder  = class('MotherShipBuilder', EntityBuilder)
 

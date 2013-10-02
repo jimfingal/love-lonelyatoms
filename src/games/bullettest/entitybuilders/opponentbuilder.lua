@@ -8,7 +8,7 @@ require 'enums.actions'
 
 
 require 'entitybuilders.emissionport'
-require 'playerbulletparticle'
+require 'particles.playerbulletparticle'
 
 require 'socket'
 

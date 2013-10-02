@@ -6,7 +6,7 @@ Palette = {}
 
 Palette.COLOR_SHIP = Color(100, 100, 100, 255)
 Palette.COLOR_BULLET = Color.fromHex("ffffff")
-Palette.COLOR_BACKGROUND = Color(15, 15, 15, 255)
+Palette.COLOR_BACKGROUND = Color(30, 30, 30, 255)
 Palette.COLOR_OPPONENT = Color.fromHex("f8ca00")
 
 return Palette
