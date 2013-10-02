@@ -18,7 +18,7 @@ function love.conf(t)
     t.modules.image = true
     t.modules.graphics = true
     t.modules.timer = true
-    t.modules.mouse = false
+    t.modules.mouse = true
     t.modules.sound = true
     t.modules.physics = false
 end
