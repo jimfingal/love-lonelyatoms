@@ -54,7 +54,7 @@ function PlayerBehaviors.dropInPlayer(world)
     -- Send player up to sky and make them smaller
 
     local transform = player:getComponent(Transform)
-    local shape = player:getComponent(ShapeRendering):getShape()
+    local shape = player:getComponent(Rendering):getRenderable():getShape()
 
     transform:move(0, -300)
 
@@ -78,7 +78,7 @@ function PlayerBehaviors.dropInPlayer(world)
     if Settings.PLAYER_SCALEIN then
         shape.width = 50
         shape.height = 15
-        tween_system:addTween(scale_tween, player:getComponent(ShapeRendering):getShape(), {width = 100, height = 30}, Easing.outBounce)
+        tween_system:addTween(scale_tween, shape, {width = 100, height = 30}, Easing.outBounce)
     end
 
 end

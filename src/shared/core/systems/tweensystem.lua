@@ -74,3 +74,22 @@ function TweenSystem:finalizeHandle(handle)
 	self.registry[handle] = nil
 end
 
+
+function TweenSystem:__tostring()
+
+	local s = "TweenSystem: ["
+
+	for handle, tweens in pairs(self.registry) do
+		s = s .. "(Handle: " .. tostring(handle) .. "; \n Tweens: \n" 
+
+		for key, tween in pairs(tweens) do 
+			s = s .. "     Key: " .. tostring(key) .. "; Tween: " .. tostring(tween) .. "\n" 
+		end
+
+		s = s .. ")\n "
+	end
+	s = s .. "]"
+	return s
+
+end
+

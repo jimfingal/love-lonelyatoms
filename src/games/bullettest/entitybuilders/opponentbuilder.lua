@@ -26,8 +26,6 @@ function OpponentBuilder:create()
     self.entity:addComponent(Transform(397, 500):setLayerOrder(10))
     self.entity:addComponent(ShapeRendering():setColor(Palette.COLOR_OPPONENT:unpack()):setShape(RectangleShape:new(10, 10)))
     self.entity:addComponent(Motion():setDrag(50, 50):setMaxAcceleration(500, 500))
-
-    self.entity:tag(Tags.MOTHERSHIP)
    
     local particle_system = self.world:getSystem(ParticleSystem)
     particle_system:addParticleType(PlayerBulletParticle(world), 100)

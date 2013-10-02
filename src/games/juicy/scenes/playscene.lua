@@ -42,7 +42,7 @@ local BrickBehaviors = require 'behaviors.brickbehaviors'
 local INPUTTABLE_ENTITIES = EntityQuery():addOrSet(InputResponse)
 local BEHAVIOR_ENTITIES = EntityQuery():addOrSet(Behavior)
 local MOVABLE_ENTITIES = EntityQuery():addOrSet(Transform):addOrSet(Motion)
-local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(TextRendering, ShapeRendering, ImageRendering):addOrSet(Transform)
+local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(Rendering):addOrSet(Transform)
 local EMITTERS = EntityQuery():addOrSet(Emitter)
 
 

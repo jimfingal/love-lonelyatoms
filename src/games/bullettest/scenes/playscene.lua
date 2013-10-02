@@ -10,6 +10,7 @@ require 'core.components.behavior'
 require 'core.components.inputresponse'
 require 'core.components.soundcomponent'
 require 'core.shapedata'
+require 'core.systems.tweensystem'
 
 require 'settings'
 
@@ -24,7 +25,7 @@ require 'core.vector'
 local INPUTTABLE_ENTITIES = EntityQuery():addOrSet(InputResponse)
 local BEHAVIOR_ENTITIES = EntityQuery():addOrSet(Behavior)
 local MOVABLE_ENTITIES = EntityQuery():addOrSet(Transform):addOrSet(Motion)
-local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(TextRendering, ShapeRendering, ImageRendering):addOrSet(Transform)
+local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(Rendering):addOrSet(Transform)
 local EMITTERS = EntityQuery():addOrSet(Emitter)
 
 local frame = 0
@@ -47,7 +48,7 @@ function PlayScene:initialize(name, w)
     input_system:registerInput('down', Actions.DOWN)
 
     self.mothership_builder = MotherShipBuilder(world)
-    self.opponent_builder = OpponentBuilder(world)
+    -- self.opponent_builder = OpponentBuilder(world)
 
 end
 
@@ -55,7 +56,7 @@ end
 function PlayScene:enter()
 
     self.mothership_builder:create()
-    self.opponent_builder:create()
+    -- self.opponent_builder:create()
 
 end
 
@@ -135,10 +136,11 @@ function PlayScene:outputDebugText()
         memsize = collectgarbage('count')
     end
 
-    love.graphics.print('Memory actually used (in kB): ' .. memsize, 50, debugstart + 320)
-    love.graphics.print('Vector objects created: ' .. ClassCounter[Vector], 50, debugstart + 340)
-    love.graphics.print('Set objects created: ' .. ClassCounter[Set], 50, debugstart + 360)
-    love.graphics.print('List objects created: ' .. ClassCounter[List], 50, debugstart + 380)
+    love.graphics.print('Memory actually used (in kB): ' .. memsize, 10, debugstart + 320)
+    love.graphics.print('Vector objects created: ' .. ClassCounter[Vector], 10, debugstart + 340)
+    love.graphics.print('Set objects created: ' .. ClassCounter[Set], 10, debugstart + 360)
+    love.graphics.print('List objects created: ' .. ClassCounter[List], 10, debugstart + 380)
+    love.graphics.print('Tweens: ' .. tostring(self.world:getSystem(TweenSystem)), 10, debugstart + 400)
 
 
 end

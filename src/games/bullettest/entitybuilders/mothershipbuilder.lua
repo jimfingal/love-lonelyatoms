@@ -1,6 +1,8 @@
 
 require 'external.middleclass'
 require 'core.entity.entitybuilder'
+require 'core.systems.tweensystem'
+Easing = require 'external.easing'
 
 require 'enums.palette'
 require 'enums.tags'
@@ -22,7 +24,12 @@ function MotherShipBuilder:create()
 	EntityBuilder.create(self)
 
     self.entity:addComponent(Transform(397, 297):setLayerOrder(10))
-    self.entity:addComponent(ShapeRendering():setColor(Palette.COLOR_SHIP:unpack()):setShape(CircleShape:new(15)))
+    local rendering = Rendering()
+    rendering:addRenderable(ShapeRendering():setColor(0, 0, 0):setShape(CircleShape:new(15)), "background")
+    rendering:addRenderable(ShapeRendering():setColor(100, 10, 10):setShape(CircleShape:new(5, 3, 3)), "eye")
+
+    self.entity:addComponent(rendering)
+
     self.entity:addComponent(Motion():setDrag(50, 50):setMaxAcceleration(500, 500))
 
     self.entity:tag(Tags.MOTHERSHIP)
@@ -72,6 +79,31 @@ function MotherShipBuilder:create()
     
     self.entity:addComponent(InputResponse():addResponse(mothershipInputResponse))
 
+    local fade = nil
+    fade = function()
+
+        local entity = self.world:getTaggedEntity(Tags.MOTHERSHIP)
+        local c = entity:getComponent(Rendering):getRenderable("eye"):getColor()
+        local world = entity:getWorld()
+        
+        local fade_to = 10
+        local easing = Easing.inCirc
+
+        if c.r ~= 100 then 
+            fade_to = 100 
+            easing = Easing.outCirc
+    
+        end
+
+        local tween_system = self.world:getSystem(TweenSystem)
+        local schedule_system = self.world:getSystem(ScheduleSystem)
+
+        schedule_system:doAfter(0.5, function()
+            tween_system:addTween(1, c, {r = fade_to }, Easing.linear, fade)
+        end)
+    end
+
+    fade()
 
 end
 
@@ -133,7 +165,7 @@ end
 function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
    
     local transform = ship:getComponent(Transform)    
-    local shape = ship:getComponent(ShapeRendering):getShape()
+    local shape = ship:getComponent(Rendering):getRenderable("eye"):getShape()
     local center = shape:center(transform:getPosition())
     local world = ship:getWorld()
 

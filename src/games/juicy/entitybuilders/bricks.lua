@@ -58,7 +58,7 @@ function BrickBuilder:loadBricks()
 
             local brick = em:createEntity('brick' .. y .. x)
             brick:addComponent(Transform(x, y):setLayerOrder(2))
-            brick:addComponent(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(50, 20)))
+            brick:addComponent(Rendering():addRenderable(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(50, 20))))
             brick:addComponent(Collider():setHitbox(RectangleShape:new(50, 20)))
             brick:addComponent(SoundComponent():addSound(Assets.BRICK_SOUND, asset_manager:getSound(Assets.BRICK_SOUND)))
             brick:addComponent(StateComponent():setState(Tags.BRICK_ALIVE, true))

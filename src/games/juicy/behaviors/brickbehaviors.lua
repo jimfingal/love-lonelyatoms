@@ -20,7 +20,7 @@ function BrickBehaviors.dropInBricks(world)
     for brick in bricks:members() do
 
         local transform = brick:getComponent(Transform)
-        local shape = brick:getComponent(ShapeRendering):getShape()
+        local shape = brick:getComponent(Rendering):getRenderable():getShape()
 
         local oldx = transform:getPosition().x
         local oldy = transform:getPosition().y
@@ -48,7 +48,7 @@ function BrickBehaviors.dropInBricks(world)
 
             shape.width = 30
             shape.height = 10
-            tween_system:addTween(scale_tween, brick:getComponent(ShapeRendering):getShape(), {width = 50, height = 20}, Easing.outBounce)
+            tween_system:addTween(scale_tween, shape, {width = 50, height = 20}, Easing.outBounce)
 
         end
 
@@ -64,12 +64,12 @@ function  BrickBehaviors.dispatchBrick(ball, brick)
     local ball_position = ball:getComponent(Transform):getPosition()
     local ball_movement = ball:getComponent(Motion)
     local ball_collider = ball:getComponent(Collider)
-    local ball_rendering = ball:getComponent(ShapeRendering)
+    local ball_rendering = ball:getComponent(Rendering):getRenderable()
 
     local brick_transform = brick:getComponent(Transform)
     local brick_position = brick:getComponent(Transform):getPosition()
     local brick_collider = brick:getComponent(Collider)
-    local brick_rendering = brick:getComponent(ShapeRendering)
+    local brick_rendering = brick:getComponent(Rendering):getRenderable()
 
     
     local brick_state = brick:getComponent(StateComponent)

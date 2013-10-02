@@ -141,34 +141,33 @@ function RenderingSystem:draw(entity)
 
 
 	local transform = entity:getComponent(Transform)
-
-	local rendering = nil
-
-	if entity:hasComponent(ShapeRendering) then
-		rendering = entity:getComponent(ShapeRendering)
-	elseif entity:hasComponent(TextRendering) then
-		rendering = entity:getComponent(TextRendering)
-	elseif entity:hasComponent(ImageRendering) then
-		rendering = entity:getComponent(ImageRendering)
-	end
-
+	local rendering = entity:getComponent(Rendering)
 	assert (rendering, "Unable to get a rendering from " .. tostring(entity))
 
-	if rendering:isVisible() then
-		
-		-- Check the previous color settings
-		local r, g, b, a = love.graphics.getColor()
-		
-		local color = rendering:getColor()
-
-		love.graphics.setColor(color:unpack())
-
-		local draw_action = RenderingFunctions[rendering.render_type]
-		draw_action(transform, rendering)
-
-		-- Restore the previous color settings
-		love.graphics.setColor(r, g, b, a)
-
+	if rendering:isActive() then 
+		for i, renderable in rendering:getRenderables():members() do
+			if renderable:isActive() then
+				self:drawRenderable(transform, renderable)
+			end
+		end
 	end
 
+end
+
+
+function RenderingSystem:drawRenderable(transform, renderable)
+		
+
+	-- Check the previous color settings
+	local r, g, b, a = love.graphics.getColor()
+	
+	local color = renderable:getColor()
+
+	love.graphics.setColor(color:unpack())
+
+	local draw_action = RenderingFunctions[renderable.render_type]
+	draw_action(transform, renderable)
+
+	-- Restore the previous color settings
+	love.graphics.setColor(r, g, b, a)
 end

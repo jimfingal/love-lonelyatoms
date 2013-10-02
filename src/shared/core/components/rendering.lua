@@ -1,48 +1,94 @@
 require 'external.middleclass'
 require 'core.color'
 require 'core.entity.component'
+require 'collections.list'
 
 
 
 -- [[ TODO, don't like this. Should be able to just ask for Rendering component. Perhaps have factory and private member containing data?]]
-local Rendering = class('Rendering', Component)
+Rendering = class('Rendering', Component)
 
-Rendering.SHAPE = "shape"
-Rendering.TEXT = "text"
-Rendering.IMAGE = "image"
-
-
-function Rendering:initialize(render_type)
+function Rendering:initialize()
 
 	Component.initialize(self, 'Rendering')
 
-	self.visible = true
-	self.render_type = render_type
-
+	self.active = true
+	self.sub_components = List()
+	self.key_components = {}
 end
 
-function Rendering:isVisible()
-	return self.visible
+function Rendering:isActive()
+	return self.active
 end
 
 function Rendering:enable()
-	self.visible = true
+	self.active = true
 	return self
 end
 
 function Rendering:disable()
-	self.visible = false
+	self.active = false
+	return self
+end
+
+function Rendering:addRenderable(renderable, key)
+	
+	self.sub_components:append(renderable)
+
+	-- If there are multiple components, support keyed access.
+	if key then
+		self.key_components[key] = renderable
+	end
+
+	return self
+end
+
+function Rendering:getRenderables()
+	return self.sub_components
+end
+
+function Rendering:getRenderable(key)
+	if not key and self.sub_components:size() == 1 then
+		return self.sub_components:memberAt(1)
+	else
+		return self.key_components[key]
+	end
+end
+
+local Renderable = class('Renderable')
+
+function Renderable:initialize(render_type)
+	self.active = true
+	self.render_type = render_type
+end
+
+Renderable.SHAPE = "shape"
+Renderable.TEXT = "text"
+Renderable.IMAGE = "image"
+
+
+function Renderable:isActive()
+	return self.active
+end
+
+function Renderable:enable()
+	self.active = true
+	return self
+end
+
+function Renderable:disable()
+	self.active = false
 	return self
 end
 
 
 --[[ Shape ]]
 
-ShapeRendering = class('ShapeRendering', Rendering)
+ShapeRendering = class('ShapeRendering', Renderable)
 
 function ShapeRendering:initialize()
 	
-	Rendering.initialize(self, Rendering.SHAPE)
+	Renderable.initialize(self, Renderable.SHAPE)
 
 	self.color = Color(0, 0, 0, 255)
 	self.fill_mode = 'fill'
@@ -81,16 +127,16 @@ end
 
 
 function ShapeRendering:__tostring()
-	return "Component: Shape Rendering :: " .. tostring(self:getShape()) -- TOOD more
+	return "Component: Shape Rendering :: " .. tostring(self:getShape()) .. ", Color: " .. tostring(self:getColor()) -- TOOD more
 end
 
 --[[ Text ]]
 
-TextRendering = class('TextRendering', Rendering)
+TextRendering = class('TextRendering', Renderable)
 
 function TextRendering:initialize(text)
 
-	Rendering.initialize(self, Rendering.TEXT)
+	Renderable.initialize(self, Renderable.TEXT)
 
 	self.text = text
 	self.color = Color(0, 0, 0, 255)
@@ -142,11 +188,11 @@ end
 
 --[[ Image ]]
 
-ImageRendering = class('ImageRendering', Rendering)
+ImageRendering = class('ImageRendering', Renderable)
 
 function ImageRendering:initialize()
 
-	Rendering.initialize(self, Rendering.IMAGE)
+	Renderable.initialize(self, Renderable.IMAGE)
 
 	self.img = nil
 

@@ -49,4 +49,16 @@ function Tween:finished()
 	return self.time >= self.duration
 end
 
+function Tween:__tostring()
+	local s = "Tween: ("
 
+	s = s .. "Time: " .. tostring(self.time)
+	s = s .. "; Initial: " .. tostring(self.initial)
+	s = s .. "; Final: " .. tostring(self.final)
+	s = s .. "; Change: " .. tostring(self.change)
+	s = s .. "; Duration: " .. tostring(self.duration)
+	s = s .. "; Easing Funciton: " .. tostring(self.func)
+	s = s .. ")"
+
+	return s
+end

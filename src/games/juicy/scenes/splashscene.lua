@@ -3,6 +3,7 @@ require 'core.scene'
 require 'collections.set'
 require 'core.entity.world'
 require 'core.entity.entityquery'
+require 'core.components.rendering'
 
 require 'enums.actions'
 require 'enums.tags'
@@ -10,7 +11,7 @@ require 'enums.palette'
 
 
 local BEHAVIOR_ENTITIES = EntityQuery():addOrSet(Behavior)
-local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(TextRendering, ShapeRendering, ImageRendering):addOrSet(Transform)
+local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(Rendering):addOrSet(Transform)
 
 SplashScene = class('Splash', Scene)
 
@@ -34,7 +35,7 @@ function SplashScene:enter(dt)
     -- Main Title
     local title = em:createEntity('title')
     title:addComponent(Transform(25, 100))
-    title:addComponent(TextRendering("J U I C Y B R E A K O U T"):setColor(Palette.COLOR_BRICK:unpack()):setFont(large_font))
+    title:addComponent(Rendering():addRenderable(TextRendering("J U I C Y B R E A K O U T"):setColor(Palette.COLOR_BRICK:unpack()):setFont(large_font)))
     title:tag(Tags.TITLE)
     GenericBehaviors.dropIn(title, self.world)
 
@@ -42,7 +43,7 @@ function SplashScene:enter(dt)
 
     local instructions = em:createEntity("instructions")
     instructions:addComponent(Transform(60, 500))
-    instructions:addComponent(TextRendering("Press Enter To Start Game"):setColor(Palette.COLOR_BRICK:unpack()):setFont(small_font))
+    instructions:addComponent(Rendering():addRenderable(TextRendering("Press Enter To Start Game"):setColor(Palette.COLOR_BRICK:unpack()):setFont(small_font)))
     instructions:tag(Tags.INSTRUCTIONS)
     GenericBehaviors.dropIn(instructions, self.world)
 

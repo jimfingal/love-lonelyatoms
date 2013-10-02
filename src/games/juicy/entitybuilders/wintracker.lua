@@ -37,7 +37,7 @@ function enableWinDisplay(world)
     local text = TextRendering("You Win!")
     text:setFont(asset_manager:getFont(Assets.FONT_LARGE))
     text:setColor(255, 255, 255)
-    win_display:addComponent(text)
+    win_display:addComponent(Rendering():addRenderable(text))
 
     local schedule_system = world:getScheduleSystem()
 

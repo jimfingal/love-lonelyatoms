@@ -30,23 +30,23 @@ function WallBuilder:create()
     local top_tile = em:createEntity('top_tile')
     top_tile:addComponent(Transform(0, 0))
     top_tile:addComponent(Collider():setHitbox(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
-    top_tile:addComponent(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
+    top_tile:addComponent(Rendering():addRenderable(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE))))
 
     local bottom_tile = em:createEntity('bottom_tile')
     bottom_tile:addComponent(Transform(0, love.graphics.getHeight() - TILE_SIZE))
     bottom_tile:addComponent(Collider():setHitbox(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
-    bottom_tile:addComponent(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE)))
+    bottom_tile:addComponent(Rendering():addRenderable(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(love.graphics.getWidth(), TILE_SIZE))))
 
     local left_tile = em:createEntity('left_tile')
     left_tile:addComponent(Transform(0, TILE_SIZE))
     left_tile:addComponent(Collider():setHitbox(RectangleShape:new(TILE_SIZE, love.graphics.getHeight() - 2 * TILE_SIZE)))
-    left_tile:addComponent(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(TILE_SIZE, love.graphics.getHeight() - 2 * TILE_SIZE)))
+    left_tile:addComponent(Rendering():addRenderable(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(TILE_SIZE, love.graphics.getHeight() - 2 * TILE_SIZE))))
 
 
     local right_tile = em:createEntity('right_tile')
     right_tile:addComponent(Transform(love.graphics.getWidth() - TILE_SIZE, TILE_SIZE))
     right_tile:addComponent(Collider():setHitbox(RectangleShape:new(TILE_SIZE, love.graphics.getHeight() - 2 * TILE_SIZE)))
-    right_tile:addComponent(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(TILE_SIZE, love.graphics.getHeight() - 2 * TILE_SIZE)))
+    right_tile:addComponent(Rendering():addRenderable(ShapeRendering():setColor(Palette.COLOR_BRICK:unpack()):setShape(RectangleShape:new(TILE_SIZE, love.graphics.getHeight() - 2 * TILE_SIZE))))
 
     self.world:addEntityToGroup(Tags.WALL_GROUP, top_tile)
     self.world:addEntityToGroup(Tags.WALL_GROUP, bottom_tile)

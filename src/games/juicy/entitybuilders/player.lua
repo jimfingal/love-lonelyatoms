@@ -27,7 +27,7 @@ function PlayerBuilder:create()
     EntityBuilder.create(self)
 
     self.entity:addComponent(Transform(350, 500))
-    self.entity:addComponent(ShapeRendering():setColor(Palette.COLOR_PADDLE:unpack()):setShape(RectangleShape:new(100, 30)))
+    self.entity:addComponent(Rendering():addRenderable(ShapeRendering():setColor(Palette.COLOR_PADDLE:unpack()):setShape(RectangleShape:new(100, 30))))
     self.entity:addComponent(Collider():setHitbox(RectangleShape:new(100, 30)))
     self.entity:addComponent(Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
 

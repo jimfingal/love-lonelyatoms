@@ -65,7 +65,7 @@ function EntityEffects.glitchColors(entity)
     -- to some other color
     if not EntityEffects.glitchLock[entity] then
 
-        local rendering = entity:getComponent(ShapeRendering)
+        local rendering = entity:getComponent(Rendering):getRenderable()
 
         local previous_color = rendering:getColor()
 

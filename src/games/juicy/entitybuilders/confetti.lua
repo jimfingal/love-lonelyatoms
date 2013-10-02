@@ -28,14 +28,14 @@ end
 function Confetti:create(x, y, vx, vy)
     local new_entity =  self.world:getEntityManager():createEntity()
     new_entity:addComponent(Transform(x, y):setLayerOrder(-1))
-    new_entity:addComponent(ShapeRendering():setColor(255, 255, 255):setShape(RectangleShape:new(3, 3)))
+    new_entity:addComponent(Rendering():addRenderable(ShapeRendering():setColor(255, 255, 255):setShape(RectangleShape:new(3, 3))))
     new_entity:addComponent(Motion:new():setVelocity(vx, vy):setAcceleration(0, 500))
     return new_entity
 end
 
 function Confetti:recycle(recycled_entity)
     recycled_entity:getComponent(Transform):moveTo(0, 0)
-    recycled_entity:getComponent(ShapeRendering):disable()
+    recycled_entity:getComponent(Rendering):disable()
     recycled_entity:getComponent(Motion):stop()
 end
 
@@ -43,7 +43,7 @@ function Confetti:reset(reset_entity, x, y, vx, vy)
     reset_entity:getComponent(Transform):moveTo(x, y)
     reset_entity:getComponent(Motion):setVelocity(vx, vy)
     reset_entity:getComponent(Motion):setAcceleration(0, 500)
-    reset_entity:getComponent(ShapeRendering):enable()
+    reset_entity:getComponent(Rendering):enable()
 end
 
 
