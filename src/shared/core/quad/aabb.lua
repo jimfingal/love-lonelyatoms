@@ -16,6 +16,21 @@ function AABB:initialize(x, y, w, h)
 	self.h = h
 end
 
+-- TOOD: test
+function AABB:containsAABB(aabb)
+
+	return
+			-- Other x value is greater or equal to my x value
+			aabb.x >= self.x and
+			-- Other's right hand x calue is less than or equal to my right hand value
+			aabb.x + aabb.w <= self.x + self.w and
+			-- Other's top y greater or equal to my top y value
+			aabb.y >= self.y and
+			-- Other's bottom y is less than or equal to my bottom y
+			aabb.y + aabb.h <= self.y + self.h 
+end
+
+
 function AABB:containsPoint(px, py)
 
 	return px > self.x and

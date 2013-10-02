@@ -42,7 +42,7 @@ function QuadTree:initialize(node_sqrt, aabb, level, max_objects, max_level)
 
 	self.boundary = nil -- AABB of boundary
 
-	self.child_nodes = List()
+	self.child_nodes = Set()
 
 	self.objects = Set()
 
@@ -83,7 +83,7 @@ function QuadTree:subdivide()
 			local child_aabb = AABB(x, y, child_w, child_h)
 			local qt = QuadTree:new(self.node_sqrt, child_aabb, self.level + 1, self.max_objects, self.max_level)
 			
-			self.child_nodes:append(qt)
+			self.child_nodes:add(qt)
 
 		end
 	end

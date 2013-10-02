@@ -17,8 +17,11 @@ function love.load()
     math.random(); math.random(); math.random()
 
     root_node:subdivide()
-    randomlySubdivide(root_node)
+    --recursivelySubdivide(root_node)
 
+    for n in root_node.child_nodes:members() do
+        randomlySubdivide(root_node)
+    end
 end
 
 function love.update(dt)
@@ -33,8 +36,8 @@ function love.draw()
 
     drawQuadTree(root_node)
 
-    for i, val  in debug_list:members() do
-        love.graphics.print(tostring(val), 0, i * 10)
+    for i, val in debug_list:members() do
+        --love.graphics.print(tostring(val), 0, i * 10)
     end
     debug_list:clear()
 
@@ -45,8 +48,8 @@ function drawQuadTree(qt)
     drawAABB(qt.aabb)
     --love.graphics.print(tostring(qt.level) .. tostring(qt.aabb), qt.aabb.x, qt.aabb.y + qt.aabb.h / 2)
 
-    for i, node in qt.child_nodes:members() do
-        --debug_list:append(node)
+    for node in qt.child_nodes:members() do
+        debug_list:append(node)
         drawQuadTree(node)
     end
 
@@ -61,7 +64,7 @@ end
 
 function recursivelySubdivide(qt)
 
-    for i, n in qt.child_nodes:members() do
+    for n in qt.child_nodes:members() do
 
         if n.level < n.max_level then
 
@@ -76,15 +79,16 @@ end
 
 function randomlySubdivide(qt)
 
-
     if qt.level < qt.max_level then
 
         if math.random(5) < 3 then
 
             qt:subdivide()
 
-            for i, n in qt.child_nodes:members() do
+            for n in qt.child_nodes:members() do
+
                 randomlySubdivide(n)
+
             end
         end
     end
