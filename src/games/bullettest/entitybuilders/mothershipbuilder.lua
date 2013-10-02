@@ -79,23 +79,26 @@ end
  gun_port8:setRotation(math.pi + math.pi / 2)
 
 function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
+   
+    local transform = ship:getComponent(Transform)    
+    local shape = ship:getComponent(ShapeRendering):getShape()
+    local center = shape:center(transform:getPosition())
+    local world = ship:getWorld()
 
     if held_actions[Actions.FIRE] then
-    
-    	local transform = ship:getComponent(Transform)    
-		local shape = ship:getComponent(ShapeRendering):getShape()
-    	local center = shape:center(transform:getPosition())
+ 
 
     	emitFromPortThenRotate(ship:getWorld(), gun_port1, center, 0.1)
     	emitFromPortThenRotate(ship:getWorld(), gun_port2, center, 0.1)
     	emitFromPortThenRotate(ship:getWorld(), gun_port3, center, 0.1)
     	emitFromPortThenRotate(ship:getWorld(), gun_port4, center, 0.1)
 
+        --[[
         emitFromPortThenRotate(ship:getWorld(), gun_port5, center, -0.1)
         emitFromPortThenRotate(ship:getWorld(), gun_port6, center, -0.1)
         emitFromPortThenRotate(ship:getWorld(), gun_port7, center, -0.1)
         emitFromPortThenRotate(ship:getWorld(), gun_port8, center, -0.1)
-
+        ]]
     end
 
 
@@ -105,20 +108,43 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
     local acceleration = 200
 
     if held_actions[Actions.RIGHT] then
+
         ship_movement.velocity.x = base_speed
+        emitFromPort(world, gun_port6, center)
+
     elseif held_actions[Actions.LEFT] then
+
         ship_movement.velocity.x = -base_speed
+        emitFromPort(world, gun_port5, center)
+
         -- player_movement.velocity.x = player_movement.velocity.x - (speed_delta.x * dt)
     end
 
     if held_actions[Actions.UP] then
+    
         ship_movement.velocity.y = -base_speed
+        emitFromPort(world, gun_port7, center)
+
     elseif held_actions[Actions.DOWN] then
+    
         ship_movement.velocity.y = base_speed    
+        emitFromPort(world, gun_port8, center)
+
     end
 end
 
 local _vector = Vector(0, 0)
+
+function emitFromPort(world, port, position)
+    local theta = port:getRotation()
+    -- Vector rotation
+    _vector.x = 300
+    _vector.y = 0
+    _vector:rotate(theta)
+    local particle_system = world:getSystem(ParticleSystem)
+    local p = particle_system:getParticle(BulletParticle, position.x, position.y, _vector.x, _vector.y)
+
+end
 
 function emitFromPortThenRotate(world, port, position, port_rot)
 	local theta = port:getRotation()
