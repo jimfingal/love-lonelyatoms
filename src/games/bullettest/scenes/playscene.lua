@@ -40,6 +40,10 @@ function PlayScene:initialize(name, w)
     -- Verbs for Play Scene
     local input_system = world:getInputSystem()
     input_system:registerInput(' ', Actions.FIRE)
+    input_system:registerInput('right', Actions.RIGHT)
+    input_system:registerInput('left', Actions.LEFT)
+    input_system:registerInput('up', Actions.UP)
+    input_system:registerInput('down', Actions.DOWN)
 
     self.mothership_builder = MotherShipBuilder(world)
 
@@ -119,6 +123,7 @@ end
 
 function PlayScene:outputDebugText()
     local debugstart = 50
+    love.graphics.setColor(255, 255, 255)
     love.graphics.print("FPS: " .. love.timer.getFPS(), 50, debugstart + 20)
 
     frame = frame + 1

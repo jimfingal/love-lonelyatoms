@@ -4,6 +4,7 @@ require 'core.entity.entitybuilder'
 
 require 'enums.palette'
 require 'enums.tags'
+require 'enums.actions'
 
 
 require 'entitybuilders.emissionport'
@@ -22,6 +23,8 @@ function MotherShipBuilder:create()
 
     self.entity:addComponent(Transform(397, 297):setLayerOrder(10))
     self.entity:addComponent(ShapeRendering():setColor(Palette.COLOR_SHIP:unpack()):setShape(CircleShape:new(15)))
+    self.entity:addComponent(Motion():setDrag(50, 50))
+
     self.entity:tag(Tags.MOTHERSHIP)
    
     local particle_system = self.world:getSystem(ParticleSystem)
@@ -93,9 +96,26 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
         emitFromPortThenRotate(ship:getWorld(), gun_port7, center, -0.1)
         emitFromPortThenRotate(ship:getWorld(), gun_port8, center, -0.1)
 
-
     end
 
+
+    local ship_movement = ship:getComponent(Motion)
+
+    local base_speed = 200
+    local acceleration = 200
+
+    if held_actions[Actions.RIGHT] then
+        ship_movement.velocity.x = base_speed
+    elseif held_actions[Actions.LEFT] then
+        ship_movement.velocity.x = -base_speed
+        -- player_movement.velocity.x = player_movement.velocity.x - (speed_delta.x * dt)
+    end
+
+    if held_actions[Actions.UP] then
+        ship_movement.velocity.y = -base_speed
+    elseif held_actions[Actions.DOWN] then
+        ship_movement.velocity.y = base_speed    
+    end
 end
 
 local _vector = Vector(0, 0)

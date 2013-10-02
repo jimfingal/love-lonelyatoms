@@ -12,6 +12,10 @@ end
 function BulletParticle:update(particle, dt)
 	particle.x = particle.x + particle.vx * dt
 	particle.y = particle.y + particle.vy * dt
+	particle.r = particle.r - 1
+	particle.g = particle.g - 1
+	particle.b = particle.b - 1
+
 end
 
 function BulletParticle:draw(particle)
@@ -38,4 +42,8 @@ function BulletParticle:reset(reset_item, x, y, vx, vy)
 	reset_item.y = y
 	reset_item.vx = vx
 	reset_item.vy = vy
+	reset_item.r = 255
+	reset_item.g = 255
+	reset_item.b = 255
+
 end

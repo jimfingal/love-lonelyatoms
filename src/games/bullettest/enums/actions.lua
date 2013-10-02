@@ -5,4 +5,9 @@ Actions = {}
 
 Actions.FIRE = "fire"
 
+Actions.LEFT = "left"
+Actions.RIGHT = "right" 
+Actions.UP = "up"
+Actions.DOWN = "down" 
+
 return Actions

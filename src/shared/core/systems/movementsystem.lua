@@ -43,27 +43,39 @@ function MovementSystem:update(transform, movement, dt)
 		local drag_x = movement.drag.x * dt
 		local drag_y = movement.drag.y * dt
 
-	 	if movement.velocity > Vector.ZERO then
+	 	if movement.velocity.x > 0 then
 	        
 	        movement.velocity.x = movement.velocity.x - drag_x
-	        movement.velocity.y = movement.velocity.y - drag_y
 
-	        if movement.velocity < Vector.ZERO then
+	        if movement.velocity.x < 0 then
 	        	movement.velocity.x = 0
-	        	movement.velocity.y = 0
-
 	        end
 
-	    elseif movement.velocity < Vector.ZERO then
+	    elseif movement.velocity.x < 0 then
 
 	        movement.velocity.x = movement.velocity.x + drag_x
-	        movement.velocity.y = movement.velocity.y + drag_y
 
-  			if movement.velocity > Vector.ZERO then
+  			if movement.velocity.x > 0 then
 	        	movement.velocity.x = 0
+	        end
+	    end
+
+
+	    if movement.velocity.y > 0 then
+	        
+	        movement.velocity.y = movement.velocity.y - drag_y
+
+	        if movement.velocity.y < 0 then
 	        	movement.velocity.y = 0
 	        end
 
+	    elseif movement.velocity.y < 0 then
+
+	        movement.velocity.y = movement.velocity.y + drag_y
+
+  			if movement.velocity.y > 0 then
+	        	movement.velocity.y = 0
+	        end
 	    end
 	end
 	
