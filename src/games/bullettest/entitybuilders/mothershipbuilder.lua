@@ -8,7 +8,7 @@ require 'enums.palette'
 require 'enums.tags'
 require 'enums.actions'
 
-
+require 'behaviors.genericbehaviors'
 require 'entitybuilders.emissionport'
 require 'bulletparticle'
 
@@ -74,7 +74,7 @@ function MotherShipBuilder:create()
     local behavior = Behavior()
     behavior:addUpdateFunction(recycleEmissionWhenOffWorld)
     --behavior:addUpdateFunction(rotateInCircle)
-
+    behavior:addUpdateFunction(GenericBehaviors.bounceEntityOffWorldEdges)
     self.entity:addComponent(behavior)
     
     self.entity:addComponent(InputResponse():addResponse(mothershipInputResponse))
