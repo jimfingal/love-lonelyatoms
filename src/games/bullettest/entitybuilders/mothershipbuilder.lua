@@ -25,8 +25,8 @@ function MotherShipBuilder:create()
 
     self.entity:addComponent(Transform(397, 297):setLayerOrder(10))
     local rendering = Rendering()
-    rendering:addRenderable(ShapeRendering():setColor(0, 0, 0):setShape(CircleShape:new(15)), "background")
-    rendering:addRenderable(ShapeRendering():setColor(100, 10, 10):setShape(CircleShape:new(5, 3, 3)), "eye")
+    rendering:addRenderable(ShapeRendering():setColor(Palette.COLOR_SHIP:unpack()):setShape(CircleShape:new(15)), "body")
+    rendering:addRenderable(ShapeRendering():setColor(205, 147, 147):setShape(CircleShape:new(5, 3, 3)), "eye")
 
     self.entity:addComponent(rendering)
 
@@ -86,11 +86,11 @@ function MotherShipBuilder:create()
         local c = entity:getComponent(Rendering):getRenderable("eye"):getColor()
         local world = entity:getWorld()
         
-        local fade_to = 10
+        local r_fade, g_fade, b_fade = 100, 100, 100
         local easing = Easing.inCirc
 
-        if c.r ~= 100 then 
-            fade_to = 100 
+        if c.r < 200 then 
+            r_fade, g_fade, b_fade = 205, 147, 147
             easing = Easing.outCirc
     
         end
@@ -99,7 +99,7 @@ function MotherShipBuilder:create()
         local schedule_system = self.world:getSystem(ScheduleSystem)
 
         schedule_system:doAfter(0.5, function()
-            tween_system:addTween(1, c, {r = fade_to }, Easing.linear, fade)
+            tween_system:addTween(1, c, {r = r_fade, g = g_fade, b = b_fade }, Easing.linear, fade)
         end)
     end
 
@@ -196,7 +196,7 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
 
         --ship_movement.acceleration.x = acceleration
 
-        emitFromPort(world, gun_port6, center)
+        -- emitFromPort(world, gun_port6, center)
 
     elseif held_actions[Actions.LEFT] then
 
@@ -204,7 +204,7 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
 
         --ship_movement.acceleration.x = -acceleration
 
-        emitFromPort(world, gun_port5, center)
+        -- emitFromPort(world, gun_port5, center)
 
         -- player_movement.velocity.x = player_movement.velocity.x - (speed_delta.x * dt)
     end
@@ -216,7 +216,7 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
         --ship_movement.acceleration.y = -acceleration
 
 
-        emitFromPort(world, gun_port7, center)
+        -- emitFromPort(world, gun_port7, center)
 
     elseif held_actions[Actions.DOWN] then
     
@@ -224,7 +224,7 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
 
         -- ship_movement.acceleration.y = acceleration
   
-        emitFromPort(world, gun_port8, center)
+        -- emitFromPort(world, gun_port8, center)
 
     end
 end

@@ -140,7 +140,7 @@ function PlayScene:outputDebugText()
     love.graphics.print('Vector objects created: ' .. ClassCounter[Vector], 10, debugstart + 340)
     love.graphics.print('Set objects created: ' .. ClassCounter[Set], 10, debugstart + 360)
     love.graphics.print('List objects created: ' .. ClassCounter[List], 10, debugstart + 380)
-    love.graphics.print('Tweens: ' .. tostring(self.world:getSystem(TweenSystem)), 10, debugstart + 400)
+    --love.graphics.print('Tweens: ' .. tostring(self.world:getSystem(TweenSystem)), 10, debugstart + 400)
 
 
 end
