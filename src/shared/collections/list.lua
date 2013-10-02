@@ -65,6 +65,12 @@ function List:size()
 	return #self.list
 end
 
+function List:clear()
+	for i in self:members() do
+		self.list[i] = nil
+	end
+end
+
 function List:__tostring()
 
 	local l = {} -- List of elements

@@ -1,8 +1,15 @@
 require 'external.middleclass'
 
+-- Axis-aligned bounding box
 AABB = class('AABB')
 
 function AABB:initialize(x, y, w, h)
+
+	assert(x, "Must have an x param")
+	assert(y, "Must have an y param")
+	assert(w, "Must have an w param")
+	assert(h, "Must have an h param")
+
 	self.x = x
 	self.y = y
 	self.w = w
@@ -36,4 +43,9 @@ function AABB:intersects(other)
 				other.y  + other.h < self.y
 			)
 
+end
+
+
+function AABB:__tostring()
+	return "AABB: [x=" .. tostring(self.x) .. ", y=" .. tostring(self.y) ..", w=" .. tostring(self.w) .. ", h=" .. tostring(self.h) .. "]"
 end
