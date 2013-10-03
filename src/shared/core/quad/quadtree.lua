@@ -2,56 +2,38 @@ require 'external.middleclass'
 require 'core.quad.aabb'
 require 'collections.set'
 require 'collections.list'
-local uuid = require('external.uuid')
 
---[[
-
-The Quadtree class is straightforward. 
-MAX_OBJECTS defines how many objects a node can hold before it splits.
-MAX_LEVELS defines the deepest level subnode. 
-Level is the current node level (0 being the topmost node)
-Bounds represents the 2D space that the node occupies, and nodes are the four subnodes.
-
-
-]]
 QuadTree = class('QuadTree')
 
-local DEFAULT_MAX_OBJECTS = 10
-local DEFAULT_MAX_LEVEL = 5
+QuadTree.DEFAULT_MAX_OBJECTS = 10
+QuadTree.DEFAULT_MAX_LEVEL = 5
+QuadTree.CHILD_NODES = 4
+QuadTree.CHILD_NODE_SQRT = 2
 
--- Arguments:
--- 		node_sqrt -- how many nodes per side.
+QuadTree.NW = 1
+QuadTree.NE = 2
+QuadTree.SW = 3
+QuadTree.SE = 4
+QuadTree.PARENT = -1
 
 
---[[
+function QuadTree:initialize(aabb, level, max_objects, max_level)
 
-
-]]
-
-function QuadTree:initialize(node_sqrt, aabb, level, max_objects, max_level)
-
-	assert(node_sqrt, "Must have a node_sqrt")
 	assert(aabb, "Must have an aabb")
 	assert(level, "Must have a level")
-	
-	self.uuid = uuid()
 
 	self.aabb = aabb
 
-	self.node_sqrt = node_sqrt
-
 	self.boundary = nil -- AABB of boundary
 
-	self.child_nodes = Set()
+	self.child_nodes = List()
 
 	self.objects = Set()
 
 	self.level = level
 
-	-- TODO: hash map
-
-	self.max_objects = max_objects or DEFAULT_MAX_OBJECTS
-	self.max_level = max_level or DEFAULT_MAX_LEVEL
+	self.max_objects = max_objects or QuadTree.DEFAULT_MAX_OBJECTS
+	self.max_level = max_level or QuadTree.DEFAULT_MAX_LEVEL
 
 end
 
@@ -61,7 +43,7 @@ function QuadTree:clear()
 	self.objects:clear()
 
 	-- Recursively clear child nodes
-	for node in self.child_nodes:members() do
+	for i, node in self.child_nodes:members() do
 		node:clear()
 	end
 
@@ -73,22 +55,16 @@ function QuadTree:subdivide()
 
 	assert(self.level < self.max_level, "Called Subdivide even though this would put us over the max level")
 
-	local child_w = self.aabb.w / self.node_sqrt
-	local child_h = self.aabb.h / self.node_sqrt
+	local child_w = self.aabb.w / QuadTree.CHILD_NODE_SQRT
+	local child_h = self.aabb.h / QuadTree.CHILD_NODE_SQRT
 
-	local x_limit = self.aabb.x + self.aabb.w - 1
-	local y_limit = self.aabb.y + self.aabb.w - 1
+	local x = self.aabb.x
+	local y = self.aabb.y
 
-	for x = self.aabb.x, x_limit, child_w do
-		for y = self.aabb.y, y_limit, child_h do
-
-			local child_aabb = AABB(x, y, child_w, child_h)
-			local qt = QuadTree:new(self.node_sqrt, child_aabb, self.level + 1, self.max_objects, self.max_level)
-			
-			self.child_nodes:add(qt)
-
-		end
-	end
+	self.child_nodes:insertAt(QuadTree.NW, QuadTree(AABB(x, y, child_w, child_h), self.level + 1, self.max_objects, self.max_level))
+	self.child_nodes:insertAt(QuadTree.NE, QuadTree(AABB(x + child_w, y, child_w, child_h), self.level + 1, self.max_objects, self.max_level))
+	self.child_nodes:insertAt(QuadTree.SW, QuadTree(AABB(x, y + child_h, child_w, child_h), self.level + 1, self.max_objects, self.max_level))
+	self.child_nodes:insertAt(QuadTree.SE, QuadTree(AABB(x+ child_w, y + child_h, child_w, child_h), self.level + 1, self.max_objects, self.max_level))
 
 end	
 
@@ -109,40 +85,34 @@ function QuadTree:insert(entity)
 
 	if self.child_nodes:size() > 0 then
 
-		local added = false
+		local quadrant = self:getQuadrant(entity.aabb)
 
-		-- Try to insert into one of my children. If I do, then just break out
-		for node in self.child_nodes:members() do
-
-			added = node:insert(entity)
-
-			if added then
-				return true
-			end
+		-- If doesn't fit exactly in any child, add it to self
+		if quadrant == QuadTree.PARENT then
+			self.objects:add(entity)
+			return true
+		else
+			return self.child_nodes:memberAt(quadrant):insert(entity)
 		end
-
-		-- Otherwise, I have to add it to myself.
-		self.objects:add(entity)
-		return true
 	
 	else
 
-		-- Otherwise, check if I'm at my limit. If I'm not, just add to my objects and return true.
+		-- If I'm not at my limit, add and return a success
 		if self.objects:size() < self.max_objects or self.level >= self.max_level then
 			
-			self.objects:add(entity)
-			
+			self.objects:add(entity)	
 			return true
 		
-		else 
+		else
 
 			-- If I am, re-partition objects down to children.
 			self:subdivide()
+			--assert(false, tostring(self.child_nodes))
 
 			-- Re-partition
 			for object in self.objects:members() do
 				local reassigned = self:insert(object)
-				assert(reassigned, "We should be able to send this entity to a child: " .. tostring(entity.aabb))
+				assert(reassigned, tostring(self) .. " We should be able to send this entity to a child: " .. tostring(entity.aabb))
 			end
 
 			-- Clear out my object list
@@ -152,13 +122,45 @@ function QuadTree:insert(entity)
 			local added = self:insert(entity)
 			assert(added, tostring(self) .. " This should have been sent to one of my children, or back to me. " .. tostring(entity.aabb))
 
-			return true
+			return added
 
 		end
 
 	end
 
 end	
+
+--[[
+ Determine which immediate node the object belongs to. PARENT means
+ object cannot completely fit within a child node and is part
+ of the parent node
+]]
+
+function QuadTree:getQuadrant(aabb)
+
+	local vertical_midpoint = self.aabb.x + self.aabb.half_w
+	local horizontal_midpoint = self.aabb.y + self.aabb.half_h
+
+	local fits_in_top_half = aabb.y <= horizontal_midpoint and aabb.y + aabb.h <= horizontal_midpoint
+   	local fits_in_bottom_half = aabb.y >= horizontal_midpoint and aabb.y + aabb.h <= self.aabb.y + self.aabb.h
+
+   	local fits_in_left_half = aabb.x <= vertical_midpoint and aabb.x + aabb.w <= vertical_midpoint
+   	local fits_in_right_half = aabb.x >= vertical_midpoint and aabb.x + aabb.w <= self.aabb.x + self.aabb.w
+
+   	if fits_in_top_half and fits_in_left_half then
+   		return QuadTree.NW
+   	elseif fits_in_top_half and fits_in_right_half then
+   		return QuadTree.NE
+   	elseif fits_in_bottom_half and fits_in_left_half then
+   		return QuadTree.SW
+   	elseif fits_in_bottom_half and fits_in_right_half then
+   		return QuadTree.SE
+   	else 
+   		return QuadTree.PARENT
+   	end
+
+end
+
 
 function QuadTree:getNodeEntityIsIn(entity)
 
@@ -170,40 +172,22 @@ function QuadTree:getNodeEntityIsIn(entity)
 	-- Otherwise, try to return which child it is in
 	elseif self.child_nodes:size() > 0 then
 
-		local contained_node = nil
+		local quadrant = self:getQuadrant(entity.aabb)
+		assert(quadrant ~= QuadTree.PARENT, "Shouldn't be contained in myself otherwise I should have returned it")
 
-		for node in self.child_nodes:members() do
-
-			contained_node = node:getNodeEntityIsIn(entity)
-
-			if contained_node then 
-				return contained_node
-			end
-
-		end
+		return self.child_nodes:memberAt(quadrant):getNodeEntityIsIn(entity)
 
 	end
 
 	return nil
 end	
 
-function QuadTree:addAllChildObjects(set)
-
-	set:addAll(self.objects)
-
-	for node in self.child_nodes:members() do
-		node:addAllChildObjects(set)
-	end
-
-	return set
-
-end
-
-
 function QuadTree:getPossibleOverlaps(object)
 
 	-- Get the lowermost node an entity is in
 	local node = self:getNodeEntityIsIn(object)
+
+	assert(node, "Couldn't find a node the entity is in... " .. tostring(object.aabb))
 
 	local set = Set()
 
@@ -223,10 +207,11 @@ function QuadTree:insertPossibleOverlaps(set, object)
 
 	set:addSet(self.objects)
 
-	for node in self.child_nodes:members() do
-
-		if object.aabb:intersects(node.aabb) then
-			node:insertPossibleOverlaps(set, object)
+	if self.child_nodes:size() > 0 then
+		for i, node in self.child_nodes:members() do
+			if object.aabb:intersects(node.aabb) then
+				node:insertPossibleOverlaps(set, object)
+			end
 		end
 	end
 

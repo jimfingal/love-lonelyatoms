@@ -13,7 +13,7 @@ function love.load()
 
     local aabb = AABB(0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
-    root_node = QuadTree(2, aabb, 0, 2, 10)
+    root_node = QuadTree(aabb, 0, 2, 10)
 
     math.randomseed( tonumber(tostring(socket.gettime()):reverse():sub(1,6)) )
     math.random(); math.random(); math.random()
@@ -74,7 +74,7 @@ end
 function outputDebugText()
    
     for i, val in debug_list:members() do
-        --love.graphics.print(tostring(val), 0, i * 10)
+        love.graphics.print(tostring(val), 0, i * 10)
     end
     debug_list:clear()
 
@@ -107,7 +107,7 @@ function drawQuadTree(qt)
     drawAABB(qt.aabb)
     --love.graphics.print(tostring(qt.level) .. tostring(qt.aabb), qt.aabb.x, qt.aabb.y + qt.aabb.h / 2)
 
-    for node in qt.child_nodes:members() do
+    for i, node in qt.child_nodes:members() do
         debug_list:append(node)
         drawQuadTree(node)
     end
@@ -122,7 +122,7 @@ end
 
 function recursivelySubdivide(qt)
 
-    for n in qt.child_nodes:members() do
+    for i, n in qt.child_nodes:members() do
 
         if n.level < n.max_level then
 
@@ -143,7 +143,7 @@ function randomlySubdivide(qt)
 
             qt:subdivide()
 
-            for n in qt.child_nodes:members() do
+            for i, n in qt.child_nodes:members() do
 
                 randomlySubdivide(n)
 

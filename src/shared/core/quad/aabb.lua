@@ -14,6 +14,9 @@ function AABB:initialize(x, y, w, h)
 	self.y = y
 	self.w = w
 	self.h = h
+
+	self.half_w = w / 2
+	self.half_h = h / 2
 end
 
 -- TOOD: test

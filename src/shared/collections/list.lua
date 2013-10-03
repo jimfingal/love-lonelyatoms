@@ -57,6 +57,11 @@ function List:members()
 	return ipairs(self.list)
 end
 
+function List:insertAt(index, object)
+	self.list[index] = object
+end
+
+
 function List:memberAt(index)
 	return self.list[index]
 end
