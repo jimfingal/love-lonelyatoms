@@ -1,5 +1,6 @@
 require 'external.middleclass'
 require 'particle.particle'
+require 'core.quad.aabb'
 
 BulletParticle = class('BulletParticle', Particle)
 
@@ -12,6 +13,9 @@ end
 function BulletParticle:update(particle, dt)
 	particle.x = particle.x + particle.vx * dt
 	particle.y = particle.y + particle.vy * dt
+	particle.aabb.x = particle.x
+	particle.aabb.y = particle.y
+
 	particle.r = particle.r - 1
 	particle.g = particle.g - 1
 	particle.b = particle.b - 1
@@ -25,7 +29,8 @@ end
 
 -- A function which returns us an object to the pool.
 function BulletParticle:create(x, y, vx, vy)
-	return { type = self.type, active=true, x = x, y = y, vx = vx, vy = vy, radius = 3, r = 255, g = 255, b = 255}
+	local rad = math.random(3)
+	return { type = self.type, active=true, x = x, y = y, vx = vx, vy = vy, aabb = AABB(x, y, rad * 2, rad * 2), radius = rad, r = 255, g = 255, b = 255}
 end
 
 -- A function called on the object when we send it to the recycler. Should do things like

@@ -161,6 +161,28 @@ function QuadTree:getQuadrant(aabb)
 
 end
 
+function QuadTree:prune()
+
+	local num_contained_objects = self.objects:size()
+
+	local child_nodes_contain_objects = false
+	local child_tally = 0
+
+	if self.child_nodes then
+
+		for i, node in self.child_nodes:members() do
+			child_tally = child_tally + node:prune()
+		end
+		
+		-- If none of my children have things in them, prune them
+		if child_tally == 0 then
+			self.child_nodes:clear()
+		end
+
+	end
+
+	return num_contained_objects + child_tally
+end
 
 function QuadTree:getNodeEntityIsIn(entity)
 
@@ -217,10 +239,6 @@ function QuadTree:insertPossibleOverlaps(set, object)
 
 	return set
 end
-
-
-
-
 
 function QuadTree:__tostring()
 	return "QuadTree level " .. self.level .. "; aabb: " .. tostring(self.aabb) .. " object #: " .. tostring(self.objects:size())  .. " children #: " .. tostring(self.child_nodes:size())

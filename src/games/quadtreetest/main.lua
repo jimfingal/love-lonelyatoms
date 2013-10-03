@@ -103,6 +103,7 @@ end
 
 
 function drawQuadTree(qt)
+    love.graphics.setColor(147,147,205)
 
     drawAABB(qt.aabb)
     --love.graphics.print(tostring(qt.level) .. tostring(qt.aabb), qt.aabb.x, qt.aabb.y + qt.aabb.h / 2)

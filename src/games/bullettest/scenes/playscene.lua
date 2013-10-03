@@ -22,6 +22,8 @@ require 'entitybuilders.starbuilder'
 
 require 'core.entity.entityquery'
 require 'core.vector'
+require 'core.quad.aabb'
+require 'core.quad.quadtree'
 
 local INPUTTABLE_ENTITIES = EntityQuery():addOrSet(InputResponse)
 local BEHAVIOR_ENTITIES = EntityQuery():addOrSet(Behavior)
@@ -51,6 +53,10 @@ function PlayScene:initialize(name, w)
     self.mothership_builder = MotherShipBuilder(world)
     self.star_builder = StarBuilder(world)
     -- self.opponent_builder = OpponentBuilder(world)
+
+    local aabb = AABB(0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+
+    self.root_node = QuadTree(aabb, 0, 10, 5)
 
 end
 
@@ -98,6 +104,19 @@ function PlayScene:update(dt)
     local particle_system =  self.world:getSystem(ParticleSystem)
     particle_system:updateParticles(game_world_dt)
 
+
+    if frame % 5 == 0 then
+        self.root_node:clear()
+        for p in particle_system:getParticlePool(BulletParticle).used_objects:members() do
+            self.root_node:insert(p)
+        end
+    end
+
+    if frame % 100 == 0 then
+        self.root_node:prune()
+    end
+  
+
     --]]
 end
 
@@ -117,6 +136,7 @@ function PlayScene:draw()
     local particle_system =  self.world:getSystem(ParticleSystem)
     particle_system:drawParticles()
 
+    self:drawQuadTree(self.root_node)
 
     if Settings.DEBUG then
 
@@ -148,5 +168,20 @@ function PlayScene:outputDebugText()
 
 end
 
+function PlayScene:drawQuadTree(qt)
+    love.graphics.setColor(147,147,205)
+
+    self:drawAABB(qt.aabb)
+
+    for i, node in qt.child_nodes:members() do
+         self:drawQuadTree(node)
+    end
+
+end
+
+
+function PlayScene:drawAABB(box, mode)
+    love.graphics.rectangle(mode or "line", box.x, box.y, box.w, box.h)
+end
 
 
