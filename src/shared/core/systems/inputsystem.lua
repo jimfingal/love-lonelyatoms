@@ -1,7 +1,7 @@
 require 'external.middleclass'
 require 'core.entity.system'
 require 'core.components.behavior'
-
+require 'collections.set'
 
 InputSystem = class('InputSystem', System)
 
