@@ -17,6 +17,7 @@ QuadTree.SE = 4
 QuadTree.PARENT = -1
 
 
+-- Every element is contained in the smallest quadtree node which contains it fully.
 function QuadTree:initialize(aabb, level, max_objects, max_level)
 
 	assert(aabb, "Must have an aabb")
