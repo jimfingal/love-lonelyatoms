@@ -10,7 +10,7 @@ function AudioModulator:initialize(engine, waveform, frequency, amplitude, shift
 	self.engine = engine
 
 	self.waveform = waveform or Waves.SINE
-	self.frequency = frequency or 0.1 -- Hertz
+	self.frequency = frequency or 0.5 -- Hertz
 	self.amplitude = amplitude or 0.5 
 	self.shift = shift or 0.0 
 	self.samples = engine.samples[self.waveform]
