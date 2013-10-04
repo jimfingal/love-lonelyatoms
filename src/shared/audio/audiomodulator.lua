@@ -5,13 +5,16 @@ require 'audio.waves'
 AudioModulator = class('AudioModulator')
 
 
-function AudioModulator:initialize(samples)
+function AudioModulator:initialize(engine, waveform, frequency, amplitude, shift)
 
-	self.waveform = Waves.SINE
-	self.frequency = 4.0 -- Hertz
-	self.amplitude = 1 
-	self.shift = 0.0 
-	self.samples = samples
+	self.engine = engine
+
+	self.waveform = waveform or Waves.SINE
+	self.frequency = frequency or 0.1 -- Hertz
+	self.amplitude = amplitude or 0.5 
+	self.shift = shift or 0.0 
+	self.samples = engine.samples[self.waveform]
+
 end
 
 function AudioModulator:process(time)
@@ -24,9 +27,15 @@ function AudioModulator:process(time)
 		t = t + (1/self.frequency) * self.shift
 	end
 
-	p = ( 44100 * self.frequency * t ) % 44100;
-    s = self.samples:memberAt(p)
+	p = math.floor(( 44100 * self.frequency * t ) % 44100 + 1);
+
+    s = self.samples[p]
 
     return s * self.amplitude;
 
+end
+
+function AudioModulator:__tostring()
+	return "AudioModulator: Waveform " .. tostring(self.waveform) .. ", frequency " .. tostring(self.frequency) .. 
+				", amplitude " .. tostring(self.amplitude) .. ", shift " .. tostring(self.shift) .. ", samples " .. tostring(self.samples)
 end

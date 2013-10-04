@@ -26,6 +26,11 @@ function AudioEngine:newAudio(waveform, duration, frequency)
 	return Audio(self, waveform, duration, frequency)
 end
 
+function AudioEngine:newAudioModulator(waveform, frequency, amplitude, shift)
+	return AudioModulator(self, waveform,  frequency, amplitude, shift)
+end
+
+
 function AudioEngine:setSamples(source, audio)
 	for i = 1, #audio.samples do
 		source:setSample(i, audio.samples[i])

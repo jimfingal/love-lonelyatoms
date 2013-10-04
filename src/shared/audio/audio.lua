@@ -14,6 +14,9 @@ function Audio:initialize(engine, waveform, duration, frequency)
 
 	self.amplitude = 0.5 -- Value in the range 0.0 to 1.0
 
+	self.frequency_modulator = nil
+	self.amplitude_modulator = nil
+
 	self.samples = {}
 
 end
@@ -37,12 +40,23 @@ function Audio:generateSamples()
 	for i = 1, num_samples do
 
 		-- Position within the waveform cache
-		local waveform_position = math.floor((44100 * self.frequency * position) % 44100 + 1)
+
+		local freq = self.frequency + 0
+		local amp = self.amplitude + 0
+
+		if self.frequency_modulator then 
+			freq = freq + self.frequency_modulator:process(position) 
+		end
+		if self.amplitude_modulator then 
+			amp = amp + self.amplitude_modulator:process(position) 
+		end
+
+		local waveform_position = math.floor((44100 * freq * position) % 44100 + 1)
 
 		local waveform_sample = waveform_cache[waveform_position]
 
 		-- Set my sample equal to the waveform's sample plus my amplitude
-		self.samples[i] = waveform_sample * self.amplitude
+		self.samples[i] = waveform_sample * amp
 
 		position = position + self.engine.sample_time
 

@@ -1,5 +1,7 @@
 require 'audio.frequency'
 require 'audio.audioengine'
+require 'audio.audiomodulator'
+
 require 'audio.waves'
 require 'core.systems.inputsystem'
 require 'external.middleclass'
@@ -28,10 +30,14 @@ memsize = 0
 
 function love.load()
     
-    local buffer_length = 0.1
+    local buffer_length = 4
 
     engine = AudioEngine()
+    
+ 
+
     audio = engine:newAudio(Waves.SAWTOOTH, buffer_length, 440)
+
 
     input_system = InputSystem()
     input_system:registerInput('up', Actions.CHANGE_WAVE_UP)
@@ -73,8 +79,16 @@ function love.update(dt)
 
         current_wave = wave_types[counter % 4]
         
+        fm = engine:newAudioModulator(Waves.SINE)
+        fm.amplitude = 20
+        fm.frequency = 0.1
+
+        --am = engine:newAudioModulator(Waves.SINE)
+
         audio.waveform = current_wave
         audio.frequency = frequencyFromNote(note_off_a)
+        audio.frequency_modulator = fm
+        --audio.amplitude_modulator = am
 
         audio:generateSamples()
 
