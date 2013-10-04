@@ -34,6 +34,15 @@ function love.update(dt)
    
 end
 
+function love.mousepressed(x, y, button)
+    mouse_x, mouse_y = love.mouse.getPosition()
+    tile_hover = screen_map:getCoordinates(mouse_x, mouse_y)
+    local x, y = tile_hover:unpack()
+    local current = clicked_matrix:get(x, y)
+    clicked_matrix:put(x, y, current + 1)
+end
+
+
 function drawScreenTiles(screen_map)
 
     for x = 0, screen_map.xtiles - 1 do 
