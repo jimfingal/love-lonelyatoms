@@ -56,7 +56,7 @@ function drawScreenTiles(screen_map)
 
             g = g + 10
 
-            local alpha = 150
+            local alpha = 200
             local current = clicked_matrix:get(x + 1, y + 1)
 
             assert(current, "There should be a current for " .. x + 1 .. ", " ..y + 1 .. " but instead there is not..." .. tostring(clicked_matrix))
