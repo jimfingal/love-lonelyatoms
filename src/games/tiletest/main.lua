@@ -11,7 +11,7 @@ function love.load()
     mouse_x = 0
     mouse_y = 0
 
-    clicked_matrix = Matrix(10, 10, 1)
+    clicked_matrix = Matrix(10, 10, 0)
 
     input_system = InputSystem()
     input_system:registerInput(' ', "select")
@@ -44,7 +44,7 @@ function drawScreenTiles(screen_map)
 
             assert(current, "There should be a current for " .. x + 1 .. ", " ..y + 1 .. " but instead there is not..." .. tostring(clicked_matrix))
 
-            if current % 2 == 0 then mode = "fill" end
+            if current % 2 == 1 then mode = "fill" end
 
             love.graphics.rectangle(mode, x * screen_map.tile_width, y * screen_map.tile_height, screen_map.tile_width, screen_map.tile_height)
            
