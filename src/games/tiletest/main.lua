@@ -14,7 +14,7 @@ function love.load()
     clicked_matrix = Matrix(10, 10, 0)
 
     input_system = InputSystem()
-    input_system:registerInput(' ', "select")
+    input_system:registerInput(' ', "reset")
 end
 
 
@@ -26,10 +26,8 @@ function love.update(dt)
     mouse_x, mouse_y = love.mouse.getPosition()
     tile_hover = screen_map:getCoordinates(mouse_x, mouse_y)
 
-    if input_system:newAction("select") then
-        local x, y = tile_hover:unpack()
-        local current = clicked_matrix:get(x, y)
-        clicked_matrix:put(x, y, current + 1)
+    if input_system:newAction("reset") then
+        clicked_matrix:populateDefault()
     end
    
 end
@@ -45,17 +43,29 @@ end
 
 function drawScreenTiles(screen_map)
 
+    local r = 200
+    local b = 40
+
     for x = 0, screen_map.xtiles - 1 do 
+
+        r = r - 10
+        b = b + 10
+        local g = 50
+
         for y = 0, screen_map.ytiles - 1 do
 
-            local mode = "line"
+            g = g + 10
+
+            local alpha = 150
             local current = clicked_matrix:get(x + 1, y + 1)
 
             assert(current, "There should be a current for " .. x + 1 .. ", " ..y + 1 .. " but instead there is not..." .. tostring(clicked_matrix))
 
-            if current % 2 == 1 then mode = "fill" end
+            if current % 2 == 1 then alpha = 255 end
 
-            love.graphics.rectangle(mode, x * screen_map.tile_width, y * screen_map.tile_height, screen_map.tile_width, screen_map.tile_height)
+            love.graphics.setColor(r,g,b, alpha)
+
+            love.graphics.rectangle("fill", x * screen_map.tile_width, y * screen_map.tile_height, screen_map.tile_width, screen_map.tile_height)
            
             love.graphics.print(tostring(current), x * screen_map.tile_width, y * screen_map.tile_height)
         end
@@ -69,7 +79,6 @@ end
 
 function love.draw()
 
-    love.graphics.setColor(147,147,205)
 
     love.graphics.setBackgroundColor(63, 63, 63, 255)
 

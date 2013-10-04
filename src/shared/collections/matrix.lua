@@ -4,18 +4,20 @@ require 'external.middleclass'
 -- TODO: UNTESTED!
 Matrix = class('Matrix')
 
-function Matrix:initialize(rows, columns, value)
+function Matrix:initialize(rows, columns, default)
 	self.matrix = {}
 
 	self.rows = rows
 	self.columns = columns
 
-	for i = 1,rows do
-		self.matrix[i] = {}
-		for j = 1,columns do
-			self.matrix[i][j] = value
-		end
+	self.default = default
+
+	self:clear()
+
+	if self.default ~= nil then 
+		self:populateDefault()
 	end
+
 end
 
 function Matrix:put(x, y, value)
@@ -34,8 +36,17 @@ function Matrix:get(x, y)
 end
 
 function Matrix:clear()
-	for key in pairs(self.matrix) do
-		self.matrix[key] = nil
+	for i = 1, self.rows do
+		self.matrix[i] = {}
+	end
+end
+
+function Matrix:populateDefault()
+
+	for i = 1, self.rows do
+		for j = 1, self.columns do
+			self.matrix[i][j] = self.default
+		end
 	end
 end
 

@@ -5,7 +5,7 @@ require 'audio.waves'
 
 AudioEngine = class('AudioEngine')
 
-function AudioEngine:initialize(sample_rate)
+function AudioEngine:initialize(sample_rate, bits, channels)
 
 	-- Samples per second
 	self.sample_rate = sample_rate or 44100
@@ -18,6 +18,9 @@ function AudioEngine:initialize(sample_rate)
 	self.samples[Waves.TRIANGLE] = Waves.triangleWave(self.sample_rate)
 
 	self.sample_time = 1.0 / self.sample_rate
+
+	self.bits = bits or 16
+	self.channels = channels or 1
 
 end
 
@@ -36,5 +39,15 @@ function AudioEngine:setSamples(source, audio)
 		source:setSample(i, audio.samples[i])
 	end
 end
+
+
+function AudioEngine:soundSourceFromAudio(audio)
+	
+	local soundData = love.sound.newSoundData(audio.duration * engine.sample_rate, engine.sample_rate, 16, 1)
+    self:setSamples(soundData, audio)
+	return love.audio.newSource(soundData)
+
+end
+
 
 
