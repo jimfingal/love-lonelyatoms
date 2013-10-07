@@ -30,8 +30,8 @@ function love.load()
     time_system = TimeSystem()
     time_system:stop()
 
-    local xtiles = 20
-    local ytiles = 20
+    local xtiles = 50
+    local ytiles = 50
 
     screen_map = ScreenMap(love.graphics.getWidth(), love.graphics.getHeight(), xtiles, ytiles)
 
@@ -118,11 +118,27 @@ function drawCellularAutomata(screen_map)
 
     for x = 0, screen_map.xtiles - 1 do 
 
+        local xtile = x * screen_map.tile_width
         r = r - 10
         b = b + 10
         local g = 50
 
         for y = 0, screen_map.ytiles - 1 do
+
+            local ytile = y * screen_map.tile_height
+
+            -- Draw Grid lines
+            if x == 0 and y > 0 then
+                love.graphics.setColor(200,200,200, 100)
+                love.graphics.line(0, ytile, love.graphics.getWidth(), ytile)
+            end
+
+            if y == 0 and x > 0 then
+               love.graphics.setColor(200,200,200, 100)
+                love.graphics.line(xtile, 0, xtile, love.graphics.getHeight())
+            end
+
+            -- Draw color
 
             g = g + 10
 
@@ -138,11 +154,13 @@ function drawCellularAutomata(screen_map)
             if current:isOn() then 
                 love.graphics.setColor(r,g,b, 255)
                 mode = "fill"
+                love.graphics.rectangle(mode, xtile, ytile, screen_map.tile_width, screen_map.tile_height)
+
             else
-                love.graphics.setColor(200,200,200, 255)
+                --love.graphics.setColor(200,200,200, 255)
             end
 
-            love.graphics.rectangle(mode, x * screen_map.tile_width, y * screen_map.tile_height, screen_map.tile_width, screen_map.tile_height)
+            --love.graphics.rectangle(mode, x * screen_map.tile_width, y * screen_map.tile_height, screen_map.tile_width, screen_map.tile_height)
            
             --love.graphics.print(tostring(current), x * screen_map.tile_width, y * screen_map.tile_height)
 
