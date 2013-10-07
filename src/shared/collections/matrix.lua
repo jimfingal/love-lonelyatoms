@@ -20,6 +20,14 @@ function Matrix:initialize(rows, columns, default)
 
 end
 
+function Matrix:rowCount()
+	return self.rows
+end
+
+function Matrix:columnCount()
+	return self.columns
+end
+
 function Matrix:put(x, y, value)
 	assert(x > 0, "X must be greater than zero, passed in " .. tostring(x))
 	assert(x <= self.rows, "X must be less than or equal to  " .. tostring(self.rows) .. ", passed in " .. tostring(x))

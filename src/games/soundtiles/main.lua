@@ -32,7 +32,7 @@ wave_types[4] = Waves.TRIANGLE
 
 current_wave = Waves.SINE
 
-DEBUG = true
+DEBUG = false
 
 frame = 1
 memsize = 0
