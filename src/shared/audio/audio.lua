@@ -16,6 +16,7 @@ function Audio:initialize(engine, waveform, duration, frequency)
 
 	self.frequency_modulator = nil
 	self.amplitude_modulator = nil
+	self.processors = List()
 
 	self.samples = {}
 
@@ -60,6 +61,10 @@ function Audio:generateSamples()
 
 		position = position + self.engine.sample_time
 
+	end
+
+	for _, processor in self.processors:members() do
+		processor:process(self.samples)
 	end
 
 end

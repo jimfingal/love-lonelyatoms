@@ -1,6 +1,7 @@
 require 'audio.frequency'
 require 'audio.audioengine'
 require 'audio.audiomodulator'
+require 'audio.audioprocessor'
 
 require 'audio.waves'
 require 'core.systems.inputsystem'
@@ -12,6 +13,8 @@ require 'utils.counters'
 
 require 'spatial.screenmap'
 require 'collections.matrix'
+
+Easing = require 'external.easing'
 
 Actions = {}
 
@@ -26,6 +29,8 @@ wave_types[2] = Waves.SAWTOOTH
 wave_types[3] = Waves.SINE
 wave_types[4] = Waves.TRIANGLE
 
+
+current_wave = Waves.SINE
 
 DEBUG = true
 
@@ -47,6 +52,8 @@ function love.load()
     schedule_system = ScheduleSystem()
 
 
+    counter = CircularCounter(4, 1)
+
     local xtiles = 20
     local ytiles = 20
 
@@ -60,11 +67,11 @@ function love.load()
 
     screen_counter = CircularCounter(xtiles, 1)
 
-    current_wave = wave_types[1]
-
-    time_interval = 0.1
+    time_interval = 0.5
 
     schedule_system:doEvery(time_interval, changeNotes)
+
+
 
 end
 
@@ -80,13 +87,13 @@ function changeNotes()
 
             local existing_sound = sound_matrix:get(screen_counter:value(), y)
 
-            if existing_sound then
-                love.audio.play(existing_sound)
-            else
-                local new_sound = getNote(y, Waves.SINE, time_interval)
+           -- if existing_sound then
+           --     love.audio.play(existing_sound)
+           -- else
+                local new_sound = getNote(y, current_wave, time_interval)
                 sound_matrix:put(screen_counter:value(), y, new_sound)
                 love.audio.play(new_sound)
-            end
+            --end
         end
 
     end
@@ -106,6 +113,14 @@ function love.update(dt)
         clicked_matrix:populateDefault()
     end
 
+    if input_system:newAction(Actions.CHANGE_WAVE_UP) then
+        counter:increment()
+        current_wave = wave_types[counter:value()]
+    elseif input_system:newAction(Actions.CHANGE_WAVE_DOWN) then
+        counter:decrement()
+        current_wave = wave_types[counter:value()]
+    end 
+
     schedule_system:update(dt)
 
 
@@ -113,8 +128,15 @@ end
 
 function getNote(note_off_a, wave_type, length)
 
+    fade_out = FadeOut(Easing.outCubic)
+    fade_in = FadeIn(Easing.outExpo)
+
 
     audio = engine:newAudio(wave_type, length, frequencyFromNote(note_off_a))
+    audio.processors:append(fade_in)
+    audio.processors:append(fade_out)
+
+    audio.amplitude = 2.0
 
     audio:generateSamples()
 
@@ -128,17 +150,7 @@ end
 
 function createAndPlayNote(note_off_a, wave_type, length)
 
-
-    audio = engine:newAudio(wave_type, length, frequencyFromNote(note_off_a))
-
-    audio:generateSamples()
-
-    soundData = love.sound.newSoundData(audio.duration * engine.sample_rate, engine.sample_rate, 16, 1)
-    
-    engine:setSamples(soundData, audio)
-
-    local sound = love.audio.newSource(soundData)
-
+    local sound = getNote(note_off_a, wave_type, length)
     love.audio.play(sound)
 
 end

@@ -14,6 +14,8 @@ function InputSystem:initialize(world)
   self.held = {} -- Actions that have been held for more than one frame
   self.pressed = {} -- Actions that have been initiated just this frame
 
+  self.mouse_actions = {}
+
   self._actions_seen = Set()
 
 end
@@ -24,6 +26,8 @@ function InputSystem:registerInput(key, action_constant)
   self.input_to_action[key] = action_constant
 
 end
+
+
 
 function InputSystem:clear()
   self.held = {}
