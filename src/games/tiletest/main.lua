@@ -56,7 +56,7 @@ function drawScreenTiles(screen_map)
 
             g = g + 10
 
-            local alpha = 200
+            local alpha = l
             local current = clicked_matrix:get(x + 1, y + 1)
 
             assert(current, "There should be a current for " .. x + 1 .. ", " ..y + 1 .. " but instead there is not..." .. tostring(clicked_matrix))
@@ -95,24 +95,4 @@ function love.draw()
 
     end
 
-end
-
-
--- function creating a sine wave sample:
-function sampleSine(freq, duration, sampleRate)
-    local data = { }
-    for i = 1,duration*sampleRate do
-        data[i] = math.sin( (i*freq/sampleRate)*math.pi*2)
-    end
-    return proAudio.sampleFromMemory(data, sampleRate)
-end
-
--- plays a sample shifted by a number of halftones for a definable period of time
-function playNote(len, rate, bits, channel, sample, pitch)
-    love.sound.newSoundData(len*rate,rate,bits,channel)
-
-    local scale = 2^(pitch/12)
-    local sound = proAudio.soundLoop(sample, volumeL, volumeR, disparity, scale)
-    proAudio.sleep(duration)
-    proAudio.soundStop(sound)
 end
