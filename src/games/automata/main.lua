@@ -9,7 +9,7 @@ require 'utils.counters'
 require 'spatial.screenmap'
 require 'collections.matrix'
 
-require 'automata.cellularautomata'
+require 'automata.life'
 
 Actions = {}
 
@@ -24,30 +24,31 @@ function love.load()
 
     input_system = InputSystem()
     input_system:registerInput(' ', "pause")
+    input_system:registerInput('r', "reset")
 
     schedule_system = ScheduleSystem()
 
     time_system = TimeSystem()
     time_system:stop()
 
-    local xtiles = 50
-    local ytiles = 50
+    local xtiles = 20
+    local ytiles = 20
 
     screen_map = ScreenMap(love.graphics.getWidth(), love.graphics.getHeight(), xtiles, ytiles)
 
     mouse_x = 0
     mouse_y = 0
 
-    time_interval = 0.5
+    time_interval = 0.1
 
     schedule_system:doEvery(time_interval, processAutomata)
 
-    cellular_grid = CellularGrid(xtiles, ytiles)
+    life_grid = LifeGrid(xtiles, ytiles)
 
 end
 
 function processAutomata()
-    cellular_grid:updateFrame()
+    life_grid:updateFrame()
 end
 
 
@@ -64,6 +65,10 @@ function love.update(dt)
         time_system:switch()
     end
 
+    if input_system:newAction("reset") then
+        life_grid:init()
+    end
+
     schedule_system:update(time_system:getDt())
 
 
@@ -76,7 +81,7 @@ function love.mousepressed(x, y, button)
     mouse_x, mouse_y = love.mouse.getPosition()
     tile_hover = screen_map:getCoordinates(mouse_x, mouse_y)
     local x, y = tile_hover:unpack()
-    local current = cellular_grid:getCell(x, y)
+    local current = life_grid:getCell(x, y)
     current:invertState()
 end
 
@@ -96,7 +101,7 @@ function love.draw()
        local debugstart = 50
         love.graphics.setColor(255, 255, 255)
         love.graphics.print("FPS: " .. love.timer.getFPS(), 50, debugstart + 20)
-        love.graphics.print("Frame: " .. cellular_grid:frameNumber(), 50, debugstart + 40)
+        love.graphics.print("Frame: " .. life_grid:frameNumber(), 50, debugstart + 40)
         love.graphics.print("Time: " .. time_system:getTime(), 50, debugstart + 60)
 
         frame = frame + 1
@@ -145,24 +150,25 @@ function drawCellularAutomata(screen_map)
             local x1 = x + 1
             local y1 = y + 1
 
-            local current = cellular_grid:getCell(x1, y1)
+            local current = life_grid:getCell(x1, y1)
 
             --assert(current, "Should be a cell at " .. tostring(x1) .. ", " .. tostring(y1) .. " but not for grid " .. tostring(cellular_grid))
 
             local mode = "line"
 
-            if current:isOn() then 
+            if current:getState() == true then 
                 love.graphics.setColor(r,g,b, 255)
                 mode = "fill"
                 love.graphics.rectangle(mode, xtile, ytile, screen_map.tile_width, screen_map.tile_height)
 
             else
-                --love.graphics.setColor(200,200,200, 255)
+                --
             end
 
             --love.graphics.rectangle(mode, x * screen_map.tile_width, y * screen_map.tile_height, screen_map.tile_width, screen_map.tile_height)
            
-            --love.graphics.print(tostring(current), x * screen_map.tile_width, y * screen_map.tile_height)
+            -- love.graphics.setColor(200,200,200, 255)
+            -- love.graphics.print(tostring(current), x * screen_map.tile_width, y * screen_map.tile_height)
 
         end
     end
