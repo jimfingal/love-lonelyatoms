@@ -56,7 +56,7 @@ function love.load()
     mouse_y = 0
 
     clicked_matrix = Matrix(xtiles, ytiles, 0)
-    sound_matrix = Matrix(xtiles, ytiles, 0)
+    sound_matrix = Matrix(xtiles, ytiles, nil)
 
     screen_counter = CircularCounter(xtiles, 1)
 
@@ -77,7 +77,16 @@ function changeNotes()
         local current = clicked_matrix:get(screen_counter:value(), y)
 
         if current == 1 then
-            createAndPlayNote(y, Waves.SINE, time_interval)
+
+            local existing_sound = sound_matrix:get(screen_counter:value(), y)
+
+            if existing_sound then
+                love.audio.play(existing_sound)
+            else
+                local new_sound = getNote(y, Waves.SINE, time_interval)
+                sound_matrix:put(screen_counter:value(), y, new_sound)
+                love.audio.play(new_sound)
+            end
         end
 
     end
@@ -99,6 +108,21 @@ function love.update(dt)
 
     schedule_system:update(dt)
 
+
+end
+
+function getNote(note_off_a, wave_type, length)
+
+
+    audio = engine:newAudio(wave_type, length, frequencyFromNote(note_off_a))
+
+    audio:generateSamples()
+
+    soundData = love.sound.newSoundData(audio.duration * engine.sample_rate, engine.sample_rate, 16, 1)
+    
+    engine:setSamples(soundData, audio)
+
+    return love.audio.newSource(soundData)
 
 end
 
@@ -182,15 +206,12 @@ function drawScreenTiles(screen_map)
             local alpha = 200
             local current = clicked_matrix:get(x + 1, y + 1)
 
-            assert(current, "There should be a current for " .. x + 1 .. ", " ..y + 1 .. " but instead there is not..." .. tostring(clicked_matrix))
-
             if current % 2 == 1 then alpha = 255 end
 
             love.graphics.setColor(r,g,b, alpha)
 
             love.graphics.rectangle("fill", x * screen_map.tile_width, y * screen_map.tile_height, screen_map.tile_width, screen_map.tile_height)
            
-            love.graphics.print(tostring(current), x * screen_map.tile_width, y * screen_map.tile_height)
         end
     end
 
