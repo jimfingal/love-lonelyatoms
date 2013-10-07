@@ -4,6 +4,8 @@ require 'audio.audiomodulator'
 
 require 'audio.waves'
 require 'core.systems.inputsystem'
+require 'core.systems.schedulesystem'
+
 require 'external.middleclass'
 
 require 'utils.counters'
@@ -25,39 +27,60 @@ wave_types[3] = Waves.SINE
 wave_types[4] = Waves.TRIANGLE
 
 
-
 DEBUG = true
 
 frame = 1
 memsize = 0
 
 function love.load()
-    
-    local buffer_length = 1
 
     engine = AudioEngine()
 
-    audio = engine:newAudio(Waves.SAWTOOTH, buffer_length, 440)
-
     input_system = InputSystem()
+
     input_system:registerInput('up', Actions.CHANGE_WAVE_UP)
     input_system:registerInput('down', Actions.CHANGE_WAVE_DOWN)
     input_system:registerInput('w', Actions.CHANGE_NOTE_UP)
     input_system:registerInput('s', Actions.CHANGE_NOTE_DOWN)
     input_system:registerInput(' ', "reset")
 
+    schedule_system = ScheduleSystem()
 
-    screen_map = ScreenMap(love.graphics.getWidth(), love.graphics.getHeight(), 10, 10)
+
+    local xtiles = 20
+    local ytiles = 20
+
+    screen_map = ScreenMap(love.graphics.getWidth(), love.graphics.getHeight(), xtiles, ytiles)
 
     mouse_x = 0
     mouse_y = 0
 
-    clicked_matrix = Matrix(10, 10, 0)
+    clicked_matrix = Matrix(xtiles, ytiles, 0)
+    sound_matrix = Matrix(xtiles, ytiles, 0)
 
-    counter = CircularCounter(4, 1)
-    note_off_a = Counter()
+    screen_counter = CircularCounter(xtiles, 1)
 
     current_wave = wave_types[1]
+
+    time_interval = 0.1
+
+    schedule_system:doEvery(time_interval, changeNotes)
+
+end
+
+function changeNotes()
+
+    screen_counter:increment()
+
+    for y = 1, screen_map.ytiles do
+        
+        local current = clicked_matrix:get(screen_counter:value(), y)
+
+        if current == 1 then
+            createAndPlayNote(y, Waves.SINE, time_interval)
+        end
+
+    end
 
 end
 
@@ -67,23 +90,6 @@ function love.update(dt)
 
     input_system:update(dt)
     
-
-    change = false
-
-    if input_system:newAction(Actions.CHANGE_WAVE_UP) then
-        counter:increment()
-        change = true
-    elseif input_system:newAction(Actions.CHANGE_WAVE_DOWN) then
-        counter:decrement()
-        change = true
-    elseif input_system:newAction(Actions.CHANGE_NOTE_UP) then
-        note_off_a:increment()
-        change = true
-    elseif input_system:newAction(Actions.CHANGE_NOTE_DOWN) then
-        note_off_a:decrement()
-        change = true
-    end
-
     mouse_x, mouse_y = love.mouse.getPosition()
     tile_hover = screen_map:getCoordinates(mouse_x, mouse_y)
 
@@ -91,30 +97,15 @@ function love.update(dt)
         clicked_matrix:populateDefault()
     end
 
+    schedule_system:update(dt)
 
-
-    if change or frame == 1 then
-
-        current_wave = wave_types[counter:value()]
-        
-        createAndPlayNote(note_off_a, current_wave)
-
-    end
 
 end
 
-function createAndPlayNote(note_off_a, wave_type)
+function createAndPlayNote(note_off_a, wave_type, length)
 
-    fm = engine:newAudioModulator(Waves.SINE)
-    fm.amplitude = 20
-    fm.frequency = 0.1
 
-    --am = engine:newAudioModulator(Waves.SINE)
-
-    audio.waveform = current_wave
-    audio.frequency = frequencyFromNote(note_off_a:value())
-    audio.frequency_modulator = fm
-    --audio.amplitude_modulator = am
+    audio = engine:newAudio(wave_type, length, frequencyFromNote(note_off_a))
 
     audio:generateSamples()
 
@@ -123,9 +114,7 @@ function createAndPlayNote(note_off_a, wave_type)
     engine:setSamples(soundData, audio)
 
     local sound = love.audio.newSource(soundData)
-    sound:setLooping(true)
 
-    love.audio.stop()
     love.audio.play(sound)
 
 end
@@ -137,7 +126,9 @@ function love.mousepressed(x, y, button)
     tile_hover = screen_map:getCoordinates(mouse_x, mouse_y)
     local x, y = tile_hover:unpack()
     local current = clicked_matrix:get(x, y)
-    clicked_matrix:put(x, y, current + 1)
+    local new = 1
+    if current == 1 then new = 0 end
+    clicked_matrix:put(x, y, new)
 end
 
 
@@ -151,14 +142,15 @@ function love.draw()
 
     drawScreenTiles(screen_map)
 
+    love.graphics.setColor(63,63,63, 20)
+    love.graphics.rectangle("fill", (screen_counter:value() - 1)  * screen_map.tile_width, 0, screen_map.tile_width, love.graphics.getHeight())
+
+
+
     if DEBUG then
        local debugstart = 50
         love.graphics.setColor(255, 255, 255)
         love.graphics.print("FPS: " .. love.timer.getFPS(), 50, debugstart + 20)
-        love.graphics.print("Counter: " .. tostring(counter), 50, debugstart + 40)
-        love.graphics.print("Waveform: " .. tostring(current_wave), 50, debugstart + 60)
-        love.graphics.print("Note off A: " .. tostring(note_off_a), 50, debugstart + 80)
-        love.graphics.print("Frequency in Hz: " .. tostring(audio.frequency), 50, debugstart + 100)
 
         frame = frame + 1
 
