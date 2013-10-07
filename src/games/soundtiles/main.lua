@@ -6,6 +6,8 @@ require 'audio.waves'
 require 'core.systems.inputsystem'
 require 'external.middleclass'
 
+require 'utils.counters'
+
 Actions = {}
 
 Actions.CHANGE_WAVE_UP = "up"
@@ -16,12 +18,14 @@ Actions.CHANGE_NOTE_UP = "noteup"
 Actions.CHANGE_NOTE_DOWN = "notedown"
 
 wave_types = {}
-wave_types[0]  = Waves.SINE
-wave_types[1] = Waves.SAWTOOTH
-wave_types[2] = Waves.TRIANGLE
-wave_types[3] = Waves.SQUARE
+wave_types[1]  = Waves.SQUARE
+wave_types[2] = Waves.SAWTOOTH
+wave_types[3] = Waves.SINE
+wave_types[4] = Waves.TRIANGLE
 
-counter = 1
+counter = CircularCounter(4, 1)
+note_off_a = Counter()
+
 current_wave = wave_types[1]
 
 DEBUG = true
@@ -46,7 +50,6 @@ function love.load()
     input_system:registerInput('s', Actions.CHANGE_NOTE_DOWN)
    
 
-    note_off_a = 0
 
 end
 
@@ -60,24 +63,22 @@ function love.update(dt)
     change = false
 
     if input_system:newAction(Actions.CHANGE_WAVE_UP) then
-        counter = counter + 1
-        counter = counter % 4
+        counter:increment()
         change = true
     elseif input_system:newAction(Actions.CHANGE_WAVE_DOWN) then
-        counter = counter - 1 
-        counter = counter % 4
+        counter:decrement()
         change = true
     elseif input_system:newAction(Actions.CHANGE_NOTE_UP) then
-        note_off_a = note_off_a + 1 
+        note_off_a:increment()
         change = true
     elseif input_system:newAction(Actions.CHANGE_NOTE_DOWN) then
-        note_off_a = note_off_a - 1 
+        note_off_a:decrement()
         change = true
     end
 
     if change or frame == 1 then
 
-        current_wave = wave_types[counter % 4]
+        current_wave = wave_types[counter:value()]
         
         createAndPlayNote(note_off_a, current_wave)
 
@@ -94,7 +95,7 @@ function createAndPlayNote(note_off_a, wave_type)
     --am = engine:newAudioModulator(Waves.SINE)
 
     audio.waveform = current_wave
-    audio.frequency = frequencyFromNote(note_off_a)
+    audio.frequency = frequencyFromNote(note_off_a:value())
     audio.frequency_modulator = fm
     --audio.amplitude_modulator = am
 
