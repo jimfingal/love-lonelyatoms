@@ -18,11 +18,16 @@ end
 
 function TimeSystem:update(dt)
 
+	local dilated_dt = 0
+	
 	if self.on then
-		local dilated_dt = dt * self.dilation
+
+		dilated_dt = dt * self.dilation
 		self.time = self.time + dilated_dt
-		self.dt = dilated_dt
+	
 	end
+	
+	self.dt = dilated_dt
 
 end
 
@@ -43,3 +48,13 @@ function TimeSystem:go()
 	self.on = true
 	return self
 end
+
+function TimeSystem:switch()
+	if self.on then
+		self:stop()
+	else
+		self:go()
+	end
+	return self
+end
+

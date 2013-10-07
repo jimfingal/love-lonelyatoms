@@ -1,5 +1,6 @@
 require 'core.systems.inputsystem'
 require 'core.systems.schedulesystem'
+require 'core.systems.timesystem'
 
 require 'external.middleclass'
 
@@ -22,12 +23,15 @@ function love.load()
 
 
     input_system = InputSystem()
-    input_system:registerInput(' ', "reset")
+    input_system:registerInput(' ', "pause")
 
     schedule_system = ScheduleSystem()
 
-    local xtiles = 5
-    local ytiles = 5
+    time_system = TimeSystem()
+    time_system:stop()
+
+    local xtiles = 20
+    local ytiles = 20
 
     screen_map = ScreenMap(love.graphics.getWidth(), love.graphics.getHeight(), xtiles, ytiles)
 
@@ -51,15 +55,16 @@ end
 function love.update(dt)
 
     input_system:update(dt)
+    time_system:update(dt)
     
     mouse_x, mouse_y = love.mouse.getPosition()
     tile_hover = screen_map:getCoordinates(mouse_x, mouse_y)
 
-    if input_system:newAction("reset") then
-        cellular_grid:reset()
+    if input_system:newAction("pause") then
+        time_system:switch()
     end
 
-    schedule_system:update(dt)
+    schedule_system:update(time_system:getDt())
 
 
 end
@@ -91,6 +96,8 @@ function love.draw()
        local debugstart = 50
         love.graphics.setColor(255, 255, 255)
         love.graphics.print("FPS: " .. love.timer.getFPS(), 50, debugstart + 20)
+        love.graphics.print("Frame: " .. cellular_grid:frameNumber(), 50, debugstart + 40)
+        love.graphics.print("Time: " .. time_system:getTime(), 50, debugstart + 60)
 
         frame = frame + 1
 
@@ -124,7 +131,7 @@ function drawCellularAutomata(screen_map)
 
             local current = cellular_grid:getCell(x1, y1)
 
-            assert(current, "Should be a cell at " .. tostring(x1) .. ", " .. tostring(y1) .. " but not for grid " .. tostring(cellular_grid))
+            --assert(current, "Should be a cell at " .. tostring(x1) .. ", " .. tostring(y1) .. " but not for grid " .. tostring(cellular_grid))
 
             local mode = "line"
 
@@ -137,7 +144,7 @@ function drawCellularAutomata(screen_map)
 
             love.graphics.rectangle(mode, x * screen_map.tile_width, y * screen_map.tile_height, screen_map.tile_width, screen_map.tile_height)
            
-            love.graphics.print(tostring(current), x * screen_map.tile_width, y * screen_map.tile_height)
+            --love.graphics.print(tostring(current), x * screen_map.tile_width, y * screen_map.tile_height)
 
         end
     end
