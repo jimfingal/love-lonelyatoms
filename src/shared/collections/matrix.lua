@@ -4,7 +4,7 @@ require 'external.middleclass'
 -- TODO: UNTESTED!
 Matrix = class('Matrix')
 
-function Matrix:initialize(rows, columns, default)
+function Matrix:initialize(rows, columns, default, strict)
 	self.matrix = {}
 
 	self.rows = rows
@@ -18,6 +18,8 @@ function Matrix:initialize(rows, columns, default)
 		self:populateDefault()
 	end
 
+	self.strict = strict or true
+
 end
 
 function Matrix:rowCount()
@@ -29,18 +31,28 @@ function Matrix:columnCount()
 end
 
 function Matrix:put(x, y, value)
-	assert(x > 0, "X must be greater than zero, passed in " .. tostring(x))
-	assert(x <= self.rows, "X must be less than or equal to  " .. tostring(self.rows) .. ", passed in " .. tostring(x))
-	assert(y > 0, "Y must be greater than zero, passed in " .. tostring(y))
-	assert(y <= self.columns, "Y must be less than or equal to " .. tostring(self.columns) .. ", passed in " .. tostring(y))
+	
+	if self.strict then
+		assert(x > 0, "X must be greater than zero, passed in " .. tostring(x))
+		assert(x <= self.rows, "X must be less than or equal to  " .. tostring(self.rows) .. ", passed in " .. tostring(x))
+		assert(y > 0, "Y must be greater than zero, passed in " .. tostring(y))
+		assert(y <= self.columns, "Y must be less than or equal to " .. tostring(self.columns) .. ", passed in " .. tostring(y))
+	end
+	
 	self.matrix[x][y] = value
+	
 	return self
 end
 
 function Matrix:get(x, y)
-	assert(x > 0, "X must be greater than zero, passed in " .. tostring(x))
-	assert(x <= self.rows, "X must be less than or equal to " .. tostring(self.rows) .. ", passed in " .. tostring(x))
+	
+	if self.strict then
+		assert(x > 0, "X must be greater than zero, passed in " .. tostring(x))
+		assert(x <= self.rows, "X must be less than or equal to " .. tostring(self.rows) .. ", passed in " .. tostring(x))
+	end
+
 	return self.matrix[x][y]
+
 end
 
 function Matrix:clear()

@@ -26,8 +26,8 @@ function love.load()
 
     schedule_system = ScheduleSystem()
 
-    local xtiles = 20
-    local ytiles = 20
+    local xtiles = 5
+    local ytiles = 5
 
     screen_map = ScreenMap(love.graphics.getWidth(), love.graphics.getHeight(), xtiles, ytiles)
 
@@ -119,10 +119,15 @@ function drawCellularAutomata(screen_map)
 
             g = g + 10
 
-            local current = cellular_grid:getCell(x + 1, y + 1)
+            local x1 = x + 1
+            local y1 = y + 1
+
+            local current = cellular_grid:getCell(x1, y1)
+
+            assert(current, "Should be a cell at " .. tostring(x1) .. ", " .. tostring(y1) .. " but not for grid " .. tostring(cellular_grid))
 
             local mode = "line"
-            
+
             if current:isOn() then 
                 love.graphics.setColor(r,g,b, 255)
                 mode = "fill"
@@ -132,6 +137,8 @@ function drawCellularAutomata(screen_map)
 
             love.graphics.rectangle(mode, x * screen_map.tile_width, y * screen_map.tile_height, screen_map.tile_width, screen_map.tile_height)
            
+            love.graphics.print(tostring(current), x * screen_map.tile_width, y * screen_map.tile_height)
+
         end
     end
 
