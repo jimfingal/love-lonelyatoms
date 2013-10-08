@@ -14,7 +14,7 @@ require 'automata.life'
 Actions = {}
 
 
-DEBUG = true
+DEBUG = false
 
 frame = 1
 memsize = 0
@@ -31,8 +31,8 @@ function love.load()
     time_system = TimeSystem()
     time_system:stop()
 
-    local xtiles = 20
-    local ytiles = 20
+    local xtiles = 50
+    local ytiles = 50
 
     screen_map = ScreenMap(love.graphics.getWidth(), love.graphics.getHeight(), xtiles, ytiles)
 
@@ -135,12 +135,12 @@ function drawCellularAutomata(screen_map)
             -- Draw Grid lines
             if x == 0 and y > 0 then
                 love.graphics.setColor(200,200,200, 100)
-                love.graphics.line(0, ytile, love.graphics.getWidth(), ytile)
+                --love.graphics.line(0, ytile, love.graphics.getWidth(), ytile)
             end
 
             if y == 0 and x > 0 then
                love.graphics.setColor(200,200,200, 100)
-                love.graphics.line(xtile, 0, xtile, love.graphics.getHeight())
+                --love.graphics.line(xtile, 0, xtile, love.graphics.getHeight())
             end
 
             -- Draw color
