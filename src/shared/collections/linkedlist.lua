@@ -2,14 +2,8 @@ require 'external.middleclass'
 
 LinkedList = class('LinkedList')
 
-function LinkedList:initialize(initial)
+function LinkedList:initialize()
 	self.list = {}
-
-	if initial then
-		for k, l in ipairs(initial) do 
-			self.list[k] = l 
-		end
-	end
 end
 
 function LinkedList:prepend(value)
@@ -26,7 +20,7 @@ function LinkedList:prepend(value)
 	table.insert(self.list, 1, node)
 end
 
-function LinkedList:append(element)
+function LinkedList:append(value)
 
 	local last = self:memberAt(self:size())
 

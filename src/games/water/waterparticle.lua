@@ -4,36 +4,81 @@ require 'core.quad.aabb'
 
 WaterParticle = class('WaterParticle', Particle)
 
+-- Spring constant for forces applied by adjacent points
+WaterParticle.SPRING_CONSTANT =0.005
+-- Sprint constant for force applied to baseline
+WaterParticle.SPRING_CONSTANT_BASELINE = 0.005
+-- Damping to apply to speed changes
+WaterParticle.DAMPING = 0.95
+-- Damping to apply to speed changes
+WaterParticle.SPREAD = 2.0
+
+
 -- Passed some update function that
 function WaterParticle:initialize(world)
 	self.world = world
 	self.type = "water"
 end
 
-function WaterParticle:update(particle, dt)
+function WaterParticle.updateParticles(particle_linked_list, dt)
 
-	local x = particle.y - particle.target_height
-    local ay = (-particle.k * x) - (particle.dampening * particle.vy)
+	for i = 0, 1 do 
+		for _, node in particle_linked_list:members() do
 
-	particle.x = particle.x + particle.vx * dt
-    particle.y = particle.y + particle.vy * dt
+			local force = 0
+			local forceFromLeft, forceFromRight, forceToBaseline = 0, 0, 0
 
-    particle.vy = particle.vy + ay
+			local particle = node:getValue()
 
+			if node:getLeftLink() then 
+				local left_particle = node:getLeftLink():getValue()
+		        local ldy = left_particle.y - particle.y
+		        forceFromLeft = WaterParticle.SPRING_CONSTANT * ldy * WaterParticle.SPREAD
+	 		end
+
+	 		if node:getRightLink() then 
+	 			local right_particle = node:getRightLink():getValue()
+		        local rdy = right_particle.y - particle.y
+	    	    forceFromRight =  WaterParticle.SPRING_CONSTANT * rdy * WaterParticle.SPREAD
+	    	end
+
+	        local dy = particle.target_height - particle.y
+	        forceToBaseline = WaterParticle.SPRING_CONSTANT_BASELINE * dy
+
+
+	        -- Sum up forces
+	       	force = force + forceFromLeft
+	        force = force + forceFromRight
+	        force = force + forceToBaseline
+
+	        -- Calculate acceleration
+	        local acceleration = force / particle.mass
+
+
+	 		-- Apply acceleration (with damping)
+	        particle.vy =  WaterParticle.DAMPING * particle.vy + acceleration
+
+	        -- Apply speed
+
+	        particle.y = particle.y + particle.vy
+
+		end
+	end
 
 end
+
 
 function WaterParticle:draw(particle)
 	love.graphics.setColor(particle.r, particle.g, particle.b, 255)
 	love.graphics.circle('fill', particle.x + particle.radius/2, particle.y  + particle.radius/2, particle.radius)
+	love.graphics.rectangle('fill', particle.x, particle.y + particle.radius/2, particle.radius * 2, love.graphics.getHeight())
+
 end
 
 -- A function which returns us an object to the pool.
-function WaterParticle:create(x, y, vx, vy)
+function WaterParticle:create(x, y, vx, vy, left)
 	return { type = self.type, 
 				active=true, 
-				k = 0.05,
-				dampening = 0.005,
 				target_height = y,
 				x = x, 
 				y = y, 
@@ -42,7 +87,9 @@ function WaterParticle:create(x, y, vx, vy)
 				radius = 5, 
 				r = 68, 
 				g = 139, 
-				b = 225}
+				b = 225,
+				mass = 1,
+				left = left}
 end
 
 -- A function called on the object when we send it to the recycler. Should do things like

@@ -16,7 +16,7 @@ Actions = {}
 
 Actions.AGITATE = "agitate"
 
-DEBUG = false
+DEBUG = true
 
 frame = 1
 memsize = 0
@@ -43,9 +43,18 @@ function love.load()
 
     particle_list = LinkedList()
 
-    for x = 0, love.graphics.getWidth(), 3 do
-        local particle = particle_system:getParticle(WaterParticle, x, 300, 0, -250)
+    local left_particle = nil
+    for x = 0, love.graphics.getWidth(), 10 do
+
+        local particle = particle_system:getParticle(WaterParticle, x, 300, 0, 0)
+
+        if left_particle then particle.left = left_particle end
+
         particle_list:append(particle)
+
+        left_particle = particle
+
+
     end
 
 end
@@ -55,8 +64,12 @@ end
 -- Perform computations, etc. between screen refreshes.
 function love.update(dt)
 
+    --[[
     local particle_system =  world:getSystem(ParticleSystem)
     particle_system:updateParticles(dt)
+    ]]
+
+    WaterParticle.updateParticles(particle_list, dt)
 
 end
 
@@ -64,7 +77,29 @@ end
 
 
 function love.mousepressed(x, y, button)
- 
+
+
+    local mouseX, mouseY = love.mouse.getPosition()
+    local closest_node = nil
+    local closest_distance = nil
+
+    for _, node in particle_list:members() do
+    
+        local distance = math.abs(mouseX - node:getValue().x)
+    
+        if closest_distance == nil then
+            closest_node = node
+            closest_distance = distance
+        else
+            if distance <= closest_distance then
+                closest_node = node
+                closest_distance = distance
+            end
+        end
+    end
+
+    closest_node:getValue().y = love.mouse.getY()
+
 end
 
 
