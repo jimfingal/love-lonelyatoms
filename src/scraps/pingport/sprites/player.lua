@@ -1,5 +1,5 @@
 require 'external.middleclass'
-require 'math.vector'
+require 'math.vector2'
 require 'states.actions'
 require 'core.oldentity.shapes'
 
@@ -21,8 +21,8 @@ function Player:initialize(x, y, width, height)
     self:setMinVelocity(-800, 0)
     self:setDrag(800, 0)
 
-    self.speed_delta = Vector(1500, 0)
-    self.base_speed = Vector(200, 0)
+    self.speed_delta = Vector2(1500, 0)
+    self.base_speed = Vector2(200, 0)
 
     self.current_action = nil
 
@@ -43,13 +43,13 @@ end
 
 function Player:stop()
 
-    self.velocity = Vector.ZERO
-    self.acceleration = Vector.ZERO
+    self.velocity = Vector2.ZERO
+    self.acceleration = Vector2.ZERO
 end
 
 function Player:accelerateRight(dt)
 
-    if self.velocity < Vector.ZERO then 
+    if self.velocity < Vector2.ZERO then 
         self.velocity = self.base_speed
     end
 
@@ -59,7 +59,7 @@ end
 
 function Player:accelerateLeft(dt)
 
-    if self.velocity > Vector.ZERO then 
+    if self.velocity > Vector2.ZERO then 
         self.velocity = -self.base_speed
     end
 
@@ -70,20 +70,20 @@ end
 
 function Player:applyDrag(dt)
 
-    if self.velocity > Vector.ZERO then
+    if self.velocity > Vector2.ZERO then
         
         self.velocity = self.velocity - (self.drag * dt)
 
-        if self.velocity < Vector.ZERO then
-            self.velocity = Vector.ZERO
+        if self.velocity < Vector2.ZERO then
+            self.velocity = Vector2.ZERO
         end
 
-    elseif self.velocity < Vector.ZERO then
+    elseif self.velocity < Vector2.ZERO then
 
         self.velocity = self.velocity + (self.drag * dt)
 
-        if self.velocity > Vector.ZERO then
-            self.velocity = Vector.ZERO
+        if self.velocity > Vector2.ZERO then
+            self.velocity = Vector2.ZERO
         end
 
     end
@@ -126,7 +126,7 @@ function Player:collideWithWall(collided_sprite)
         self:moveTo(new_x, self.position.y)
 
         if self.current_action == Actions.PLAYER_LEFT then
-            self.velocity = Vector.ZERO
+            self.velocity = Vector2.ZERO
         else
             self.velocity = -self.velocity
         end
@@ -138,7 +138,7 @@ function Player:collideWithWall(collided_sprite)
         self:moveTo(collided_position.x - self.width - 1, self.position.y)
 
         if self.current_action == Actions.PLAYER_RIGHT then
-            self.velocity = Vector.ZERO
+            self.velocity = Vector2.ZERO
         else
             self.velocity = -self.velocity
         end

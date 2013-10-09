@@ -150,7 +150,7 @@ function CollisionSystem:checkCollision(entity_a, entity_b)
 
 end
 
-local _point = Vector(0, 0)
+local _point = Vector2(0, 0)
 
 function CollisionSystem:circleCollision(at, ac, bt, bc)
 	
@@ -165,7 +165,7 @@ function CollisionSystem:circleCollision(at, ac, bt, bc)
 
 		local added_radii = a_circle.radius + b_circle.radius
 
-		return Vector.dist(a_center, b_center) < added_radii	
+		return Vector2.dist(a_center, b_center) < added_radii	
 
 
 	elseif instanceOf(PointShape, bc:hitbox()) then
@@ -188,7 +188,7 @@ function CollisionSystem:circleCollision(at, ac, bt, bc)
 		_point.y = closestY
 
 		-- Check to see if this point is within circle
-		return Vector.dist(a_center, _point) < a_circle.radius
+		return Vector2.dist(a_center, _point) < a_circle.radius
 
 	end
 
@@ -206,7 +206,7 @@ function CollisionSystem:pointCollision(at, ac, bt, bc)
 		local b_center = b_circle:center(bt:getPosition())
 
 		-- Distance from point to center of circle < radius
-		return Vector.dist(a_point, b_center) < b_circle.radius
+		return Vector2.dist(a_point, b_center) < b_circle.radius
 
 	elseif instanceOf(PointShape, bc:hitbox()) then
 

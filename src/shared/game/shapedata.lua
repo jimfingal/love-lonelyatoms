@@ -1,4 +1,4 @@
-require 'math.vector'
+require 'math.vector2'
 require 'external.middleclass'
 
 Shape = class('Shape')
@@ -8,7 +8,7 @@ function Shape:initialize(x, y)
 	-- Shapes are used as hitboxes or for rendering.
 	-- Position offset is how far to offset from the entity's Transform.
 
-	self.position_offset = Vector(x or 0, y or 0)
+	self.position_offset = Vector2(x or 0, y or 0)
 
 end
 
@@ -23,7 +23,7 @@ CircleShape = class('CircleShape', Shape)
 function CircleShape:initialize(radius, x, y)
 	Shape.initialize(self, x, y)
 	self.radius = radius
-	self._c = Vector(0, 0)  -- Reused object
+	self._c = Vector2(0, 0)  -- Reused object
 end
 
 function CircleShape:draw(position, mode)
@@ -86,7 +86,7 @@ function RectangleShape:initialize(width, height, x, y)
 	Shape.initialize(self, x, y)
 	self.width = width
 	self.height = height
-	self._c = Vector(0, 0) -- Reused object
+	self._c = Vector2(0, 0) -- Reused object
 
 end
 

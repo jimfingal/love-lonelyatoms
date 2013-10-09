@@ -194,7 +194,7 @@ function collidePlayerWithWall(player, wall)
 
         --[[
         if self.current_action == Actions.PLAYER_LEFT then
-            self.velocity = Vector.ZERO
+            self.velocity = Vector2.ZERO
         else
             self.velocity = -self.velocity
         end
@@ -212,7 +212,7 @@ function collidePlayerWithWall(player, wall)
 
 		--[[
         if self.current_action == Actions.PLAYER_RIGHT then
-            self.velocity = Vector.ZERO
+            self.velocity = Vector2.ZERO
         else
             self.velocity = -self.velocity
         end

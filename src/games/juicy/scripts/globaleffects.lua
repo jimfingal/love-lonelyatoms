@@ -5,7 +5,7 @@ require 'entity.components.motion'
 require 'entity.systems.tweensystem'
 require 'entity.systems.schedulesystem'
 
-require 'math.vector'
+require 'math.vector2'
 
 require 'enums.scenes'
 require 'enums.tags'

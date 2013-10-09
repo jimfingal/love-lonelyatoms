@@ -29,7 +29,7 @@ function MovementSystem:update(transform, movement, dt)
 
 	-- Pulling native vector operations out for reduced object creation
 
-    if movement.acceleration ~= Vector.ZERO then
+    if movement.acceleration ~= Vector2.ZERO then
 	    local acceleration_effect_x = movement.acceleration.x * dt
 	    local acceleration_effect_y = movement.acceleration.y * dt
 
@@ -81,7 +81,7 @@ function MovementSystem:update(transform, movement, dt)
 	
     movement:capVelocity()
 
-	if movement.velocity ~= Vector.ZERO then
+	if movement.velocity ~= Vector2.ZERO then
 
 	    local movement_x = movement.velocity.x  * dt
 	    local movement_y = movement.velocity.y  * dt

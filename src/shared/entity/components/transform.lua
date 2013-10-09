@@ -1,6 +1,6 @@
 require 'external.middleclass'
 require 'entity.component'
-require 'math.vector'
+require 'math.vector2'
 
 
 Transform = class('Transform', Component)
@@ -9,12 +9,12 @@ function Transform:initialize(x, y)
 
 	Component.initialize(self, 'Transform')
 
-	self.position = Vector(x or 0, y or 0)
+	self.position = Vector2(x or 0, y or 0)
 	self.rotation = 0 -- Rotation in Radians
 	-- Used for layer rendering
 	self.z = 1
 
-	self.scale = Vector(1, 1)
+	self.scale = Vector2(1, 1)
 
 	self.debug_objects_created = 0
 

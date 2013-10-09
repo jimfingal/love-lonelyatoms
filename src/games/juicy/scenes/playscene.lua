@@ -32,7 +32,7 @@ require 'entitybuilders.walls'
 require 'entitybuilders.wintracker'
 require 'entity.entityquery'
 
-require 'math.vector'
+require 'math.vector2'
 
 
 local Collisions = require 'scripts.collisions'
@@ -225,7 +225,7 @@ function PlayScene:outputDebugText()
     end
 
     love.graphics.print('Memory actually used (in kB): ' .. memsize, 50, debugstart + 320)
-    love.graphics.print('Vector objects created: ' .. ClassCounter[Vector], 50, debugstart + 340)
+    love.graphics.print('Vector objects created: ' .. ClassCounter[Vector2], 50, debugstart + 340)
     love.graphics.print('Set objects created: ' .. ClassCounter[Set], 50, debugstart + 360)
     love.graphics.print('List objects created: ' .. ClassCounter[List], 50, debugstart + 380)
 

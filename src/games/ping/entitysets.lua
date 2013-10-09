@@ -5,7 +5,7 @@ require 'entity.components.motion'
 require 'entity.components.behavior'
 require 'entity.components.inputresponse'
 require 'entity.components.soundcomponent'
-require 'math.vector'
+require 'math.vector2'
 require 'entity.entityquery'
 
 

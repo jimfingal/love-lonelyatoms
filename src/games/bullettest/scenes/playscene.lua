@@ -22,11 +22,13 @@ require 'entitybuilders.opponentbuilder'
 require 'entitybuilders.starbuilder'
 
 require 'entity.entityquery'
-require 'math.vector'
+require 'math.vector2'
 require 'math.quad.aabb'
 require 'math.quad.quadtree'
 
 require 'behaviors.coroutinebehaviors'
+
+bloom = require 'shaders.bloom'
 
 local INPUTTABLE_ENTITIES = EntityQuery():addOrSet(InputResponse)
 local BEHAVIOR_ENTITIES = EntityQuery():addOrSet(Behavior)
@@ -121,7 +123,8 @@ function PlayScene:update(dt)
 
     if frame % 5 == 0 then
         self.root_node:clear()
-        for p in particle_system:getParticlePool(BulletParticle).used_objects:members() do
+        for p in particle_system:getParticlePool(PointParticle).used_objects:members() do
+        -- for p in particle_system:getParticlePool(BulletParticle).used_objects:members() do
             self.root_node:insert(p)
         end
     end
@@ -145,11 +148,24 @@ function PlayScene:draw()
     self:drawQuadTree(self.root_node)
     
     -- Should be moved into rendering system probably
+
+    --[[
     local particle_system =  self.world:getSystem(ParticleSystem)
     particle_system:drawParticles()
 
     local drawables = self.world:getEntityManager():query(DRAWABLE_ENTITIES)
     self.world:getRenderingSystem():renderDrawables(drawables)
+
+    --]]
+    love.graphics.setPixelEffect(bloom)
+
+    local particle_system =  self.world:getSystem(ParticleSystem)
+    particle_system:drawParticles()
+
+    local drawables = self.world:getEntityManager():query(DRAWABLE_ENTITIES)
+    self.world:getRenderingSystem():renderDrawables(drawables)
+
+    love.graphics.setPixelEffect()
 
 
     if Settings.DEBUG then
@@ -174,7 +190,7 @@ function PlayScene:outputDebugText()
     end
 
     love.graphics.print('Memory actually used (in kB): ' .. memsize, 10, debugstart + 320)
-    love.graphics.print('Vector objects created: ' .. ClassCounter[Vector], 10, debugstart + 340)
+    love.graphics.print('Vector objects created: ' .. ClassCounter[Vector2], 10, debugstart + 340)
     love.graphics.print('Set objects created: ' .. ClassCounter[Set], 10, debugstart + 360)
     love.graphics.print('List objects created: ' .. ClassCounter[List], 10, debugstart + 380)
     --love.graphics.print('Tweens: ' .. tostring(self.world:getSystem(TweenSystem)), 10, debugstart + 400)

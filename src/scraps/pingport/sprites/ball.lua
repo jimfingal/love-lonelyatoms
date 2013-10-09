@@ -1,6 +1,6 @@
 require 'external.middleclass'
 require 'core.oldentity.shapes'
-require 'math.vector'
+require 'math.vector2'
 require 'states.actions'
 
 require 'game.tween'

@@ -197,7 +197,7 @@ function love.draw()
         local e = pe:getComponent(Emitter)
         love.graphics.print("Emitter active: " .. tostring(e:isActive()), 50, debugstart + 20)
         love.graphics.print("Emitter ready: " .. tostring(e:isReady()), 50, debugstart + 40)
-        love.graphics.print("Vector Zero: " .. tostring(Vector.ZERO), 50, debugstart + 60)
+        love.graphics.print("Vector Zero: " .. tostring(Vector2.ZERO), 50, debugstart + 60)
 
         --[[
         love.graphics.print("Ball x: " .. ball_transform.position.x, 50, debugstart + 20)

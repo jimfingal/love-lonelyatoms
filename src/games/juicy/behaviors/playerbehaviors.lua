@@ -84,8 +84,8 @@ function PlayerBehaviors.dropInPlayer(world)
 end
 
 
-local speed_delta = Vector(2300, 0)
-local base_speed = Vector(200, 0)
+local speed_delta = Vector2(2300, 0)
+local base_speed = Vector2(200, 0)
 
 function PlayerBehaviors.playerInputResponse(player, held_actions, pressed_actions, dt)
 
@@ -93,7 +93,7 @@ function PlayerBehaviors.playerInputResponse(player, held_actions, pressed_actio
 
     if held_actions[Actions.PLAYER_RIGHT] then
     
-        if player_movement.velocity < Vector.ZERO then 
+        if player_movement.velocity < Vector2.ZERO then 
             player_movement.velocity.x = base_speed.x
         end
 
@@ -102,7 +102,7 @@ function PlayerBehaviors.playerInputResponse(player, held_actions, pressed_actio
     
     elseif held_actions[Actions.PLAYER_LEFT] then
     
-        if player_movement.velocity > Vector.ZERO then 
+        if player_movement.velocity > Vector2.ZERO then 
             player_movement.velocity.x = -base_speed.x
         end
 

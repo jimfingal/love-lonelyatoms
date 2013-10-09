@@ -1,7 +1,7 @@
 EmissionPort = class("EmissionPort")
 
 function EmissionPort:initialize()
-	self.offset = Vector(0, 0)
+	self.offset = Vector2(0, 0)
 	self.rotation = 0
 end
 

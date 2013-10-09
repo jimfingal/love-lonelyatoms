@@ -2,7 +2,7 @@ require 'entity.components.transform'
 require 'entity.components.rendering'
 require 'entity.components.collider'
 require 'entity.components.motion'
-require 'math.vector'
+require 'math.vector2'
 
 require 'enums.scenes'
 require 'enums.tags'

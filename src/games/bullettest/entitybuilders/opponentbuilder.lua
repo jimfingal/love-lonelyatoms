@@ -51,7 +51,7 @@ function OpponentBuilder:create()
     gun_port1:setRotation(0)
 
 
-    local _vector = Vector(0, 0)
+    local _vector = Vector2(0, 0)
 
     local emitFromPort = function(world, port, position)
         local theta = port:getRotation()

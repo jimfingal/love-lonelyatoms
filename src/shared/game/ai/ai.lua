@@ -9,7 +9,7 @@ function AI.move(entity, direction_angle, speed, time)
   local transform = entity:getComponent(Transform)
   local motion = entity:getComponent(Motion)
 
-  local direction_vector = Vector.fromAngle(direction_angle)
+  local direction_vector = Vector2.fromAngle(direction_angle)
 
   local velocity = direction_vector * speed
 

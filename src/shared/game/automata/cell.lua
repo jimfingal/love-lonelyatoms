@@ -2,7 +2,7 @@ require 'external.middleclass'
 require 'collections.matrix'
 require 'util.counters'
 require 'collections.list'
-require 'math.vector'
+require 'math.vector2'
 
 
 
@@ -13,7 +13,7 @@ function Cell:initialize(x, y, default_state)
 	assert(type(y) == "number", "Y must be numeric but is instead " .. tostring(y))
 
 	self.state = default_state
-	self.position = Vector(x, y)
+	self.position = Vector2(x, y)
 	self.neighbors = List()
 	self.next_state = default_state
 end

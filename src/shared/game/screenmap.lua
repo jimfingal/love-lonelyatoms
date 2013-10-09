@@ -1,5 +1,5 @@
 require 'external.middleclass'
-require 'math.vector'
+require 'math.vector2'
 
 ScreenMap = class("ScreenMap")
 
@@ -17,7 +17,7 @@ end
 
 function ScreenMap:getCoordinates(screen_x, screen_y)
 	
-	return Vector(math.ceil(screen_x / self.tile_width), math.ceil(screen_y / self.tile_height))
+	return Vector2(math.ceil(screen_x / self.tile_width), math.ceil(screen_y / self.tile_height))
 
 end
 

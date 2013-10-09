@@ -56,15 +56,15 @@ function playerAI(player, dt)
     local third_third = paddle_origin + paddle_width
 
 
-    local speed_delta = Vector(1500, 0)
-    local base_speed = Vector(200, 0)
+    local speed_delta = Vector2(1500, 0)
+    local base_speed = Vector2(200, 0)
 
 
     if middle_ball < first_third or ball_movement.velocity.x == 0 then
 
         -- TODO
         -- player_movement:accelerateLeft(dt)
-        if player_movement.velocity > Vector.ZERO then 
+        if player_movement.velocity > Vector2.ZERO then 
             player_movement.velocity = -base_speed
         end
 
@@ -75,7 +75,7 @@ function playerAI(player, dt)
 
         -- TODO
         -- self:accelerateRight(dt)
-        if player_movement.velocity < Vector.ZERO then 
+        if player_movement.velocity < Vector2.ZERO then 
             player_movement.velocity = base_speed
         end
 
@@ -88,14 +88,14 @@ end
 
 function playerInputResponse(player, held_actions, pressed_actions, dt)
 
-    local speed_delta = Vector(2300, 0)
-    local base_speed = Vector(200, 0)
+    local speed_delta = Vector2(2300, 0)
+    local base_speed = Vector2(200, 0)
 
     local player_movement = player:getComponent(Motion)
 
     if held_actions[Actions.PLAYER_RIGHT] then
     
-        if player_movement.velocity < Vector.ZERO then 
+        if player_movement.velocity < Vector2.ZERO then 
             player_movement.velocity = base_speed
         end
 
@@ -107,7 +107,7 @@ function playerInputResponse(player, held_actions, pressed_actions, dt)
     
     elseif held_actions[Actions.PLAYER_LEFT] then
     
-        if player_movement.velocity > Vector.ZERO then 
+        if player_movement.velocity > Vector2.ZERO then 
             player_movement.velocity = -base_speed
         end
 

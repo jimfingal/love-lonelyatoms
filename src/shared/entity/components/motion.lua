@@ -1,6 +1,6 @@
 require 'external.middleclass'
 require 'entity.component'
-require 'math.vector'
+require 'math.vector2'
 
 Motion = class('Motion', Component)
 
@@ -10,35 +10,35 @@ function Motion:initialize()
 
 	-- Property: velocity
 	-- Motion either along the x or y axes, in pixels per second.
-	self.velocity = Vector(0, 0)
+	self.velocity = Vector2(0, 0)
 
 	-- Property: minVelocity
 	-- No matter what else may affect this sprite's velocity, it
 	-- will never go below these numbers.
-	self.minVelocity = Vector(- math.huge, - math.huge)
+	self.minVelocity = Vector2(- math.huge, - math.huge)
 
 	-- Property: maxVelocity
 	-- No matter what else may affect this sprite's velocity, it will
 	-- never go above these numbers.
-	self.maxVelocity = Vector(math.huge, math.huge)
+	self.maxVelocity = Vector2(math.huge, math.huge)
 
 	-- Property: acceleration
 	-- Acceleration along the x or y axes, or rotation about its center, in
 	-- pixels per second squared.
-	self.acceleration = Vector(0, 0)
+	self.acceleration = Vector2(0, 0)
 
 	-- Property: minAcceleration
 	-- No matter what else may affect this sprite's velocity, it
 	-- will never go below these numbers.
-	self.minAcceleration = Vector(- math.huge, - math.huge)
+	self.minAcceleration = Vector2(- math.huge, - math.huge)
 
 	-- Property: max acceleration
 	-- No matter what else may affect this sprite's acceleration, it will
 	-- never go above these numbers.
-	self.maxAcceleration = Vector(math.huge, math.huge)
+	self.maxAcceleration = Vector2(math.huge, math.huge)
 
 	-- Property: drag
-	self.drag = Vector(0, 0)
+	self.drag = Vector2(0, 0)
 
 	self.active = true
 

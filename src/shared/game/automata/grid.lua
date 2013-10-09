@@ -2,7 +2,7 @@ require 'external.middleclass'
 require 'collections.matrix'
 require 'util.counters'
 require 'collections.list'
-require 'math.vector'
+require 'math.vector2'
 require 'game.automata.cell'
 
 CellGrid = class('CellGrid')
