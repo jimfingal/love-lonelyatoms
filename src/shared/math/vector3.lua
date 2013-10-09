@@ -26,6 +26,12 @@ function Vector3:clone()
 	return Vector3(self.x, self.y, self.z)
 end
 
+function Vector3:copy(other)
+	self.x = other.x
+	self.y = other.y
+	self.z = other.z
+end
+
 function Vector3:unpack()
 	return self.x, self.y, self.z
 end
@@ -42,6 +48,13 @@ function Vector3:add(other)
 	self.z = self.z + other.z
 end
 
+function Vector3:subtract(other)
+	assert(Vector3.isVector3(other), 'argument must be a vector')
+	self.x = self.x - other.x
+	self.y = self.y - other.y
+	self.z = self.z - other.z
+end
+
 function Vector3:multiply(multiplier)
 	assert(type(multiplier) == "number", "argument must be a number, instead is " .. type(multiplier) .. ": " .. tostring(multiplier))
 	self.x = self.x * multiplier
@@ -50,11 +63,19 @@ function Vector3:multiply(multiplier)
 
 end
 
+function Vector3:divide(divisor)
+	assert(type(divisor) == "number", "argument must be a number, instead is " .. type(divisor) .. ": " .. tostring(divisor))
+	self.x = self.x / divisor
+	self.y = self.y / divisor
+	self.z = self.z / divisor
+
+end
+
 
 function Vector3:__unm()
 	return Vector3(-self.x, -self.y, -self.z)
 end
-
+--[[
 function Vector3:__add(other)
 	assert(Vector3.isVector3(other), 'argument must be a vector')
 	return Vector3(self.x + other.x, self.y + other.y, self.z + other.z)
@@ -79,7 +100,7 @@ function Vector3:__eq(other)
 	assert(Vector3.isVector3(other), 'argument must be a vector')
 	return self.x == other.x and self.y == other.y and self.z == other.z
 end
-
+]]
 
 function Vector3:len()
 	return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
@@ -89,8 +110,21 @@ function Vector3:len2()
 	return self.x * self.x + self.y * self.y + self.z * self.z
 end
 
+
 function Vector3.distance(a, b)
-	return (a - b):len()
+
+	return math.sqrt(Vector3.distance2(a, b))
+
+end
+
+function Vector3.distance2(a, b)
+
+	local x = a.x - b.x
+	local y = a.y - b.y
+	local z = a.z - b.z
+
+	return x * x + y * y + z * z
+
 end
 
 function Vector3:zero()

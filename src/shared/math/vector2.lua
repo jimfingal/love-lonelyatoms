@@ -49,6 +49,13 @@ function Vector2:add(other)
 	self.y = self.y + other.y
 end
 
+
+function Vector2:subtract(other)
+	assert(Vector2.isVector2(other), 'argument must be a vector')
+	self.x = self.x - other.x
+	self.y = self.y - other.y
+end
+
 function Vector2:multiply(multiplier)
 	assert(type(multiplier) == "number", "argument must be a number, instead is " .. type(multiplier) .. ": " .. tostring(multiplier))
 	self.x = self.x * multiplier

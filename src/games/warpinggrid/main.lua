@@ -12,13 +12,13 @@ local memsize = 0
 
 function love.load()
 
-    grid3d = Grid(love.graphics.getWidth(), love.graphics.getHeight(), 10, 10)
+    grid3d = Grid(love.graphics.getWidth(), love.graphics.getHeight(), 20, 20)
 
     mouse_x = 0
     mouse_y = 0
 
     input_system = InputSystem()
-    input_system:registerInput(' ', "reset")
+    input_system:registerInput(' ', "implosive")
 end
 
 
@@ -29,14 +29,21 @@ function love.update(dt)
 
     mouse_x, mouse_y = love.mouse.getPosition()
 
-    if input_system:newAction("reset") then
-        -- clicked_matrix:populateDefault()
+    last_mouse_x, last_mouse_y = mouse_x, mouse_y
+
+
+    if input_system:newAction("implosive") then
+        grid3d:applyImplosiveForce(300, Vector3(mouse_x, mouse_y, -50), 200)
     end
-   
+
+    grid3d:update(dt)
+
 end
 
 function love.mousepressed(x, y, button)
     mouse_x, mouse_y = love.mouse.getPosition()
+
+    grid3d:applyExplosiveForce(300, Vector3(mouse_x, mouse_y, 0), 80)
 end
 
 -- Update the screen.
@@ -48,7 +55,7 @@ function love.draw()
 
     love.graphics.setColor(147,147,205)
 
-    grid3d:draw()
+    -- grid3d:draw()
 
 
     if DEBUG then

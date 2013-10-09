@@ -8,7 +8,7 @@ require 'spring'
 
 Grid = class('Grid')
 
-local screen_size = Vector2(love.graphics.getWidth(), love.graphics.getHeight())
+local half_screen_size = Vector2(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
 
 function Grid:initialize(screen_width, screen_height, rows, cols)
 
@@ -79,6 +79,10 @@ function Grid:update(dt)
 
 end
 
+local point = Vector2(0, 0)
+local left = Vector2(0, 0)
+local up = Vector2(0, 0)
+
 function Grid:draw()
 
 	local radius = 4
@@ -87,76 +91,109 @@ function Grid:draw()
 		for y = 1, self.rows do
 			
 			local pointmass = self.point_grid:get(x, y)
-			local point = toVec2(pointmass:getPosition())
+			point = toVec2(pointmass:getPosition(), point)
 			
 			love.graphics.circle('fill', point.x, point.y, radius)
 
 			-- [[]
 			if x > 1 then
-				local left = toVec2(self.point_grid:get(x - 1, y):getPosition())
+				left = toVec2(self.point_grid:get(x - 1, y):getPosition(), left)
 				love.graphics.line(point.x, point.y, left.x, left.y)
 
+				--[[
 				if y % 3 == 1 then
 					love.graphics.line(point.x, point.y - 1, left.x, left.y - 1)
 					love.graphics.line(point.x, point.y + 1, left.x, left.y + 1)
 				end
-
+				]]
 			end
 
 			if y > 1 then
-				local up = toVec2(self.point_grid:get(x, y - 1):getPosition())
+				up = toVec2(self.point_grid:get(x, y - 1):getPosition(), up)
 
 				love.graphics.line(point.x, point.y, up.x, up.y)
 
+				--[[
 				if x % 3 == 1 then
 					love.graphics.line(point.x - 1, point.y, up.x - 1, up.y)
 					love.graphics.line(point.x + 1, point.y, up.x + 1, up.y)
 				end
-
+				]]
 			end
 			--]]
-
-			--[[
-	 	for (int y = 1; y < height; y++)
-	    {
-	        for (int x = 1; x < width; x++)      {           
-	        	Vector2 left = new Vector2(), up = new Vector2();           
-	        	Vector2 p = ToVec2(points[x, y].Position);          
-	        	if (x > 1)
-	            {
-	                left = ToVec2(points[x - 1, y].Position);
-	                float thickness = y % 3 == 1 ? 3f : 1f;
-	                spriteBatch.DrawLine(left, p, color, thickness);
-	            }
-	            if (y > 1)
-	            {
-	                up = ToVec2(points[x, y - 1].Position);
-	                float thickness = x % 3 == 1 ? 3f : 1f;
-	                spriteBatch.DrawLine(up, p, color, thickness);
-	            }
-	        }
-	    }
-	    --]]
-
-
-
 
 		end
 	end
 
 end
 
-function toVec2(v3)
+function toVec2(v3, v2)
 
 	assert(v3.x and v3.y and v3.z, "Must have all three points but instead has " .. tostring(v3))
 	-- do a perspective projection
 	local factor = (v3.z + 2000) / 2000
 
-	local proj = Vector2(v3.x, v3.y)
-	proj = proj - (screen_size / 2)
-	proj = proj * factor
-	proj = proj + (screen_size / 2)
+	v2.x = v3.x
+	v2.y = v3.y
+	v2:subtract(half_screen_size)
+	v2:multiply(factor)
+	v2:add(half_screen_size)
 
-	return proj
+	return v2
 
 end
+
+
+local _force_buffer = Vector3(0, 0, 0)
+
+function Grid:applyImplosiveForce(force, position, radius)
+
+	for x = 1, self.cols do
+		for y = 1, self.rows do
+			
+			local point = self.point_grid:get(x, y)
+
+			local distance_from_point = Vector3.distance2(position, point:getPosition())
+
+			if distance_from_point < radius * radius then
+
+				_force_buffer:copy(position)
+				_force_buffer:subtract(point:getPosition())
+				_force_buffer:multiply(10 * force)
+				_force_buffer:divide(100 + distance_from_point)
+
+				point:applyForce(_force_buffer)
+				point:increaseDamping(0.6)
+			end
+
+		end
+	end
+
+end
+
+function Grid:applyExplosiveForce(force, position, radius)
+
+	for x = 1, self.cols do
+		for y = 1, self.rows do
+			
+			local point = self.point_grid:get(x, y)
+
+			local distance_from_point = Vector3.distance2(position, point:getPosition())
+
+			if distance_from_point < radius * radius then
+
+				_force_buffer:copy(position)
+				_force_buffer:subtract(point:getPosition())
+				_force_buffer:multiply(100 * force)
+				_force_buffer:divide(10000 + distance_from_point)
+
+				point:applyForce(_force_buffer)
+				point:increaseDamping(0.6)
+
+			end
+
+		end
+	end
+
+end
+

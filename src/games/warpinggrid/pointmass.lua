@@ -25,9 +25,14 @@ function PointMass:getVelocity()
     return self.velocity
 end
 
+local _force_buff = Vector3(0, 0, 0)
+
 function PointMass:applyForce(force)
 
-    self.acceleration:add(force * self.invmass)
+    _force_buff:copy(force)
+    _force_buff:multiply(self.invmass)
+    
+    self.acceleration:add(_force_buff)
 
 end
 
@@ -38,8 +43,9 @@ end
 function PointMass:update(dt)
 
     -- TODO: http://en.wikipedia.org/wiki/Semi-implicit_Euler_method
-    self.velocity = self.velocity + self.acceleration
-    self.position = self.position + self.velocity
+
+    self.velocity:add(self.acceleration)
+    self.position:add(self.velocity)
 
     self.acceleration:zero()
 
