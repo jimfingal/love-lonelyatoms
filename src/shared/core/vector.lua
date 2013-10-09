@@ -48,6 +48,15 @@ function Vector.isvector(a)
 	return a.class.name == 'Vector'
 end
 
+function Vector.fromAngle(angle)
+	return Vector.fromTheta(math.rad(angle))
+end
+
+function Vector.fromTheta(theta)
+	return Vector(cos(theta), sin(theta))
+end
+
+
 function Vector:clone()
 	return Vector(self.x, self.y)
 end
@@ -65,6 +74,12 @@ function Vector:add(other)
 	assert(Vector.isvector(other), 'argument must be a vector')
 	self.x = self.x + other.x
 	self.y = self.y + other.y
+end
+
+function Vector:multiply(multiplier)
+	assert(type(multiplier) == "number", "argument must be a number, instead is " .. type(multiplier) .. ": " .. tostring(multiplier))
+	self.x = self.x * multiplier
+	self.y = self.y * multiplier
 end
 
 

@@ -12,6 +12,8 @@ require 'core.systems.timesystem'
 require 'core.systems.statisticssystem'
 require 'core.systems.emissionsystem'
 require 'core.systems.particlesystem'
+require 'core.systems.coroutinesystem'
+
 
 require 'core.entity.world'
 require 'scenes.playscene'
@@ -79,6 +81,9 @@ function loadSystems(world)
     local particle_system = ParticleSystem()
     world:setSystem(particle_system)
     
+    local coroutine_system = CoroutineSystem()
+    world:setSystem(coroutine_system)
+
 end
 
 

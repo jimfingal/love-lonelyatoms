@@ -25,6 +25,8 @@ require 'core.vector'
 require 'core.quad.aabb'
 require 'core.quad.quadtree'
 
+require 'behaviors.coroutinebehaviors'
+
 local INPUTTABLE_ENTITIES = EntityQuery():addOrSet(InputResponse)
 local BEHAVIOR_ENTITIES = EntityQuery():addOrSet(Behavior)
 local MOVABLE_ENTITIES = EntityQuery():addOrSet(Transform):addOrSet(Motion)
@@ -67,6 +69,38 @@ function PlayScene:enter()
     self.star_builder:create()
     -- self.opponent_builder:create()
 
+    local ship = self.world:getTaggedEntity(Tags.MOTHERSHIP)
+
+    local moveMothership = function()
+
+        
+        -- [[ Move down
+        move(ship, 270, 100, 2)
+        sleep(1)
+        --]]
+
+        --[[ Move left
+        move(ship, 180, 100, 1)
+        sleep(1)
+        --]]
+
+        --[[ Move right
+        move(ship, 0, 100, 1)
+        sleep(1)
+        --]]
+
+        --[ Move up
+        move(ship, 90, 100, 1)
+        sleep(1)
+        --]]
+       
+        moveTo(ship, Vector(397, 297), 1)
+
+    end
+
+
+    self.world:getSystem(CoroutineSystem):runAsCoroutine(moveMothership)
+
 end
 
 function PlayScene:update(dt)
@@ -77,16 +111,22 @@ function PlayScene:update(dt)
     time_system:update(dt)
     local game_world_dt = time_system:getDt()
 
-   -- [[
+
+
+
     -- Update scheduled functions
     self.world:getScheduleSystem():update(game_world_dt)
     
     -- Update tweens 
     self.world:getTweenSystem():update(game_world_dt)
 
-    -- Update input
+    -- Update Input
     local inputtable = self.world:getEntityManager():query(INPUTTABLE_ENTITIES)
     self.world:getInputSystem():processInputResponses(inputtable, game_world_dt)
+
+    -- Update Coroutines
+    self.world:getSystem(CoroutineSystem):update(game_world_dt) 
+
 
     -- Update Emitters 
     local emitters = self.world:getEntityManager():query(EMITTERS)
@@ -95,6 +135,8 @@ function PlayScene:update(dt)
     -- Update behaviors
     local behaviorals = self.world:getEntityManager():query(BEHAVIOR_ENTITIES)
     self.world:getBehaviorSystem():processBehaviors(behaviorals, game_world_dt) 
+
+
 
     -- Update movement 
     local movables = self.world:getEntityManager():query(MOVABLE_ENTITIES)
