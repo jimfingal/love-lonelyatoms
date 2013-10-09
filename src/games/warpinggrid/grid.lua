@@ -10,21 +10,22 @@ Grid = class('Grid')
 
 local half_screen_size = Vector2(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
 
-function Grid:initialize(screen_width, screen_height, rows, cols)
+function Grid:initialize(screen_width, screen_height, cols, rows)
 
 	self.screen_width = screen_width
 	self.screen_height = screen_height
-	self.rows = rows
+
 	self.cols = cols
+	self.rows = rows
 
 	self.x_spacer = self.screen_width / (self.cols - 1)
 	self.y_spacer = self.screen_height / (self.rows - 1)
 
 
-	self.point_grid = Matrix(rows, cols,  nil)
+	self.point_grid = Matrix(cols, rows,  nil)
 	self.springs = List()
 
-	self.fixed_points = Matrix(rows, cols,  nil)
+	self.fixed_points = Matrix(cols, rows,  nil)
 
 	for x = 0, cols - 1  do
 		for y = 0, rows - 1  do
@@ -93,7 +94,7 @@ function Grid:draw()
 			local pointmass = self.point_grid:get(x, y)
 			point = toVec2(pointmass:getPosition(), point)
 			
-			love.graphics.circle('fill', point.x, point.y, radius)
+			--love.graphics.point('fill', point.x, point.y, radius)
 
 			-- [[]
 			if x > 1 then

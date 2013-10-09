@@ -12,7 +12,7 @@ local memsize = 0
 
 function love.load()
 
-    grid3d = Grid(love.graphics.getWidth(), love.graphics.getHeight(), 20, 20)
+    grid3d = Grid(love.graphics.getWidth(), love.graphics.getHeight(), 15, 15)
 
     mouse_x = 0
     mouse_y = 0
@@ -33,7 +33,7 @@ function love.update(dt)
 
 
     if input_system:newAction("implosive") then
-        grid3d:applyImplosiveForce(300, Vector3(mouse_x, mouse_y, -50), 200)
+        grid3d:applyImplosiveForce(100, Vector3(mouse_x, mouse_y, -50), 200)
     end
 
     grid3d:update(dt)
@@ -43,7 +43,7 @@ end
 function love.mousepressed(x, y, button)
     mouse_x, mouse_y = love.mouse.getPosition()
 
-    grid3d:applyExplosiveForce(300, Vector3(mouse_x, mouse_y, 0), 80)
+    grid3d:applyExplosiveForce(100, Vector3(mouse_x, mouse_y, 0), 80)
 end
 
 -- Update the screen.
@@ -55,7 +55,7 @@ function love.draw()
 
     love.graphics.setColor(147,147,205)
 
-    -- grid3d:draw()
+    grid3d:draw()
 
 
     if DEBUG then
