@@ -94,34 +94,17 @@ function Grid:draw()
 			local pointmass = self.point_grid:get(x, y)
 			point = toVec2(pointmass:getPosition(), point)
 			
-			--love.graphics.point('fill', point.x, point.y, radius)
+			love.graphics.point(point.x, point.y)
 
-			-- [[]
 			if x > 1 then
 				left = toVec2(self.point_grid:get(x - 1, y):getPosition(), left)
 				love.graphics.line(point.x, point.y, left.x, left.y)
-
-				--[[
-				if y % 3 == 1 then
-					love.graphics.line(point.x, point.y - 1, left.x, left.y - 1)
-					love.graphics.line(point.x, point.y + 1, left.x, left.y + 1)
-				end
-				]]
 			end
 
 			if y > 1 then
 				up = toVec2(self.point_grid:get(x, y - 1):getPosition(), up)
-
-				love.graphics.line(point.x, point.y, up.x, up.y)
-
-				--[[
-				if x % 3 == 1 then
-					love.graphics.line(point.x - 1, point.y, up.x - 1, up.y)
-					love.graphics.line(point.x + 1, point.y, up.x + 1, up.y)
-				end
-				]]
+				love.graphics.line(point.x, point.y, up.x, up.y)				
 			end
-			--]]
 
 		end
 	end
