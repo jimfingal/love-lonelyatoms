@@ -1,6 +1,6 @@
-require 'spatial.screenmap'
+require 'game.screenmap'
 require 'collections.matrix'
-require 'core.systems.inputsystem'
+require 'entity.systems.inputsystem'
 
 DEBUG = true
 

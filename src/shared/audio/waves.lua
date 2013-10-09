@@ -1,5 +1,5 @@
 require 'collections.list'
-require 'utils.mathutils'
+require 'math.util'
 
 Waves = {}
 

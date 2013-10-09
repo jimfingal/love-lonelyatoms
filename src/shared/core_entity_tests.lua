@@ -1,6 +1,6 @@
-require 'core.entity.entitymanager'
-require 'core.entity.component'
-require 'core.entity.metaentity'
+require 'entity.entitymanager'
+require 'entity.component'
+require 'entity.entity'
 require 'external.middleclass'
 
 local em = EntityManager()

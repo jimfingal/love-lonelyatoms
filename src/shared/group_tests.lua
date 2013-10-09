@@ -1,7 +1,7 @@
-require 'core.entity.entitymanager'
-require 'core.entity.component'
-require 'core.entity.metaentity'
-require 'core.entity.world'
+require 'entity.entitymanager'
+require 'entity.component'
+require 'entity.entity'
+require 'entity.world'
 
 require 'external.middleclass'
 

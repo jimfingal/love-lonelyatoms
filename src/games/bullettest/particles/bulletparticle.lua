@@ -1,6 +1,6 @@
 require 'external.middleclass'
-require 'particle.particle'
-require 'core.quad.aabb'
+require 'game.particle'
+require 'math.quad.aabb'
 
 BulletParticle = class('BulletParticle', Particle)
 

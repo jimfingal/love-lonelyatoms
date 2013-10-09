@@ -1,7 +1,7 @@
-require 'core.entity.entityquery'
-require 'core.components.emitter'
-require 'core.components.behavior'
-require 'core.components.collider'
+require 'entity.entityquery'
+require 'entity.components.emitter'
+require 'entity.components.behavior'
+require 'entity.components.collider'
 require 'external.middleclass'
 
 

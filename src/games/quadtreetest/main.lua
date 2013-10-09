@@ -1,5 +1,5 @@
-require 'core.quad.aabb'
-require 'core.quad.quadtree'
+require 'math.quad.aabb'
+require 'math.quad.quadtree'
 require 'collections.list'
 require 'socket'
 

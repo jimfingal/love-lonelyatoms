@@ -1,7 +1,7 @@
-require 'core.components.transform'
-require 'core.components.rendering'
-require 'core.components.collider'
-require 'core.components.motion'
+require 'entity.components.transform'
+require 'entity.components.rendering'
+require 'entity.components.collider'
+require 'entity.components.motion'
 Easing = require 'external.easing'
 
 require 'enums.tags'

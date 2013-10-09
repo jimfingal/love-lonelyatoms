@@ -1,7 +1,7 @@
 -- Fixed color palettes, so we can refer to colors by name or purpose 
 -- rather than by magic numbers
 
-require 'core.color'
+require 'game.color'
 Palette = {}
 
 Palette.COLOR_SHIP = Color(100, 100, 100, 255)

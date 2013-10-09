@@ -1,6 +1,6 @@
 require 'external.middleclass'
-require 'particle.particle'
-require 'core.quad.aabb'
+require 'game.particle'
+require 'math.quad.aabb'
 
 WaterParticle = class('WaterParticle', Particle)
 
@@ -84,7 +84,7 @@ function WaterParticle:create(x, y, vx, vy, left)
 				y = y, 
 				vx = vx, 
 				vy = vy, 
-				radius = 5, 
+				radius = 6, 
 				r = 68, 
 				g = 139, 
 				b = 225,

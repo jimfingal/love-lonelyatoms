@@ -4,14 +4,14 @@ require 'audio.audiomodulator'
 require 'audio.audioprocessor'
 
 require 'audio.waves'
-require 'core.systems.inputsystem'
-require 'core.systems.schedulesystem'
+require 'entity.systems.inputsystem'
+require 'entity.systems.schedulesystem'
 
 require 'external.middleclass'
 
-require 'utils.counters'
+require 'util.counters'
 
-require 'spatial.screenmap'
+require 'game.screenmap'
 require 'collections.matrix'
 
 Easing = require 'external.easing'

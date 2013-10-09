@@ -1,7 +1,7 @@
 
 require 'external.middleclass'
 require 'audio.waves'
-require 'utils.counters'
+require 'util.counters'
 
 local AudioProcessor = class('AudioProcessor')
 

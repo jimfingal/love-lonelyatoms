@@ -1,4 +1,4 @@
-require 'core.components.transform'
+require 'entity.components.transform'
 
 GenericBehaviors = {}
 

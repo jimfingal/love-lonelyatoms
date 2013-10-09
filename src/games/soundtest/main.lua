@@ -3,7 +3,7 @@ require 'audio.audioengine'
 require 'audio.audiomodulator'
 
 require 'audio.waves'
-require 'core.systems.inputsystem'
+require 'entity.systems.inputsystem'
 require 'external.middleclass'
 
 Actions = {}

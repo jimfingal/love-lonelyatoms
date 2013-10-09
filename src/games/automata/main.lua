@@ -1,15 +1,15 @@
-require 'core.systems.inputsystem'
-require 'core.systems.schedulesystem'
-require 'core.systems.timesystem'
+require 'entity.systems.inputsystem'
+require 'entity.systems.schedulesystem'
+require 'entity.systems.timesystem'
 
 require 'external.middleclass'
 
-require 'utils.counters'
+require 'util.counters'
 
-require 'spatial.screenmap'
+require 'game.screenmap'
 require 'collections.matrix'
 
-require 'automata.life'
+require 'game.automata.life'
 
 Actions = {}
 

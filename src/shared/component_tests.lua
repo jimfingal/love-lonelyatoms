@@ -1,7 +1,7 @@
-require 'core.systems.messagesystem'
-require 'core.components.messaging'
-require 'core.components.history'
-require 'core.components.transform'
+require 'entity.systems.messagesystem'
+require 'entity.components.messaging'
+require 'entity.components.history'
+require 'entity.components.transform'
 
 -- messageTests()
 

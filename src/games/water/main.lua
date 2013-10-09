@@ -1,12 +1,12 @@
-require 'core.entity.world'
-require 'core.systems.inputsystem'
-require 'core.systems.particlesystem'
+require 'entity.world'
+require 'entity.systems.inputsystem'
+require 'entity.systems.particlesystem'
 
 require 'external.middleclass'
 
-require 'utils.counters'
+require 'util.counters'
 
-require 'spatial.screenmap'
+require 'game.screenmap'
 require 'collections.linkedlist'
 require 'waterparticle'
 

@@ -1,11 +1,11 @@
-require 'core.components.transform'
-require 'core.components.rendering'
-require 'core.components.collider'
-require 'core.components.motion'
-require 'core.systems.tweensystem'
-require 'core.systems.schedulesystem'
+require 'entity.components.transform'
+require 'entity.components.rendering'
+require 'entity.components.collider'
+require 'entity.components.motion'
+require 'entity.systems.tweensystem'
+require 'entity.systems.schedulesystem'
 
-require 'core.vector'
+require 'math.vector'
 
 require 'enums.scenes'
 require 'enums.tags'

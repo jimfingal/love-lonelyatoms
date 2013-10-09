@@ -17,8 +17,10 @@ BUILD_DIR="_build"
 DISTRO_DIR="distro"
 SHARED_DIR="./src/shared"
 GAME_DIR="./src/games/$GAME_NAME"
+SCRAP_DIR="./src/scraps/$GAME_NAME"
 
-if [ ! -d $GAME_DIR ]
+
+if [ ! -d $GAME_DIR ] && [ ! -d $SCRAP_DIR ]
 then
 	echo "Error: no game directory named ${1}"
 	exit
@@ -34,6 +36,8 @@ mkdir $BUILD_DIR
 # Copy files to build dir
 cp -r $SHARED_DIR/* $BUILD_DIR # Shared files
 cp -r $GAME_DIR/* $BUILD_DIR # Game-specific
+cp -r $SCRAP_DIR/* $BUILD_DIR #SCRAPS
+
 
 cd $BUILD_DIR
 

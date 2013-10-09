@@ -1,5 +1,5 @@
 require 'external.middleclass'
-require 'core.entity.entitybuilder'
+require 'entity.entitybuilder'
 
 local GlobalEffects = require 'scripts.globaleffects'
 local EntityEffects = require 'scripts.entityeffects'

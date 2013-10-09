@@ -1,15 +1,15 @@
-require 'core.components.transform'
-require 'core.components.rendering'
-require 'core.components.collider'
-require 'core.components.motion'
-require 'core.components.behavior'
-require 'core.components.inputresponse'
-require 'core.components.soundcomponent'
+require 'entity.components.transform'
+require 'entity.components.rendering'
+require 'entity.components.collider'
+require 'entity.components.motion'
+require 'entity.components.behavior'
+require 'entity.components.inputresponse'
+require 'entity.components.soundcomponent'
 
 require 'enums.tags'
 require 'enums.palette'
 
-require 'core.entity.entitybuilder'
+require 'entity.entitybuilder'
 
 require 'external.middleclass'
 

@@ -1,5 +1,5 @@
 require 'external.middleclass'
-require 'particle.particle'
+require 'game.particle'
 
 Stars = class('Stars', Particle)
 

@@ -1,7 +1,7 @@
 
 require 'external.middleclass'
-require 'core.entity.entitybuilder'
-require 'core.systems.tweensystem'
+require 'entity.entitybuilder'
+require 'entity.systems.tweensystem'
 Easing = require 'external.easing'
 
 require 'enums.palette'

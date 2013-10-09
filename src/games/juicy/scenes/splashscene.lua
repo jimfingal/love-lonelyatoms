@@ -1,9 +1,9 @@
 require 'external.middleclass'
-require 'core.scene'
+require 'game.scene'
 require 'collections.set'
-require 'core.entity.world'
-require 'core.entity.entityquery'
-require 'core.components.rendering'
+require 'entity.world'
+require 'entity.entityquery'
+require 'entity.components.rendering'
 
 require 'enums.actions'
 require 'enums.tags'

@@ -1,8 +1,8 @@
 
 require 'external.middleclass'
-require 'core.entity.entitybuilder'
-require 'core.systems.tweensystem'
-require 'core.systems.coroutinesystem'
+require 'entity.entitybuilder'
+require 'entity.systems.tweensystem'
+require 'entity.systems.coroutinesystem'
 
 Easing = require 'external.easing'
 
@@ -13,7 +13,7 @@ require 'enums.actions'
 require 'behaviors.genericbehaviors'
 require 'entitybuilders.emissionport'
 require 'particles.bulletparticle'
-require 'core.components.coroutinebehavior'
+require 'entity.components.coroutinebehavior'
 
 
 MotherShipBuilder  = class('MotherShipBuilder', EntityBuilder)

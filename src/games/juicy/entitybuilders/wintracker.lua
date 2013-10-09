@@ -1,6 +1,6 @@
 
 require 'external.middleclass'
-require 'core.entity.entitybuilder'
+require 'entity.entitybuilder'
 
 WinTrackerBuilder  = class('WinTrackerBuilder', EntityBuilder)
 

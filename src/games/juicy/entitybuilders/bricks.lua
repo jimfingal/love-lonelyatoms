@@ -1,14 +1,14 @@
-require 'core.components.transform'
-require 'core.components.rendering'
-require 'core.components.collider'
-require 'core.components.soundcomponent'
-require 'core.components.statecomponent'
+require 'entity.components.transform'
+require 'entity.components.rendering'
+require 'entity.components.collider'
+require 'entity.components.soundcomponent'
+require 'entity.components.statecomponent'
 
 require 'enums.assets'
 require 'enums.tags'
 require 'enums.palette'
 
-require 'core.entity.entitybuilder'
+require 'entity.entitybuilder'
 local BrickBehaviors = require 'behaviors.brickbehaviors'
 
 require 'external.middleclass'

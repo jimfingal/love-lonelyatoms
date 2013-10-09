@@ -1,5 +1,5 @@
-require 'core.managers.groupmanager'
-require 'core.entity.world'
+require 'entity.managers.groupmanager'
+require 'entity.world'
 
 local gm = GroupManager()
 

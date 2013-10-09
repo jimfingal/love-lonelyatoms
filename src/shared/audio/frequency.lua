@@ -1,5 +1,5 @@
 require 'collections.list'
-require 'utils.mathutils'
+require 'math.util'
 
 -- http://gamedev.tutsplus.com/tutorials/implementation/noise-creating-a-synthesizer-for-retro-sound-effects-introduction/
 
