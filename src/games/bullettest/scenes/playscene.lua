@@ -9,6 +9,8 @@ require 'core.components.motion'
 require 'core.components.behavior'
 require 'core.components.inputresponse'
 require 'core.components.soundcomponent'
+require 'core.components.coroutinebehavior'
+
 require 'core.shapedata'
 require 'core.systems.tweensystem'
 
@@ -29,6 +31,7 @@ require 'behaviors.coroutinebehaviors'
 
 local INPUTTABLE_ENTITIES = EntityQuery():addOrSet(InputResponse)
 local BEHAVIOR_ENTITIES = EntityQuery():addOrSet(Behavior)
+local COBEHAVIOR_ENTITIES = EntityQuery():addOrSet(CoroutineBehavior)
 local MOVABLE_ENTITIES = EntityQuery():addOrSet(Transform):addOrSet(Motion)
 local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(Rendering):addOrSet(Transform)
 local EMITTERS = EntityQuery():addOrSet(Emitter)
@@ -69,37 +72,6 @@ function PlayScene:enter()
     self.star_builder:create()
     -- self.opponent_builder:create()
 
-    local ship = self.world:getTaggedEntity(Tags.MOTHERSHIP)
-
-    local moveMothership = function()
-
-        
-        -- [[ Move down
-        move(ship, 270, 100, 2)
-        sleep(1)
-        --]]
-
-        --[[ Move left
-        move(ship, 180, 100, 1)
-        sleep(1)
-        --]]
-
-        --[[ Move right
-        move(ship, 0, 100, 1)
-        sleep(1)
-        --]]
-
-        --[ Move up
-        move(ship, 90, 100, 1)
-        sleep(1)
-        --]]
-       
-        moveTo(ship, Vector(397, 297), 1)
-
-    end
-
-
-    self.world:getSystem(CoroutineSystem):runAsCoroutine(moveMothership)
 
 end
 
@@ -125,7 +97,8 @@ function PlayScene:update(dt)
     self.world:getInputSystem():processInputResponses(inputtable, game_world_dt)
 
     -- Update Coroutines
-    self.world:getSystem(CoroutineSystem):update(game_world_dt) 
+    local co_behaviorals = self.world:getEntityManager():query(COBEHAVIOR_ENTITIES)
+    self.world:getSystem(CoroutineSystem):update(co_behaviorals, game_world_dt) 
 
 
     -- Update Emitters 

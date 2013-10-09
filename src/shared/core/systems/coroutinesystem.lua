@@ -1,10 +1,11 @@
 require 'external.middleclass'
 require 'core.entity.system'
 require 'collections.list'
+require 'core.components.coroutinebehavior'
 
 CoroutineSystem = class('CoroutineSystem', System)
 
-local coroutine_done_message = "cannot resume dead coroutine"
+local COROUTINE_DONE_MESSAGE = "cannot resume dead coroutine"
 
 function CoroutineSystem:initialize(world)
 
@@ -13,7 +14,7 @@ function CoroutineSystem:initialize(world)
 	self.world = world
 
 	self.routines = Set()
-	self.to_remove = Set()
+	self.remove_buffer = Set()
 
 end
 
@@ -26,26 +27,53 @@ function CoroutineSystem:runAsCoroutine(func)
 
 end
 
+function CoroutineSystem:update(entities, dt)
 
+	self:updateGlobalRoutines(dt)
 
-function CoroutineSystem:update(dt)
+	for entity in entities:members() do 
+		local coroutine_behavior = entity:getComponent(CoroutineBehavior)
+		self:runRoutines(coroutine_behavior, dt)
+	end
 
+end
 
-	self.to_remove:clear()
+function CoroutineSystem:runRoutines(routine_source, dt)
 
-	for co in self.routines:members() do
+	self.remove_buffer:clear()
+
+	for co in routine_source:getRoutines():members() do
 
 		status, message = coroutine.resume(co, dt)
 		if not status then
 
-			assert(message == coroutine_done_message, "Coroutine error: [" .. tostring(message) .. "]")
+			-- Raise any errors we encounter
+			assert(message == COROUTINE_DONE_MESSAGE, "Coroutine error: [" .. tostring(message) .. "]")
 
-			self.to_remove:add(co)
+			self.remove_buffer:add(co)
 	    end
 	end
 
-	for co in self.to_remove:members() do
-		self.routines:remove(co)
+	for co in self.remove_buffer:members() do
+		routine_source:removeCoroutineFunction(co)
 	end
 
+end
+
+
+
+function CoroutineSystem:updateGlobalRoutines(dt)
+
+	self:runRoutines(self, dt)
+	
+end
+
+function CoroutineSystem:getRoutines()
+	return self.routines
+end
+
+
+function CoroutineSystem:removeCoroutineFunction(co)
+  	self.routines:remove(co)
+  	return self
 end

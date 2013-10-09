@@ -2,6 +2,8 @@
 require 'external.middleclass'
 require 'core.entity.entitybuilder'
 require 'core.systems.tweensystem'
+require 'core.systems.coroutinesystem'
+
 Easing = require 'external.easing'
 
 require 'enums.palette'
@@ -11,6 +13,8 @@ require 'enums.actions'
 require 'behaviors.genericbehaviors'
 require 'entitybuilders.emissionport'
 require 'particles.bulletparticle'
+require 'core.components.coroutinebehavior'
+
 
 MotherShipBuilder  = class('MotherShipBuilder', EntityBuilder)
 
@@ -104,6 +108,42 @@ function MotherShipBuilder:create()
     end
 
     fade()
+
+
+    local co_behavior = CoroutineBehavior()
+
+    local ship = self.entity
+
+    local moveMothership = function()
+
+        -- [[ Move down
+        move(ship, 270, 100, 2)
+        sleep(1)
+        --]]
+
+        -- [[ Move left
+        move(ship, 180, 100, 1)
+        sleep(1)
+        --]]
+
+        -- [[ Move right
+        move(ship, 0, 100, 1)
+        sleep(1)
+        --]]
+
+        --[ Move up
+        move(ship, 90, 100, 1)
+        sleep(1)
+        --]]
+       
+        moveTo(ship, Vector(397, 297), 1)
+
+    end
+
+    co_behavior:addCoroutineFunction(moveMothership)
+
+    self.entity:addComponent(co_behavior)
+
 
 end
 
