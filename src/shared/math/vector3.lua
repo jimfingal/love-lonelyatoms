@@ -80,3 +80,22 @@ function Vector3:__eq(other)
 	return self.x == other.x and self.y == other.y and self.z == other.z
 end
 
+
+function Vector3:len()
+	return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
+end
+
+function Vector3:len2()
+	return self.x * self.x + self.y * self.y + self.z * self.z
+end
+
+function Vector3.distance(a, b)
+	return (a - b):len()
+end
+
+function Vector3:zero()
+	self.x = 0
+	self.y = 0
+	self.z = 0
+end
+

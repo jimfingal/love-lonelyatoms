@@ -148,3 +148,8 @@ end
 function Vector2:normalized()
 	return self:clone():normalize_inplace()
 end
+
+function Vector2:zero()
+	self.x = 0
+	self.y = 0
+end

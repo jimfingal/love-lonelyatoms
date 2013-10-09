@@ -1,51 +1,54 @@
 require 'external.middleclass'
+require 'math.vector3'
 
-WaterParticle = class('WaterParticle', Particle)
+PointMass = class('PointMass')
 
 
-function WaterParticle:initialize()
+function PointMass:initialize(x, y, z, mass)
+
+    self.invmass = 1/mass
+    self.position = Vector3(x, y, z)
+
+    self.velocity = Vector3.ZERO:clone()
+    self.acceleration = Vector3.ZERO:clone()
+
+    self.damping = 0.98
 
 end
 
---[[
 
-private class PointMass
-{
-    public Vector3 Position;
-    public Vector3 Velocity;
-    public float InverseMass;
- 
-    private Vector3 acceleration;
-    private float damping = 0.98f;
- 
-    public PointMass(Vector3 position, float invMass)
-    {
-        Position = position;
-        InverseMass = invMass;
-    }
- 
-    public void ApplyForce(Vector3 force)
-    {
-        acceleration += force * InverseMass;
-    }
- 
-    public void IncreaseDamping(float factor)
-    {
-        damping *= factor;
-    }
- 
-    public void Update()
-    {
-        Velocity += acceleration;
-        Position += Velocity;
-        acceleration = Vector3.Zero;
-        if (Velocity.LengthSquared() < 0.001f * 0.001f)
-            Velocity = Vector3.Zero;
- 
-        Velocity *= damping;
-        damping = 0.98f;
-    }
-}
+function PointMass:getPosition()
+    return self.position
+end
 
+function PointMass:getVelocity()
+    return self.velocity
+end
 
-]]
+function PointMass:applyForce(force)
+
+    self.acceleration:add(force * self.invmass)
+
+end
+
+function PointMass:increaseDamping(factor)
+    self.damping = self.damping  * factor
+end
+
+function PointMass:update(dt)
+
+    -- TODO: http://en.wikipedia.org/wiki/Semi-implicit_Euler_method
+    self.velocity = self.velocity + self.acceleration
+    self.position = self.position + self.velocity
+
+    self.acceleration:zero()
+
+    if self.velocity:len2() < 0.001 * 0.001 then
+        self.velocity:zero()
+    end
+
+    self.velocity:multiply(self.damping)
+
+    self.damping = .98
+
+end

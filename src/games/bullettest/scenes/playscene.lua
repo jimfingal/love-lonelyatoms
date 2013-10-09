@@ -149,24 +149,11 @@ function PlayScene:draw()
     
     -- Should be moved into rendering system probably
 
-    --[[
     local particle_system =  self.world:getSystem(ParticleSystem)
     particle_system:drawParticles()
 
     local drawables = self.world:getEntityManager():query(DRAWABLE_ENTITIES)
     self.world:getRenderingSystem():renderDrawables(drawables)
-
-    --]]
-    love.graphics.setPixelEffect(bloom)
-
-    local particle_system =  self.world:getSystem(ParticleSystem)
-    particle_system:drawParticles()
-
-    local drawables = self.world:getEntityManager():query(DRAWABLE_ENTITIES)
-    self.world:getRenderingSystem():renderDrawables(drawables)
-
-    love.graphics.setPixelEffect()
-
 
     if Settings.DEBUG then
 
