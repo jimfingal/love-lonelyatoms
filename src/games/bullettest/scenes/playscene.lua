@@ -128,15 +128,15 @@ function PlayScene:draw()
 
     love.graphics.setBackgroundColor(Palette.COLOR_BACKGROUND:unpack())
 
-
-    local drawables = self.world:getEntityManager():query(DRAWABLE_ENTITIES)
-    self.world:getRenderingSystem():renderDrawables(drawables)
+    self:drawQuadTree(self.root_node)
     
     -- Should be moved into rendering system probably
     local particle_system =  self.world:getSystem(ParticleSystem)
     particle_system:drawParticles()
 
-    self:drawQuadTree(self.root_node)
+    local drawables = self.world:getEntityManager():query(DRAWABLE_ENTITIES)
+    self.world:getRenderingSystem():renderDrawables(drawables)
+
 
     if Settings.DEBUG then
 
