@@ -20,6 +20,7 @@ require 'enums.actions'
 require 'entitybuilders.mothershipbuilder'
 require 'entitybuilders.opponentbuilder'
 require 'entitybuilders.starbuilder'
+require 'entitybuilders.seekerbuilder'
 
 require 'entity.entityquery'
 require 'math.vector2'
@@ -58,7 +59,8 @@ function PlayScene:initialize(name, w)
 
     self.mothership_builder = MotherShipBuilder(world)
     self.star_builder = StarBuilder(world)
-    -- self.opponent_builder = OpponentBuilder(world)
+    --self.opponent_builder = OpponentBuilder(world)
+    self.seeker_builder = SeekerBuilder(world)
 
     local aabb = AABB(0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
@@ -72,7 +74,7 @@ function PlayScene:enter()
     self.mothership_builder:create()
     self.star_builder:create()
     -- self.opponent_builder:create()
-
+    self.seeker_builder:create()
 
 end
 
@@ -85,8 +87,6 @@ function PlayScene:update(dt)
     local game_world_dt = time_system:getDt()
 
 
-
-
     -- Update scheduled functions
     self.world:getScheduleSystem():update(game_world_dt)
     
@@ -96,11 +96,6 @@ function PlayScene:update(dt)
     -- Update Input
     local inputtable = self.world:getEntityManager():query(INPUTTABLE_ENTITIES)
     self.world:getInputSystem():processInputResponses(inputtable, game_world_dt)
-
-    -- Update Coroutines
-    local co_behaviorals = self.world:getEntityManager():query(COBEHAVIOR_ENTITIES)
-    self.world:getSystem(CoroutineSystem):update(co_behaviorals, game_world_dt) 
-
 
     -- Update Emitters 
     local emitters = self.world:getEntityManager():query(EMITTERS)
@@ -123,8 +118,8 @@ function PlayScene:update(dt)
 
     if frame % 5 == 0 then
         self.root_node:clear()
-        for p in particle_system:getParticlePool(PointParticle).used_objects:members() do
-        -- for p in particle_system:getParticlePool(BulletParticle).used_objects:members() do
+        --for p in particle_system:getParticlePool(PointParticle).used_objects:members() do
+        for p in particle_system:getParticlePool(BulletParticle).used_objects:members() do
             self.root_node:insert(p)
         end
     end
@@ -176,11 +171,20 @@ function PlayScene:outputDebugText()
         memsize = collectgarbage('count')
     end
 
-    love.graphics.print('Memory actually used (in kB): ' .. memsize, 10, debugstart + 320)
-    love.graphics.print('Vector objects created: ' .. ClassCounter[Vector2], 10, debugstart + 340)
-    love.graphics.print('Set objects created: ' .. ClassCounter[Set], 10, debugstart + 360)
-    love.graphics.print('List objects created: ' .. ClassCounter[List], 10, debugstart + 380)
+    love.graphics.print('Memory actually used (in kB): ' .. memsize, 10, debugstart + 120)
+    love.graphics.print('Vector objects created: ' .. ClassCounter[Vector2], 10, debugstart + 140)
+    love.graphics.print('Set objects created: ' .. ClassCounter[Set], 10, debugstart + 160)
+    love.graphics.print('List objects created: ' .. ClassCounter[List], 10, debugstart + 180)
     --love.graphics.print('Tweens: ' .. tostring(self.world:getSystem(TweenSystem)), 10, debugstart + 400)
+
+    local seeker = self.world:getTaggedEntity(Tags.SEEKER)
+    local transform = seeker:getComponent(Transform)
+    local motion = seeker:getComponent(Motion)
+    -- Seeeker
+    love.graphics.print('Seeker Position:    ' .. tostring(transform:getPosition()), 10, debugstart + 300)
+    love.graphics.print('Seeker Velocity:    ' .. tostring(motion:getVelocity()), 10, debugstart + 320)
+    love.graphics.print('Seeker Acceleraton: ' .. tostring(motion:getAcceleration()), 10, debugstart + 340)
+
 
 
 end

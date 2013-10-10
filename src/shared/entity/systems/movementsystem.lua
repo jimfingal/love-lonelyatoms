@@ -80,6 +80,7 @@ function MovementSystem:update(transform, movement, dt)
 	end
 	
     movement:capVelocity()
+    movement:capAcceleration()
 
 	if movement.velocity ~= Vector2.ZERO then
 

@@ -10,6 +10,8 @@ function Behavior:initialize()
 	
 	self.update_callbacks = List()
 
+	self.routines = Set()
+
 end
 
 function Behavior:addUpdateFunction(update_callback)
@@ -19,6 +21,24 @@ end
 
 function Behavior:getUpdateFunctions()
 	return self.update_callbacks
+end
+
+
+function Behavior:addRoutine(func)
+
+	local co = coroutine.create(func)
+  	self.routines:add(co)
+  	return co
+
+end
+
+function Behavior:removeRoutine(co)
+  	self.routines:remove(co)
+  	return self
+end
+
+function Behavior:getRoutines()
+	return self.routines
 end
 
 

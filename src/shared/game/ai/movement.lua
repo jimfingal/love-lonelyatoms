@@ -1,10 +1,10 @@
 require 'entity.components.transform'
 require 'entity.components.motion'
 
-AI = {}
+AIMovement = {}
 
 
-function AI.move(entity, direction_angle, speed, time)
+function AIMovement.move(dt, entity, direction_angle, speed, time)
 
   local transform = entity:getComponent(Transform)
   local motion = entity:getComponent(Motion)
@@ -30,7 +30,7 @@ end
 
 
 
-function AI.moveTo(entity, destination_point, time)
+function AIMovement.moveTo(entity, destination_point, time)
 
   local transform = entity:getComponent(Transform)
   local motion = entity:getComponent(Motion)
@@ -57,7 +57,7 @@ function AI.moveTo(entity, destination_point, time)
 end
 
 
-function AI.sleep(time)
+function AIMovement.sleep(time)
   local elapsed = 0
 
   while elapsed < time do
@@ -71,6 +71,5 @@ function AI.sleep(time)
 
 end
 
-
-return AI
+return Movement
 

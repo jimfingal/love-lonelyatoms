@@ -32,6 +32,11 @@ function Vector2.fromTheta(theta)
 end
 
 
+function Vector2:copy(other)
+	self.x = other.x
+	self.y = other.y
+end
+
 function Vector2:clone()
 	return Vector2(self.x, self.y)
 end
@@ -98,6 +103,8 @@ function Vector2:__eq(other)
 	return self.x == other.x and self.y == other.y
 end
 
+
+--[[
 function Vector2:__lt(other)
 	assert(Vector2.isVector2(other), 'argument must be a vector')
 	return self.x < other.x or (self.x == other.x and self.y < other.y)
@@ -107,6 +114,20 @@ function Vector2:__le(other)
 	assert(Vector2.isVector2(other), 'argument must be a vector')
 	return self.x <= other.x and self.y <= other.y
 end
+
+
+
+function Vector2:__le(other)
+	assert(Vector2.isVector2(other), 'argument must be a vector')
+	return self:len2() <= other:len2()
+end
+]]
+
+function Vector2:__lt(other)
+	assert(Vector2.isVector2(other), 'argument must be a vector')
+	return self:len2() < other:len2()
+end
+
 
 
 function Vector2:len2()

@@ -1,7 +1,6 @@
 require 'external.middleclass'
 require 'entity.system'
 require 'collections.list'
-require 'entity.components.coroutinebehavior'
 
 CoroutineSystem = class('CoroutineSystem', System)
 
@@ -30,11 +29,6 @@ end
 function CoroutineSystem:update(entities, dt)
 
 	self:updateGlobalRoutines(dt)
-
-	for entity in entities:members() do 
-		local coroutine_behavior = entity:getComponent(CoroutineBehavior)
-		self:runRoutines(coroutine_behavior, dt)
-	end
 
 end
 

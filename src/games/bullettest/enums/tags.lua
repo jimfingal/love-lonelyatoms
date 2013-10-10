@@ -5,5 +5,6 @@ Tags = {}
 
 Tags.MOTHERSHIP = "mothership"
 Tags.BULLET_GROUP = "bullets"
+Tags.SEEKER = "seeker"
 
 return Tags

@@ -13,8 +13,7 @@ end
 function PointParticle:update(particle, dt)
 
 	-- Quit updating if we've faded out
-
-
+	
 	particle.x = particle.x + particle.vx * dt
 	particle.y = particle.y + particle.vy * dt
 	particle.aabb.x = particle.x

@@ -81,9 +81,6 @@ function loadSystems(world)
     local particle_system = ParticleSystem()
     world:setSystem(particle_system)
     
-    local coroutine_system = CoroutineSystem()
-    world:setSystem(coroutine_system)
-
 end
 
 

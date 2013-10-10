@@ -15,7 +15,7 @@ require 'entitybuilders.emissionport'
 require 'particles.bulletparticle'
 require 'particles.pointparticle'
 
-require 'entity.components.coroutinebehavior'
+require 'entity.components.behavior'
 
 
 MotherShipBuilder  = class('MotherShipBuilder', EntityBuilder)
@@ -42,15 +42,15 @@ function MotherShipBuilder:create()
    
     local particle_system = self.world:getSystem(ParticleSystem)
 
-    particle_system:addParticleType(PointParticle(world), 2000)
+    --particle_system:addParticleType(PointParticle(world), 2000)
 
-    -- particle_system:addParticleType(BulletParticle(world), 2000)
+    particle_system:addParticleType(BulletParticle(world), 2000)
 
 	local recycleEmissionWhenOffWorld = function(self)
     
         local particle_system = self.world:getSystem(ParticleSystem)
-        -- local pool = particle_system:getParticlePool(BulletParticle)
-        local pool = particle_system:getParticlePool(PointParticle)
+        local pool = particle_system:getParticlePool(BulletParticle)
+        -- local pool = particle_system:getParticlePool(PointParticle)
 
         for particle in pool.used_objects:members() do
 
@@ -116,7 +116,6 @@ function MotherShipBuilder:create()
     fade()
 
 
-    local co_behavior = CoroutineBehavior()
 
     local ship = self.entity
 
@@ -145,6 +144,8 @@ function MotherShipBuilder:create()
         moveTo(ship, Vector2(397, 297), 1)
 
     end
+
+    -- behavior:addRoutine(moveMothership)
 
     -- co_behavior:addCoroutineFunction(moveMothership)
 
@@ -187,8 +188,8 @@ local emitFromPort = function(world, port, position)
     _vector.y = 0
     _vector:rotate(theta)
     local particle_system = world:getSystem(ParticleSystem)
-    -- local p = particle_system:getParticle(BulletParticle, position.x, position.y, _vector.x, _vector.y)
-    local p = particle_system:getParticle(PointParticle, position.x, position.y, _vector.x, _vector.y)
+    local p = particle_system:getParticle(BulletParticle, position.x, position.y, _vector.x, _vector.y)
+    -- local p = particle_system:getParticle(PointParticle, position.x, position.y, _vector.x, _vector.y)
 
 end
 
@@ -207,8 +208,8 @@ local emitFromPortThenRotate = function(world, port, position, port_rot)
 
     local particle_system = world:getSystem(ParticleSystem)
 
-    -- local p = particle_system:getParticle(BulletParticle, position.x, position.y, _vector.x, _vector.y)
-    local p = particle_system:getParticle(PointParticle, position.x, position.y, _vector.x, _vector.y)
+    local p = particle_system:getParticle(BulletParticle, position.x, position.y, _vector.x, _vector.y)
+    --local p = particle_system:getParticle(PointParticle, position.x, position.y, _vector.x, _vector.y)
 end
 
 function mothershipInputResponse(ship, held_actions, pressed_actions, dt)

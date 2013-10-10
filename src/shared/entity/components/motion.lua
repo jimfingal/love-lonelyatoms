@@ -15,7 +15,7 @@ function Motion:initialize()
 	-- Property: minVelocity
 	-- No matter what else may affect this sprite's velocity, it
 	-- will never go below these numbers.
-	self.minVelocity = Vector2(- math.huge, - math.huge)
+	self.minVelocity = Vector2(0, 0)
 
 	-- Property: maxVelocity
 	-- No matter what else may affect this sprite's velocity, it will
@@ -30,7 +30,7 @@ function Motion:initialize()
 	-- Property: minAcceleration
 	-- No matter what else may affect this sprite's velocity, it
 	-- will never go below these numbers.
-	self.minAcceleration = Vector2(- math.huge, - math.huge)
+	self.minAcceleration = Vector2(0, 0)
 
 	-- Property: max acceleration
 	-- No matter what else may affect this sprite's acceleration, it will
@@ -81,6 +81,14 @@ end
 function Motion:getAcceleration()
 	return self.acceleration
 end
+
+function Motion:accelerate(dx, dy)
+	self.acceleration.x = self.acceleration.x + dx
+	self.acceleration.y = self.acceleration.y + dy
+	return self
+end
+
+
 function Motion:setAcceleration(x, y)
 	self.acceleration.x = x
 	self.acceleration.y = y
@@ -100,6 +108,24 @@ function Motion:setMaxAcceleration(x, y)
 	return self
 end
 
+function Motion:capAcceleration()
+
+	if self.acceleration > self.maxAcceleration then
+
+		self.acceleration:normalize_inplace()
+		self.acceleration:multiply(self.maxAcceleration:len())
+
+	elseif self.acceleration < self.minAcceleration then
+    
+        self.acceleration:normalize_inplace()
+		self.acceleration:multiply(self.minAcceleration:len())
+    
+    end
+
+
+	return self
+end
+
 function Motion:setDrag(x, y)
 	self.drag.x = x
 	self.drag.y = y
@@ -108,11 +134,19 @@ end
 
 
 function Motion:capVelocity()
-    if self.velocity > self.maxVelocity then
-        self.velocity = self.maxVelocity
-    elseif self.velocity < self.minVelocity then
-        self.velocity = self.minVelocity
+
+	if self.velocity > self.maxVelocity then
+
+		self.velocity:normalize_inplace()
+		self.velocity:multiply(self.maxVelocity:len())
+
+	elseif self.velocity < self.minVelocity then
+    
+        self.velocity:normalize_inplace()
+		self.velocity:multiply(self.minVelocity:len())
+    
     end
+
    	return self
 end
 
