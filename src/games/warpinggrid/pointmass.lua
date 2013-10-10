@@ -38,16 +38,28 @@ function PointMass:update(dt)
 
     -- TODO: http://en.wikipedia.org/wiki/Semi-implicit_Euler_method
 
-    self.velocity:add(self.acceleration)
-    self.position:add(self.velocity)
+    self.velocity.x = self.velocity.x + self.acceleration.x 
+    self.velocity.y = self.velocity.y + self.acceleration.y 
+    self.velocity.z = self.velocity.z + self.acceleration.z
 
-    self.acceleration:zero()
+    self.position.x = self.position.x + self.velocity.x 
+    self.position.y = self.position.y + self.velocity.y 
+    self.position.z = self.position.z + self.velocity.z
+
+
+    self.acceleration.x = 0
+    self.acceleration.y = 0
+    self.acceleration.z = 0
 
     if self.velocity:len2() < 0.001 * 0.001 then
-        self.velocity:zero()
+        self.velocity.x = 0
+        self.velocity.y = 0
+        self.velocity.z = 0    
     end
 
-    self.velocity:multiply(self.damping)
+    self.velocity.x = self.velocity.x * self.damping
+    self.velocity.y = self.velocity.y * self.damping
+    self.velocity.z = self.velocity.z * self.damping
 
     self.damping = .98
 
