@@ -80,11 +80,14 @@ function Grid:update(dt)
 
 end
 
+
+
 local point = Vector2(0, 0)
 local left = Vector2(0, 0)
 local up = Vector2(0, 0)
 
 function Grid:draw()
+
 
 	local radius = 4
 
@@ -111,26 +114,29 @@ function Grid:draw()
 
 end
 
+
 function toVec2(v3, v2)
 
-	assert(v3.x and v3.y and v3.z, "Must have all three points but instead has " .. tostring(v3))
 	-- do a perspective projection
 	local factor = (v3.z + 2000) / 2000
 
-	v2.x = v3.x
-	v2.y = v3.y
-	v2:subtract(half_screen_size)
-	v2:multiply(factor)
-	v2:add(half_screen_size)
+	v2.x = v3.x - half_screen_size.x
+	v2.y = v3.y - half_screen_size.y
+
+	v2.x = v2.x * factor
+	v2.y = v2.y  * factor
+
+	v2.x = v2.x + half_screen_size.x
+	v2.y = v2.y + half_screen_size.y
 
 	return v2
 
 end
 
 
-local _force_buffer = Vector3(0, 0, 0)
-
 function Grid:applyImplosiveForce(force, position, radius)
+
+	local _force_buffer = Vector3(0, 0, 0)
 
 	for x = 1, self.cols do
 		for y = 1, self.rows do
@@ -157,6 +163,8 @@ end
 
 function Grid:applyExplosiveForce(force, position, radius)
 
+	local _force_buffer = Vector3(0, 0, 0)
+	
 	for x = 1, self.cols do
 		for y = 1, self.rows do
 			

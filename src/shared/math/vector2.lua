@@ -10,6 +10,8 @@ local sqrt, cos, sin, atan2 = math.sqrt, math.cos, math.sin, math.atan2
 
 Vector2 = class('Vector2')
 
+local STRICT = false
+
 function Vector2:initialize(x, y)
 	self.x = x or 0
 	self.y = y or 0
@@ -44,20 +46,20 @@ end
 
 
 function Vector2:add(other)
-	assert(Vector2.isVector2(other), 'argument must be a vector')
+	if STRICT then assert(Vector2.isVector2(other), 'argument must be a vector') end
 	self.x = self.x + other.x
 	self.y = self.y + other.y
 end
 
 
 function Vector2:subtract(other)
-	assert(Vector2.isVector2(other), 'argument must be a vector')
+	if STRICT then assert(Vector2.isVector2(other), 'argument must be a vector') end
 	self.x = self.x - other.x
 	self.y = self.y - other.y
 end
 
 function Vector2:multiply(multiplier)
-	assert(type(multiplier) == "number", "argument must be a number, instead is " .. type(multiplier) .. ": " .. tostring(multiplier))
+	if STRICT then assert(type(multiplier) == "number", "argument must be a number, instead is " .. type(multiplier) .. ": " .. tostring(multiplier)) end
 	self.x = self.x * multiplier
 	self.y = self.y * multiplier
 end

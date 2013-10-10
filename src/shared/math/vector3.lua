@@ -79,7 +79,7 @@ function Vector3:__unm()
 end
 
 function Vector3:__eq(other)
-	assert(Vector3.isVector3(other), 'argument must be a vector')
+	if STRICT then assert(Vector3.isVector3(other), 'argument must be a vector') end
 	return self.x == other.x and self.y == other.y and self.z == other.z
 end
 

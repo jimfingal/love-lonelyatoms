@@ -12,7 +12,7 @@ local memsize = 0
 
 function love.load()
 
-    grid3d = Grid(love.graphics.getWidth(), love.graphics.getHeight(), 40, 40)
+    grid3d = Grid(love.graphics.getWidth(), love.graphics.getHeight(), 30, 30)
 
     mouse_x = 0
     mouse_y = 0

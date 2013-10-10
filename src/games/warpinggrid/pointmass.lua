@@ -14,17 +14,19 @@ function PointMass:initialize(x, y, z, mass)
 
     self.damping = 0.98
 
+    self._force_buff = Vector3(0, 0, 0)
+
+
 end
 
 
-local _force_buff = Vector3(0, 0, 0)
 
 function PointMass:applyForce(force)
 
-    _force_buff:copy(force)
-    _force_buff:multiply(self.invmass)
+    self._force_buff:copy(force)
+    self._force_buff:multiply(self.invmass)
 
-    self.acceleration:add(_force_buff)
+    self.acceleration:add(self._force_buff)
 
 end
 
