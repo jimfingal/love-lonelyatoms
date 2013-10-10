@@ -74,7 +74,7 @@ function Grid:update(dt)
 	
 	for x = 1, self.cols do
 		for y = 1, self.rows do
-			self.point_grid:get(x, y):update(dt)
+			self.point_grid.matrix[x][y]:update(dt)
 		end
 	end
 
