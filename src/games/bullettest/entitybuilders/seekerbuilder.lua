@@ -37,13 +37,14 @@ function SeekerBuilder:create()
 
     local seekerAI = function()
 
-        Steering.seek(self.entity, mothership, 10000, math.huge)
+        -- Steering.seek(self.entity, mothership, 10000, math.huge)
+        Steering.wander(self.entity, 100, 0.3, math.huge)
 
     end
 
     behavior:addRoutine(seekerAI)
 
-    behavior:addUpdateFunction(GenericBehaviors.bounceEntityOffWorldEdges)
+    behavior:addUpdateFunction(GenericBehaviors.wrapEntityAroundWorldEdges)
 
     self.entity:addComponent(behavior)
 
