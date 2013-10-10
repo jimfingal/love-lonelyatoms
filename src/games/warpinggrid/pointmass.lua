@@ -17,21 +17,13 @@ function PointMass:initialize(x, y, z, mass)
 end
 
 
-function PointMass:getPosition()
-    return self.position
-end
-
-function PointMass:getVelocity()
-    return self.velocity
-end
-
 local _force_buff = Vector3(0, 0, 0)
 
 function PointMass:applyForce(force)
 
     _force_buff:copy(force)
     _force_buff:multiply(self.invmass)
-    
+
     self.acceleration:add(_force_buff)
 
 end

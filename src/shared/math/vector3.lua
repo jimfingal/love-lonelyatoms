@@ -8,6 +8,8 @@ require 'external.middleclass'
 
 local sqrt, cos, sin, atan2 = math.sqrt, math.cos, math.sin, math.atan2
 
+local STRICT = false
+
 Vector3 = class('Vector3')
 
 function Vector3:initialize(x, y, z)
@@ -42,21 +44,21 @@ end
 
 
 function Vector3:add(other)
-	assert(Vector3.isVector3(other), 'argument must be a vector')
+	if STRICT then assert(Vector3.isVector3(other), 'argument must be a vector') end
 	self.x = self.x + other.x
 	self.y = self.y + other.y
 	self.z = self.z + other.z
 end
 
 function Vector3:subtract(other)
-	assert(Vector3.isVector3(other), 'argument must be a vector')
+	if STRICT then assert(Vector3.isVector3(other), 'argument must be a vector') end
 	self.x = self.x - other.x
 	self.y = self.y - other.y
 	self.z = self.z - other.z
 end
 
 function Vector3:multiply(multiplier)
-	assert(type(multiplier) == "number", "argument must be a number, instead is " .. type(multiplier) .. ": " .. tostring(multiplier))
+	if STRICT then assert(type(multiplier) == "number", "argument must be a number, instead is " .. type(multiplier) .. ": " .. tostring(multiplier)) end
 	self.x = self.x * multiplier
 	self.y = self.y * multiplier
 	self.z = self.z * multiplier
@@ -64,7 +66,7 @@ function Vector3:multiply(multiplier)
 end
 
 function Vector3:divide(divisor)
-	assert(type(divisor) == "number", "argument must be a number, instead is " .. type(divisor) .. ": " .. tostring(divisor))
+	if STRICT then assert(type(divisor) == "number", "argument must be a number, instead is " .. type(divisor) .. ": " .. tostring(divisor)) end
 	self.x = self.x / divisor
 	self.y = self.y / divisor
 	self.z = self.z / divisor
@@ -75,32 +77,11 @@ end
 function Vector3:__unm()
 	return Vector3(-self.x, -self.y, -self.z)
 end
---[[
-function Vector3:__add(other)
-	assert(Vector3.isVector3(other), 'argument must be a vector')
-	return Vector3(self.x + other.x, self.y + other.y, self.z + other.z)
-end
-
-function Vector3:__sub(other)
-	assert(Vector3.isVector3(other), 'argument must be a vector')
-	return Vector3(self.x - other.x, self.y - other.y, self.z - other.z)
-end
-
-function Vector3:__mul(multiplier)
-	assert(type(multiplier) == "number", "argument must be a number, instead is " .. type(multiplier) .. ": " .. tostring(multiplier))
-	return Vector3(self.x * multiplier, self.y * multiplier, self.z * multiplier)
-end
-
-function Vector3:__div(divisor)
-	assert(type(divisor) == "number", "argument must be a number")
-	return Vector3(self.x / divisor, self.y / divisor, self.z / divisor)
-end
 
 function Vector3:__eq(other)
 	assert(Vector3.isVector3(other), 'argument must be a vector')
 	return self.x == other.x and self.y == other.y and self.z == other.z
 end
-]]
 
 function Vector3:len()
 	return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z)

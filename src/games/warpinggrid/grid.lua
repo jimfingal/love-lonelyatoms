@@ -91,18 +91,18 @@ function Grid:draw()
 	for x = 1, self.cols do
 		for y = 1, self.rows do
 			
-			local pointmass = self.point_grid:get(x, y)
-			point = toVec2(pointmass:getPosition(), point)
+			local pointmass = self.point_grid.matrix[x][y]
+			point = toVec2(pointmass.position, point)
 			
 			love.graphics.point(point.x, point.y)
 
 			if x > 1 then
-				left = toVec2(self.point_grid:get(x - 1, y):getPosition(), left)
+				left = toVec2(self.point_grid.matrix[x - 1][y].position, left)
 				love.graphics.line(point.x, point.y, left.x, left.y)
 			end
 
 			if y > 1 then
-				up = toVec2(self.point_grid:get(x, y - 1):getPosition(), up)
+				up = toVec2(self.point_grid.matrix[x][y - 1].position, up)
 				love.graphics.line(point.x, point.y, up.x, up.y)				
 			end
 
@@ -137,12 +137,12 @@ function Grid:applyImplosiveForce(force, position, radius)
 			
 			local point = self.point_grid:get(x, y)
 
-			local distance_from_point = Vector3.distance2(position, point:getPosition())
+			local distance_from_point = Vector3.distance2(position, point.position)
 
 			if distance_from_point < radius * radius then
 
 				_force_buffer:copy(position)
-				_force_buffer:subtract(point:getPosition())
+				_force_buffer:subtract(point.position)
 				_force_buffer:multiply(10 * force)
 				_force_buffer:divide(100 + distance_from_point)
 
@@ -162,12 +162,12 @@ function Grid:applyExplosiveForce(force, position, radius)
 			
 			local point = self.point_grid:get(x, y)
 
-			local distance_from_point = Vector3.distance2(position, point:getPosition())
+			local distance_from_point = Vector3.distance2(position, point.position)
 
 			if distance_from_point < radius * radius then
 
 				_force_buffer:copy(position)
-				_force_buffer:subtract(point:getPosition())
+				_force_buffer:subtract(point.position)
 				_force_buffer:multiply(100 * force)
 				_force_buffer:divide(10000 + distance_from_point)
 

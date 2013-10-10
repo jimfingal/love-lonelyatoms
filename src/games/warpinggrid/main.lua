@@ -12,7 +12,7 @@ local memsize = 0
 
 function love.load()
 
-    grid3d = Grid(love.graphics.getWidth(), love.graphics.getHeight(), 15, 15)
+    grid3d = Grid(love.graphics.getWidth(), love.graphics.getHeight(), 20, 20)
 
     mouse_x = 0
     mouse_y = 0
@@ -55,6 +55,7 @@ function love.draw()
 
     love.graphics.setColor(147,147,205)
 
+    love.graphics.setLineStyle("rough")
     grid3d:draw()
 
 
