@@ -12,6 +12,10 @@ function math.randomPlusOrMinus()
 	if r < 0.5 then return -1 else return 1 end
 end
 
+function math.randomBinomial()
+	return math.random() - math.random()
+end
+
 
 function math.round(num, idp)
   local mult = 10^(idp or 0)

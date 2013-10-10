@@ -168,16 +168,22 @@ end
 
 
 function Vector2:normalize_inplace()
-	local l = self:len()
-	if l > 0 then
-		self.x, self.y = self.x / l, self.y / l
-	end
+	self.x, self.y = self:normalized_values()
 	return self
 end
 
 function Vector2:normalized()
 	return self:clone():normalize_inplace()
 end
+
+function Vector2:normalized_values()
+	local l = self:len()
+	if l > 0 then
+		return self.x / l, self.y / l
+	end
+	return self.x, self.y
+end
+
 
 function Vector2:zero()
 	self.x = 0
