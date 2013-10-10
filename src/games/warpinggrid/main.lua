@@ -32,8 +32,8 @@ function love.update(dt)
     last_mouse_x, last_mouse_y = mouse_x, mouse_y
 
 
-    if input_system:newAction("implosive") then
-        grid3d:applyImplosiveForce(100, Vector3(mouse_x, mouse_y, -50), 200)
+    if input_system:heldAction("implosive") then
+        grid3d:applyImplosiveForce(100, Vector3(mouse_x, mouse_y, -100), 200)
     end
 
     grid3d:update(dt)
@@ -43,7 +43,7 @@ end
 function love.mousepressed(x, y, button)
     mouse_x, mouse_y = love.mouse.getPosition()
 
-    grid3d:applyExplosiveForce(100, Vector3(mouse_x, mouse_y, 0), 80)
+    grid3d:applyExplosiveForce(500, Vector3(mouse_x, mouse_y, -1), 80)
 end
 
 -- Update the screen.

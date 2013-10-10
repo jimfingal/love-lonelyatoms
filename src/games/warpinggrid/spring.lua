@@ -22,9 +22,11 @@ function Spring:update()
 
 --    local x = self.pointmass1:getPosition() - self.pointmass2:getPosition()
 
-    self._point_buffer:copy(self.pointmass1.position)
-    self._point_buffer:subtract(self.pointmass2.position)
+    self._point_buffer.x = self.pointmass1.position.x - self.pointmass2.position.x
+    self._point_buffer.y = self.pointmass1.position.y - self.pointmass2.position.y
+    self._point_buffer.z = self.pointmass1.position.z - self.pointmass2.position.z
 
+    
     local x = self._point_buffer
 
     local length = x:len()
@@ -39,22 +41,27 @@ function Spring:update()
     x:divide(length)
     x:multiply(length - self.target_length)
 
-    self._velocity_buffer:copy(self.pointmass2.velocity)
-    self._velocity_buffer:subtract(self.pointmass1.velocity)
+
+    self._velocity_buffer.x = self.pointmass2.velocity.x - self.pointmass1.velocity.x
+    self._velocity_buffer.y = self.pointmass2.velocity.y - self.pointmass1.velocity.y
+    self._velocity_buffer.z = self.pointmass2.velocity.z - self.pointmass1.velocity.z
 
     local dv = self._velocity_buffer
 
 --  local force = x * self.stiffness - (dv * self.damping)
 
-    x:multiply(self.stiffness)
-    dv:multiply(self.damping)
-    x:subtract(dv)
+    x.x = x.x * self.stiffness - (dv.x * self.damping)
+    x.y = x.y * self.stiffness - (dv.y * self.damping)
+    x.z = x.z * self.stiffness - (dv.z * self.damping)
+
 
     local force = x
  
     self.pointmass2:applyForce(force)
 
-    force:multiply(-1)
+    force.x = force.x * -1
+    force.y = force.y * -1
+    force.z = force.z * -1
 
     self.pointmass1:applyForce(force)
 

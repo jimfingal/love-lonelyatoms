@@ -44,7 +44,7 @@ function Grid:initialize(screen_width, screen_height, cols, rows)
 			-- anchor the border of the grid 
 			if x == 1 or y == 1 or x == self.cols or y == self.rows then
 
-			  	self.springs:append(Spring(self.fixed_points:get(x, y), self.point_grid:get(x, y), 0.1, 0.1))
+			  	self.springs:append(Spring(self.fixed_points:get(x, y), self.point_grid:get(x, y), 0.7, 0.7))
         
             elseif x % 3 == 0 and y % 3 == 0 then  -- loosely anchor 1/9th of the point masses 
  			  	self.springs:append(Spring(self.fixed_points:get(x, y), self.point_grid:get(x, y), 0.002, 0.002))
