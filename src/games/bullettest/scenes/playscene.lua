@@ -180,10 +180,14 @@ function PlayScene:outputDebugText()
     local seeker = self.world:getTaggedEntity(Tags.SEEKER)
     local transform = seeker:getComponent(Transform)
     local motion = seeker:getComponent(Motion)
+
+    local mother_transform = self.world:getTaggedEntity(Tags.MOTHERSHIP):getComponent(Transform)
+
     -- Seeeker
     love.graphics.print('Seeker Position:    ' .. tostring(transform:getPosition()), 10, debugstart + 300)
     love.graphics.print('Seeker Velocity:    ' .. tostring(motion:getVelocity()), 10, debugstart + 320)
     love.graphics.print('Seeker Acceleraton: ' .. tostring(motion:getAcceleration()), 10, debugstart + 340)
+    love.graphics.print('Seeker Distance: ' .. tostring((mother_transform:getPosition() - transform:getPosition()):len()), 10, debugstart + 360)
 
 
 
