@@ -36,6 +36,10 @@ function Vector2.fromTheta(theta)
 	return Vector2(cos(theta), sin(theta))
 end
 
+function Vector2:toTheta()
+	return math.atan2(self.y, self.x)
+end
+
 
 function Vector2:copy(other)
 	self.x = other.x
@@ -205,7 +209,7 @@ function Vector2:setToDifference(position, target)
 
 	self:copy(target)
 	self:subtract(position)
-	
+
 	return self
 
 end

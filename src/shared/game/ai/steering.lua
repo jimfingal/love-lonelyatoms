@@ -167,9 +167,6 @@ end
 
 
 
-
-
-
 function AISteering.wander(steering, entity, target_speed, max_rotation)
 
   steering:clear()
@@ -190,47 +187,83 @@ function AISteering.wander(steering, entity, target_speed, max_rotation)
 
 end
 
-function AISteering.orbit(entity, target, target_orbit, speed, t)
 
-  local time = t or math.huge
 
-  local entity_transform = entity:getComponent(Transform)
+function AISteering.keepTargetDistance(steering, entity, target, target_radius, slow_radius)
+
+
+  AISteering.seek(steering, entity, target)
+
   local entity_motion = entity:getComponent(Motion)
 
-  local target_transform = target:getComponent(Transform)
+  local distance = steering.target_vector:len()
 
-  local distance_vector = Vector2(0, 0)
+  local target_norm_x, target_norm_y = steering.target_vector:normalized_values()
 
-  local direction_vector = Vector2(0, 0)
+  local target_speed = entity_motion.maxVelocity:len()
 
-  local elapsed = 0
+  if distance < target_radius then
+
+      target_speed = -target_speed
+
+  end
+
+  if distance > target_radius - slow_radius or distance > target_radius - slow_radius then
+
+      target_speed = target_speed * (distance / slow_radius)
+
+  end
+  
+  -- Target Velocity
+  local target_velocity = steering.target_vector
+  target_velocity:normalize_inplace()
+  target_velocity:multiply(target_speed)
+
+
+  -- Accelerate to get to the target velocity vector
+  steering.target_vector:subtract(entity_motion:getVelocity())
+
+
+end
+
+
+
+
+
+
+function AISteering.orbit(steering, entity, target, target_orbit, target_speed)
+
+  steering:clear()
+
+  local tolerance = 3
 
   local half_pi = math.pi / 2
   local quarter_pi = math.pi / 4
 
-  while elapsed < time do
 
+  steering.target_vector:setToDifference(pos(entity), pos(target))
 
-    distance_vector:copy(target_transform:getPosition())
-    distance_vector:subtract(entity_transform:getPosition())
- 
-    direction_vector:copy(distance_vector)
-    direction_vector:normalize_inplace()
-    direction_vector:rotate(half_pi)
+  local distance = steering.target_vector:len()
 
-    -- Rotate inwards
-    if distance_vector:len() > target_orbit then
-        direction_vector:rotate(-quarter_pi)
-    end
+  steering.target_vector:normalize_inplace()
+  steering.target_vector:rotate(half_pi)
 
-    direction_vector:multiply(speed)
-
-
-    entity_motion:setVelocity(direction_vector.x, direction_vector.y)
-
-    elapsed = elapsed + coroutine.yield()
-  
+  -- Rotate inwards
+  if distance > target_orbit + tolerance then
+      steering.target_vector:rotate(-quarter_pi)
+  elseif distance < target_orbit - tolerance then
+      steering.target_vector:rotate(quarter_pi)
   end
+
+  local current_speed = entity:getComponent(Motion):getVelocity():len()
+
+  local speed_diff = target_speed - current_speed
+
+
+  steering.target_vector:multiply(speed_diff)
+
+  steering.rotation = steering.target_vector:toTheta()
+  steering.acceleration = maxAcceleration(entity)
 
 
 end
@@ -243,67 +276,7 @@ end
 
 
 
-function AISteering.keepDistance(entity, target, target_radius, slow_radius, t)
 
-
-  local time = t or math.huge
-
-  local entity_transform = entity:getComponent(Transform)
-  local target_transform = target:getComponent(Transform)
-
-  local entity_motion = entity:getComponent(Motion)
-
-  local direction_vector = Vector2(0, 0)
-
-  local elapsed = 0
-  local dt = 0
-
-  while elapsed < time do
-
-    dt = coroutine.yield()
-
-    elapsed = elapsed + dt
-
-    -- Accelerate towards
-
-
-    AIHelpers.setVectorTowardOther(direction_vector, entity, target)
-  
-    local distance = direction_vector:len()
-
-    local target_velocity = direction_vector
-
-    AIHelpers.scaleVectorToMaxVelocity(target_velocity, entity)
-
-
-    if distance < target_radius then
-
-      target_velocity:negative()
-
-    end
-
-    if distance > target_radius - slow_radius or distance > target_radius - slow_radius then
-
-      target_velocity:multiply(distance / slow_radius)
-
-    end
-      
-    local velocity_diff = target_velocity 
-    velocity_diff:subtract(entity_motion:getVelocity())
-
-
-    local acceleration = velocity_diff
-
-    AIHelpers.scaleVectorToMaxAcceleration(acceleration, entity)
-
-    entity_motion:setAcceleration(acceleration.x, acceleration.y)
-
-
-
-  end
-
-
-end
 
 
 
