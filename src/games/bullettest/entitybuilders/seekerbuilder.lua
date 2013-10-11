@@ -44,7 +44,9 @@ function SeekerBuilder:create()
 
         -- Steering.arrive(self.entity, mothership, 20, 100)
         --Steering.matchVelocity(self.entity, mothership)
-        Steering.keepDistance(self.entity, mothership, 300, 100)
+        -- Steering.keepDistance(self.entity, mothership, 300, 100)
+        -- Steering.pursue(self.entity, mothership)
+        Steering.evade(self.entity, mothership)
 
 
 

@@ -36,6 +36,126 @@ function AISteering.seek(entity, target, t)
 
 end
 
+
+function AISteering.pursue(entity, target, t)
+
+  local time = t or math.huge
+
+  local entity_transform = entity:getComponent(Transform)
+  local entity_motion = entity:getComponent(Motion)
+
+  local target_transform = target:getComponent(Transform)
+  local target_motion = target:getComponent(Motion)
+
+
+  local elapsed = 0
+  local speed = 0
+  local distance = 0
+  local direction_vector = Vector2(0, 0)
+  local acceleration_vector = Vector2(0, 0)
+  local target_position = Vector2(0, 0)
+  local entity_velocity = nil
+  local target_velocity = nil
+
+  local prediction = 0
+
+  while elapsed < time do
+
+    entity_velocity = entity_motion:getVelocity()
+    target_velocity = target_motion:getVelocity()
+
+    AIHelpers.setVectorToDistance(direction_vector, entity_transform:getPosition(), target_transform:getPosition())
+
+    distance = direction_vector:len()
+    speed = entity_velocity:len()
+
+    if speed > 0 then 
+      prediction = distance / speed
+    else
+      prediction = distance
+    end
+
+    target_position:copy(target_transform:getPosition())
+
+    target_position.x = target_position.x + target_velocity.x * prediction
+    target_position.y = target_position.y + target_velocity.y * prediction
+
+
+    AIHelpers.setVectorToDistance(acceleration_vector, entity_transform:getPosition(), target_position)
+
+    Helpers.scaleVectorToMaxAcceleration(acceleration_vector, entity)
+
+    entity_motion:setAcceleration(acceleration_vector.x, acceleration_vector.y)
+
+    elapsed = elapsed + coroutine.yield()
+
+  end
+
+
+end
+
+
+function AISteering.evade(entity, target, t)
+
+  local time = t or math.huge
+
+  local entity_transform = entity:getComponent(Transform)
+  local entity_motion = entity:getComponent(Motion)
+
+  local target_transform = target:getComponent(Transform)
+  local target_motion = target:getComponent(Motion)
+
+
+  local elapsed = 0
+  local speed = 0
+  local distance = 0
+  local direction_vector = Vector2(0, 0)
+  local acceleration_vector = Vector2(0, 0)
+  local target_position = Vector2(0, 0)
+  local entity_velocity = nil
+  local target_velocity = nil
+
+  local prediction = 0
+
+  while elapsed < time do
+
+    entity_velocity = entity_motion:getVelocity()
+    target_velocity = target_motion:getVelocity()
+
+    AIHelpers.setVectorToDistance(direction_vector, entity_transform:getPosition(), target_transform:getPosition())
+
+    distance = direction_vector:len()
+    speed = entity_velocity:len()
+
+    if speed > 0 then 
+      prediction = distance / speed
+    else
+      prediction = distance
+    end
+
+    target_position:copy(target_transform:getPosition())
+
+    target_position.x = target_position.x + target_velocity.x * prediction
+    target_position.y = target_position.y + target_velocity.y * prediction
+
+
+    AIHelpers.setVectorToDistance(acceleration_vector, entity_transform:getPosition(), target_position)
+
+    acceleration_vector:negative()
+
+
+    Helpers.scaleVectorToMaxAcceleration(acceleration_vector, entity)
+
+    entity_motion:setAcceleration(acceleration_vector.x, acceleration_vector.y)
+
+    elapsed = elapsed + coroutine.yield()
+
+  end
+
+
+end
+
+
 function AISteering.flee(entity, target, t)
 
   local time = t or math.huge

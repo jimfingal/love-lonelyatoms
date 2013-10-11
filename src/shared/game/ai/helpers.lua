@@ -9,7 +9,18 @@ function AIHelpers.setVectorTowardOther(vector, entity, target)
 	vector:copy(target_position)
 	vector:subtract(entity_position)
 
+	 AIHelpers.setVectorToDistance(vector, entity_position, target_position)
+
 end
+
+
+function AIHelpers.setVectorToDistance(vector, a, b)
+
+	vector:copy(b)
+	vector:subtract(a)
+
+end
+
 
 function AIHelpers.setVectorAwayFromOther(vector, entity, target)
 
