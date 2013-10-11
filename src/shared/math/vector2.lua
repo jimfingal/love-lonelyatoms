@@ -74,6 +74,11 @@ function Vector2:multiply(multiplier)
 	self.y = self.y * multiplier
 end
 
+function Vector2:negative()
+	self.x = -self.x
+	self.y = -self.y
+end
+
 
 --  unary - operation.
 -- [[

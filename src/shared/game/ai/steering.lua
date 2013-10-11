@@ -3,74 +3,59 @@ require 'entity.components.motion'
 require 'math.vector2'
 require 'math.util'
 
+Helpers = require 'game.ai.helpers'
+
+
 AISteering = {}
 
 
-function AISteering.seek(entity, target, acceleration_per_sec, t)
 
+
+function AISteering.seek(entity, target, t)
 
   local time = t or math.huge
 
-  local entity_transform = entity:getComponent(Transform)
-  local target_transform = target:getComponent(Transform)
-
   local entity_motion = entity:getComponent(Motion)
 
-  local direction_vector = Vector2(0, 0)
+  local acceleration_vector = Vector2(0, 0)
 
   local elapsed = 0
   local dt = 0
 
   while elapsed < time do
 
-    dt = coroutine.yield()
+    Helpers.setVectorTowardOther(acceleration_vector, entity, target)
+    Helpers.scaleVectorToMaxAcceleration(acceleration_vector, entity)
 
-    elapsed = elapsed + dt
+    entity_motion:setAcceleration(acceleration_vector.x, acceleration_vector.y)
 
-    -- Accelerate towards
-
-    direction_vector:copy(target_transform:getPosition())
-    direction_vector:subtract(entity_transform:getPosition())
-
-    direction_vector:normalize_inplace()
-
-    entity_motion:accelerate(direction_vector.x * acceleration_per_sec * dt, direction_vector.y * acceleration_per_sec * dt)
-
+    elapsed = elapsed + coroutine.yield()
 
   end
 
 
 end
 
-function AISteering.flee(entity, target, acceleration_per_sec, t)
+function AISteering.flee(entity, target, t)
 
   local time = t or math.huge
 
-  local entity_transform = entity:getComponent(Transform)
-  local target_transform = target:getComponent(Transform)
-
   local entity_motion = entity:getComponent(Motion)
 
-  local direction_vector = Vector2(0, 0)
+  local acceleration_vector = Vector2(0, 0)
 
   local elapsed = 0
   local dt = 0
 
   while elapsed < time do
 
-    dt = coroutine.yield()
+    -- Accelerate away
+    Helpers.setVectorAwayFromOther(acceleration_vector, entity, target)
+    Helpers.scaleVectorToMaxAcceleration(acceleration_vector, entity)
 
-    elapsed = elapsed + dt
+    entity_motion:setAcceleration(acceleration_vector.x, acceleration_vector.y)
 
-    -- Accelerate towards
-
-    direction_vector:copy(entity_transform:getPosition())
-    direction_vector:subtract(target_transform:getPosition())
-
-    direction_vector:normalize_inplace()
-
-    entity_motion:accelerate(direction_vector.x * acceleration_per_sec * dt, direction_vector.y * acceleration_per_sec * dt)
-
+    elapsed = elapsed + coroutine.yield()
 
   end
 
@@ -162,9 +147,6 @@ function AISteering.arrive(entity, target, target_radius, slow_radius, t)
 
   local time = t or math.huge
 
-  local entity_transform = entity:getComponent(Transform)
-  local target_transform = target:getComponent(Transform)
-
   local entity_motion = entity:getComponent(Motion)
 
   local direction_vector = Vector2(0, 0)
@@ -172,7 +154,6 @@ function AISteering.arrive(entity, target, target_radius, slow_radius, t)
   local elapsed = 0
   local dt = 0
 
-  local max_velocity = entity_motion.maxVelocity:len()
 
   while elapsed < time do
 
@@ -182,14 +163,13 @@ function AISteering.arrive(entity, target, target_radius, slow_radius, t)
 
     -- Accelerate towards
 
-    direction_vector:copy(target_transform:getPosition())
-    direction_vector:subtract(entity_transform:getPosition())
-
+    AIHelpers.setVectorTowardOther(direction_vector, entity, target)
+  
     local distance = direction_vector:len()
-    direction_vector:normalize_inplace()
 
     local target_velocity = direction_vector
-    target_velocity:multiply(max_velocity)
+
+    AIHelpers.scaleVectorToMaxVelocity(target_velocity, entity)
 
     if distance < target_radius then
 
@@ -203,12 +183,74 @@ function AISteering.arrive(entity, target, target_radius, slow_radius, t)
       
     local velocity_diff = target_velocity 
     velocity_diff:subtract(entity_motion:getVelocity())
-    velocity_diff:normalize_inplace()
+
+    local acceleration = velocity_diff
+
+    AIHelpers.scaleVectorToMaxAcceleration(acceleration, entity)
+
+    entity_motion:setAcceleration(acceleration.x, acceleration.y)
+
+
+
+  end
+
+
+end
+
+
+
+function AISteering.keepDistance(entity, target, target_radius, slow_radius, t)
+
+
+  local time = t or math.huge
+
+  local entity_transform = entity:getComponent(Transform)
+  local target_transform = target:getComponent(Transform)
+
+  local entity_motion = entity:getComponent(Motion)
+
+  local direction_vector = Vector2(0, 0)
+
+  local elapsed = 0
+  local dt = 0
+
+  while elapsed < time do
+
+    dt = coroutine.yield()
+
+    elapsed = elapsed + dt
+
+    -- Accelerate towards
+
+
+    AIHelpers.setVectorTowardOther(direction_vector, entity, target)
+  
+    local distance = direction_vector:len()
+
+    local target_velocity = direction_vector
+
+    AIHelpers.scaleVectorToMaxVelocity(target_velocity, entity)
+
+
+    if distance < target_radius then
+
+      target_velocity:negative()
+
+    end
+
+    if distance > target_radius - slow_radius or distance > target_radius - slow_radius then
+
+      target_velocity:multiply(distance / slow_radius)
+
+    end
+      
+    local velocity_diff = target_velocity 
+    velocity_diff:subtract(entity_motion:getVelocity())
 
 
     local acceleration = velocity_diff
-    acceleration:multiply(entity_motion.maxAcceleration:len())
 
+    AIHelpers.scaleVectorToMaxAcceleration(acceleration, entity)
 
     entity_motion:setAcceleration(acceleration.x, acceleration.y)
 
