@@ -42,7 +42,8 @@ function SeekerBuilder:create()
         -- Steering.flee(self.entity, mothership, 10000)
         -- Steering.orbit(self.entity, mothership, 100, 200)
 
-        Steering.arrive(self.entity, mothership, 20, 100)
+        -- Steering.arrive(self.entity, mothership, 20, 100)
+        Steering.matchVelocity(self.entity, mothership)
 
 
 

@@ -186,10 +186,10 @@ function AISteering.arrive(entity, target, target_radius, slow_radius, t)
     direction_vector:subtract(entity_transform:getPosition())
 
     local distance = direction_vector:len()
-
     direction_vector:normalize_inplace()
 
-    local target_velocity = direction_vector * max_velocity
+    local target_velocity = direction_vector
+    target_velocity:multiply(max_velocity)
 
     if distance < target_radius then
 
@@ -197,15 +197,17 @@ function AISteering.arrive(entity, target, target_radius, slow_radius, t)
 
     elseif distance < slow_radius then
 
-      target_velocity = target_velocity * (distance / slow_radius)
+      target_velocity:multiply(distance / slow_radius)
 
     end
       
-    local velocity_diff = target_velocity - entity_motion:getVelocity()
-
+    local velocity_diff = target_velocity 
+    velocity_diff:subtract(entity_motion:getVelocity())
     velocity_diff:normalize_inplace()
 
-    local acceleration = velocity_diff * entity_motion.maxAcceleration:len()
+
+    local acceleration = velocity_diff
+    acceleration:multiply(entity_motion.maxAcceleration:len())
 
 
     entity_motion:setAcceleration(acceleration.x, acceleration.y)
@@ -216,6 +218,46 @@ function AISteering.arrive(entity, target, target_radius, slow_radius, t)
 
 
 end
+
+
+
+
+function AISteering.matchVelocity(entity, target, t)
+
+
+  local time = t or math.huge
+
+  local entity_transform = entity:getComponent(Transform)
+  local target_transform = target:getComponent(Transform)
+
+  local entity_motion = entity:getComponent(Motion)
+  local target_motion = target:getComponent(Motion)
+
+  local elapsed = 0
+  local dt = 0
+
+  local diff_from_target = Vector2(0, 0)
+
+  while elapsed < time do
+
+    diff_from_target.x = target_motion:getVelocity().x - entity_motion:getVelocity().x
+    diff_from_target.y = target_motion:getVelocity().y - entity_motion:getVelocity().y
+
+    diff_from_target:normalize_inplace()
+    diff_from_target:multiply(entity_motion.maxAcceleration:len())
+
+
+    entity_motion:setAcceleration(diff_from_target.x, diff_from_target.y)
+
+
+    elapsed = elapsed + coroutine.yield()
+
+
+  end
+
+
+end
+
 
 
 

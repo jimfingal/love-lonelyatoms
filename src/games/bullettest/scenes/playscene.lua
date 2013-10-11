@@ -159,6 +159,7 @@ function PlayScene:draw()
 
 end
 
+local position_diff = Vector2(0, 0)
 
 function PlayScene:outputDebugText()
     local debugstart = 50
@@ -187,7 +188,11 @@ function PlayScene:outputDebugText()
     love.graphics.print('Seeker Position:    ' .. tostring(transform:getPosition()), 10, debugstart + 300)
     love.graphics.print('Seeker Velocity:    ' .. tostring(motion:getVelocity()), 10, debugstart + 320)
     love.graphics.print('Seeker Acceleraton: ' .. tostring(motion:getAcceleration()), 10, debugstart + 340)
-    love.graphics.print('Seeker Distance: ' .. tostring((mother_transform:getPosition() - transform:getPosition()):len()), 10, debugstart + 360)
+
+    position_diff.x = mother_transform:getPosition().x - transform:getPosition().x
+    position_diff.y = mother_transform:getPosition().y - transform:getPosition().y
+
+    love.graphics.print('Seeker Distance: ' .. tostring(position_diff:len()), 10, debugstart + 360)
 
 
 
