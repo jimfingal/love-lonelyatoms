@@ -210,6 +210,7 @@ function PlayScene:outputDebugText()
 end
 
 function PlayScene:drawQuadTree(qt)
+
     love.graphics.setColor(147,147,205)
 
     self:drawAABB(qt.aabb)
@@ -222,7 +223,7 @@ end
 
 
 function PlayScene:drawAABB(box, mode)
-    love.graphics.rectangle(mode or "line", box.x, box.y, box.w, box.h)
+    love.graphics.rectangle("line", box.x, box.y, box.w, box.h)
 end
 
 

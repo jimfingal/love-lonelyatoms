@@ -126,3 +126,5 @@ function Transform:snapshot(object)
 end
 ]]
 
+return Transform
+

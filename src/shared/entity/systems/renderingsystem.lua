@@ -38,7 +38,6 @@ function RenderingSystem:renderDrawables(entities)
 
 	self:clearLayers()
 
-
 	for entity in entities:members() do
 
 		local layer_num = entity:getComponent(Transform):getLayerOrder()

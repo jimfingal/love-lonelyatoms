@@ -15,7 +15,8 @@ end
 
 function EntityQuery:addOrSet(...)
 	local or_set = Set()
-	for i,v in ipairs(arg) do 
+
+	for i,v in ipairs({...}) do 
 		or_set:add(v)
 	end
 

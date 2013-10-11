@@ -28,11 +28,18 @@ end
 
 function CircleShape:draw(position, mode)
 	local half_radius = self.radius / 2
-	love.graphics.circle(mode or 'line', position.x + half_radius, position.y + half_radius, self.radius)
+
+	local m = "line"
+	if mode then m = mode end
+
+	love.graphics.circle(m, position.x + half_radius, position.y + half_radius, self.radius)
 end
 
 function CircleShape:drawAroundOrigin(mode)
-	love.graphics.circle(mode or 'line', 0, 0, self.radius)
+
+	local m = "fill"
+	if mode then m = mode end
+	love.graphics.circle(m, 0, 0, self.radius)
 end
 
 function CircleShape:center(transform_position)
@@ -91,11 +98,19 @@ function RectangleShape:initialize(width, height, x, y)
 end
 
 function RectangleShape:draw(position, mode)
-	love.graphics.rectangle(mode or "line", position.x, position.y, self.width, self.height)
+
+	local m = "line"
+	if mode then m = mode end
+
+	love.graphics.rectangle(m, position.x, position.y, self.width, self.height)
 end
 
 function RectangleShape:drawAroundOrigin(mode)
-	love.graphics.rectangle(mode or "line", -self.width/2, -self.height/2, self.width, self.height)
+	
+	local m = "fill"
+	if mode then m = mode end
+
+	love.graphics.rectangle(m, -self.width/2, -self.height/2, self.width, self.height)
 end
 
 

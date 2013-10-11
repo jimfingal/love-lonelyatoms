@@ -47,5 +47,6 @@ cd ..
 
 # rm -rf $BUILD_DIR # Disable if we want to inspect output
 
+# open ./$DISTRO_DIR/$GAME_NAME.love
+love ./$DISTRO_DIR/$GAME_NAME.love
 
-open ./$DISTRO_DIR/$GAME_NAME.love
