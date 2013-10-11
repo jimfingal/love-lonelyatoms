@@ -275,44 +275,16 @@ end
 
 
 
+function AISteering.matchVelocity(steering, entity, target)
 
-
-
-
-
-
-function AISteering.matchVelocity(entity, target, t)
-
-
-  local time = t or math.huge
-
-  local entity_transform = entity:getComponent(Transform)
-  local target_transform = target:getComponent(Transform)
 
   local entity_motion = entity:getComponent(Motion)
   local target_motion = target:getComponent(Motion)
 
-  local elapsed = 0
-  local dt = 0
+  steering.target_vector.x = target_motion:getVelocity().x - entity_motion:getVelocity().x
+  steering.target_vector.y = target_motion:getVelocity().y - entity_motion:getVelocity().y
 
-  local diff_from_target = Vector2(0, 0)
-
-  while elapsed < time do
-
-    diff_from_target.x = target_motion:getVelocity().x - entity_motion:getVelocity().x
-    diff_from_target.y = target_motion:getVelocity().y - entity_motion:getVelocity().y
-
-    diff_from_target:normalize_inplace()
-    diff_from_target:multiply(entity_motion.maxAcceleration:len())
-
-
-    entity_motion:setAcceleration(diff_from_target.x, diff_from_target.y)
-
-
-    elapsed = elapsed + coroutine.yield()
-
-
-  end
+  steering.acceleration = maxAcceleration(entity)
 
 
 end

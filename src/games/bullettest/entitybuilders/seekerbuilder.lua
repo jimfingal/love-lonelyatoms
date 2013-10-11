@@ -40,16 +40,14 @@ function SeekerBuilder:create()
         -- AISteering.steer(AISteering.seek, self.entity, mothership)
         -- AISteering.steer(AISteering.pursue, self.entity, mothership)
         -- AISteering.steer(AISteering.evade, self.entity, mothership)
-        --AISteering.steer(AISteering.flee, self.entity, mothership)
+        -- AISteering.steer(AISteering.flee, self.entity, mothership)
         -- AISteering.steer(AISteering.arrive, self.entity, mothership, 20, 100)
         -- AISteering.steer(AISteering.wander, self.entity, 100, 0.3)
-
         -- AISteering.steer(AISteering.keepTargetDistance, self.entity, mothership, 300, 100)
-        AISteering.steer(AISteering.orbit, self.entity, mothership,  100, 200)
+        -- AISteering.steer(AISteering.orbit, self.entity, mothership,  100, 200)
+        
+        AISteering.steer(AISteering.matchVelocity, self.entity, mothership)
 
-        -- Steering.orbit(self.entity, mothership, 100, 200)
-
-        --Steering.matchVelocity(self.entity, mothership)
 
 
     end
