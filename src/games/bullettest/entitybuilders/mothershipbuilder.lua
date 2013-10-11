@@ -46,7 +46,7 @@ function MotherShipBuilder:create()
 
     particle_system:addParticleType(BulletParticle(world), 2000)
 
-	local recycleEmissionWhenOffWorld = function(self)
+	local recycleInactiveInvisibleOrOffWorld = function(self)
     
         local particle_system = self.world:getSystem(ParticleSystem)
         local pool = particle_system:getParticlePool(BulletParticle)
@@ -55,13 +55,16 @@ function MotherShipBuilder:create()
         for particle in pool.used_objects:members() do
 
             if particle.x < 0 or particle.x > love.graphics.getWidth() 
-                or particle.y < 0 or particle.y > love.graphics.getHeight() then
+                or particle.y < 0 or particle.y > love.graphics.getHeight() or
+                particle.active == false or
+                particle.a <= 0 then
 
                 pool:recycle(particle)
             
             end
         end
     end 
+
 
     local unit_vector = Vector2(5, 5)
 
@@ -82,7 +85,8 @@ function MotherShipBuilder:create()
     end 
 
     local behavior = Behavior()
-    behavior:addUpdateFunction(recycleEmissionWhenOffWorld)
+    behavior:addUpdateFunction(recycleInactiveInvisibleOrOffWorld)
+
     --behavior:addUpdateFunction(rotateInCircle)
     behavior:addUpdateFunction(GenericBehaviors.bounceEntityOffWorldEdges)
     self.entity:addComponent(behavior)
