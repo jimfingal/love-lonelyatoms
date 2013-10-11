@@ -139,9 +139,9 @@ function AISteering.arrive(steering, entity, target, target_radius, slow_radius)
   target_velocity:normalize_inplace()
   target_velocity:multiply(target_speed)
 
-  -- Accelerate to get to the target velocity
-  steering.target_vector.x = target_velocity.x - entity_motion:getVelocity().x
-  steering.target_vector.y = target_velocity.y - entity_motion:getVelocity().y
+
+  -- Accelerate to get to the target velocity vector
+  steering.target_vector:subtract(entity_motion:getVelocity())
 
 
 end
@@ -170,62 +170,22 @@ end
 
 
 
+function AISteering.wander(steering, entity, target_speed, max_rotation)
 
-function AISteering.separation(entity, target, t)
+  steering:clear()
 
-  local time = t or math.huge
+  local rotation = entity:getComponent(Transform):getRotation()
+  local rotation_delta = math.randomBinomial() * max_rotation
 
-  local entity_motion = entity:getComponent(Motion)
+  steering.rotation = rotation + rotation_delta
 
-  local acceleration_vector = Vector2(0, 0)
+  local current_speed = entity:getComponent(Motion):getVelocity():len()
+  local speed_diff = target_speed - current_speed
 
-  local elapsed = 0
-  local dt = 0
+  steering.target_vector = Vector2.fromTheta(steering.rotation)
+  steering.target_vector:multiply(speed_diff)
 
-  while elapsed < time do
-
-    -- Accelerate away
-    Helpers.setVectorAwayFromOther(acceleration_vector, entity, target)
-    Helpers.scaleVectorToMaxAcceleration(acceleration_vector, entity)
-
-    entity_motion:setAcceleration(acceleration_vector.x, acceleration_vector.y)
-
-    elapsed = elapsed + coroutine.yield()
-
-  end
-
-
-end
-
-
-
-
-function AISteering.wander(entity, acceleration, max_rotation, t)
-
-  local time = t or math.huge
-
-  local entity_transform = entity:getComponent(Transform)
-  local entity_motion = entity:getComponent(Motion)
-
-  local rotation = entity_transform:getRotation()
-
-
-  local elapsed = 0
-
-  while elapsed < time do
-
-    local dt = coroutine.yield()
- 
-    entity_transform:rotate(math.randomBinomial() * max_rotation)
-
-    local direction_vector = Vector2.fromTheta(entity_transform:getRotation())
-    local da = direction_vector * acceleration * dt 
-
-    entity_motion:accelerate(da.x, da.y)
-
-    elapsed = elapsed + dt
-  
-  end
+  steering.acceleration = maxAcceleration(entity)
 
 
 end
