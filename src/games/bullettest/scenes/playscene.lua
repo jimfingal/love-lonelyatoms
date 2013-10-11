@@ -65,7 +65,7 @@ function PlayScene:initialize(name, w)
 
     self.root_node = QuadTree(aabb, 0, 10, 5)
 
-    grid3d = Grid(love.graphics.getWidth(), love.graphics.getHeight(), 10, 10)
+    grid3d = Grid(love.graphics.getWidth(), love.graphics.getHeight(), 30, 30)
 
 
 end
@@ -121,7 +121,7 @@ function PlayScene:update(dt)
 
     grid3d:update(dt)
 
-    -- [[
+    --[[
     if frame % 5 == 0 then
         self.root_node:clear()
         --for p in particle_system:getParticlePool(PointParticle).used_objects:members() do
@@ -151,7 +151,7 @@ function PlayScene:draw()
     grid3d:draw()
     love.graphics.setLineStyle("smooth")
     
-    self:drawQuadTree(self.root_node)
+    --self:drawQuadTree(self.root_node)
     
     -- Should be moved into rendering system probably
 
