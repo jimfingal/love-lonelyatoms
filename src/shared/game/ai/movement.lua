@@ -1,7 +1,6 @@
 require 'entity.components.transform'
 require 'entity.components.motion'
 
-Helpers = require 'game.ai.helpers'
 
 AIMovement = {}
 

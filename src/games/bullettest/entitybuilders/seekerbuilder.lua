@@ -10,7 +10,7 @@ require 'enums.actions'
 require 'entitybuilders.emissionport'
 require 'particles.playerbulletparticle'
 
-Steering = require 'game.ai.steering'
+AISteering = require 'game.ai.steering'
 
 require 'socket'
 
@@ -37,16 +37,21 @@ function SeekerBuilder:create()
 
     local seekerAI = function()
 
+        -- AISteering.steer(AISteering.seek, self.entity, mothership)
+        -- AISteering.steer(AISteering.pursue, self.entity, mothership)
+        -- AISteering.steer(AISteering.evade, self.entity, mothership)
+        --AISteering.steer(AISteering.flee, self.entity, mothership)
+        AISteering.steer(AISteering.arrive, self.entity, mothership, 20, 100)
+
         -- Steering.seek(self.entity, mothership, 10000, math.huge)
         -- Steering.wander(self.entity, 100, 0.03, math.huge)
-        -- Steering.flee(self.entity, mothership)
         -- Steering.orbit(self.entity, mothership, 100, 200)
 
         -- Steering.arrive(self.entity, mothership, 20, 100)
         --Steering.matchVelocity(self.entity, mothership)
         -- Steering.keepDistance(self.entity, mothership, 300, 100)
         -- Steering.pursue(self.entity, mothership)
-        Steering.evade(self.entity, mothership)
+        -- Steering.evade(self.entity, mothership)
 
 
 

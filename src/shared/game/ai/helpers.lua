@@ -1,25 +1,13 @@
 
 AIHelpers = {}
 
-function AIHelpers.setVectorTowardOther(vector, entity, target)
+function AIHelpers.setVectorTowardOther(vector, position, target)
 
-	local entity_position = entity:getComponent(Transform):getPosition()
-	local target_position = target:getComponent(Transform):getPosition()
-
-	vector:copy(target_position)
-	vector:subtract(entity_position)
-
-	 AIHelpers.setVectorToDistance(vector, entity_position, target_position)
+	vector:copy(target)
+	vector:subtract(position)
 
 end
 
-
-function AIHelpers.setVectorToDistance(vector, a, b)
-
-	vector:copy(b)
-	vector:subtract(a)
-
-end
 
 
 function AIHelpers.setVectorAwayFromOther(vector, entity, target)

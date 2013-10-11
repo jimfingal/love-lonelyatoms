@@ -195,6 +195,22 @@ function Vector2:normalized_values()
 end
 
 
+function Vector2:scaleTo(distance)
+	self:normalize_inplace()
+	self:multiply(distance)
+	return self
+end
+
+function Vector2:setToDifference(position, target)
+
+	self:copy(target)
+	self:subtract(position)
+	
+	return self
+
+end
+
+
 function Vector2:zero()
 	self.x = 0
 	self.y = 0
