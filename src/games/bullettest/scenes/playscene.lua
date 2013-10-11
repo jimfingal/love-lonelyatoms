@@ -28,8 +28,7 @@ require 'math.quad.aabb'
 require 'math.quad.quadtree'
 
 require 'behaviors.coroutinebehaviors'
-
-bloom = require 'shaders.bloom'
+require 'game.warpinggrid.grid'
 
 local INPUTTABLE_ENTITIES = EntityQuery():addOrSet(InputResponse)
 local BEHAVIOR_ENTITIES = EntityQuery():addOrSet(Behavior)
@@ -65,6 +64,9 @@ function PlayScene:initialize(name, w)
     local aabb = AABB(0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
     self.root_node = QuadTree(aabb, 0, 10, 5)
+
+    grid3d = Grid(love.graphics.getWidth(), love.graphics.getHeight(), 10, 10)
+
 
 end
 
@@ -116,6 +118,10 @@ function PlayScene:update(dt)
     particle_system:updateParticles(game_world_dt)
 
 
+
+    grid3d:update(dt)
+
+    -- [[
     if frame % 5 == 0 then
         self.root_node:clear()
         --for p in particle_system:getParticlePool(PointParticle).used_objects:members() do
@@ -140,6 +146,11 @@ function PlayScene:draw()
 
     love.graphics.setBackgroundColor(Palette.COLOR_BACKGROUND:unpack())
 
+    love.graphics.setLineStyle("rough")
+    love.graphics.setColor(147,147,205, 100)
+    grid3d:draw()
+    love.graphics.setLineStyle("smooth")
+    
     self:drawQuadTree(self.root_node)
     
     -- Should be moved into rendering system probably

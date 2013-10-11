@@ -225,6 +225,7 @@ function mothershipInputResponse(ship, held_actions, pressed_actions, dt)
 
     if held_actions[Actions.FIRE] then
  
+        grid3d:applyExplosiveForce(500, Vector3(transform:getPosition().x, transform:getPosition().y, -1), 80)
 
     	emitFromPortThenRotate(ship:getWorld(), gun_port1, center, 0.1)
     	emitFromPortThenRotate(ship:getWorld(), gun_port2, center, 0.1)

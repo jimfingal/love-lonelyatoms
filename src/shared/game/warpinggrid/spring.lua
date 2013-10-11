@@ -1,6 +1,6 @@
 require 'external.middleclass'
 require 'math.vector3'
-require 'pointmass'
+require 'game.warpinggrid.pointmass'
 
 Spring = class('Spring')
 

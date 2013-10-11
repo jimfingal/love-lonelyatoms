@@ -2,7 +2,7 @@ require 'game.screenmap'
 require 'collections.matrix'
 require 'entity.systems.inputsystem'
 
-require 'grid'
+require 'game.warpinggrid.grid'
 
 DEBUG = true
 

@@ -3,8 +3,8 @@ require 'collections.matrix'
 require 'collections.list'
 require 'math.vector3'
 require 'math.vector2'
-require 'pointmass'
-require 'spring'
+require 'game.warpinggrid.pointmass'
+require 'game.warpinggrid.spring'
 
 Grid = class('Grid')
 
