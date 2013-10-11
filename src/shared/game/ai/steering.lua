@@ -157,5 +157,68 @@ end
 
 
 
+function AISteering.arrive(entity, target, target_radius, slow_radius, t)
+
+
+  local time = t or math.huge
+
+  local entity_transform = entity:getComponent(Transform)
+  local target_transform = target:getComponent(Transform)
+
+  local entity_motion = entity:getComponent(Motion)
+
+  local direction_vector = Vector2(0, 0)
+
+  local elapsed = 0
+  local dt = 0
+
+  local max_velocity = entity_motion.maxVelocity:len()
+
+  while elapsed < time do
+
+    dt = coroutine.yield()
+
+    elapsed = elapsed + dt
+
+    -- Accelerate towards
+
+    direction_vector:copy(target_transform:getPosition())
+    direction_vector:subtract(entity_transform:getPosition())
+
+    local distance = direction_vector:len()
+
+    direction_vector:normalize_inplace()
+
+    local target_velocity = direction_vector * max_velocity
+
+    if distance < target_radius then
+
+      target_velocity:zero()
+
+    elseif distance < slow_radius then
+
+      target_velocity = target_velocity * (distance / slow_radius)
+
+    end
+      
+    local velocity_diff = target_velocity - entity_motion:getVelocity()
+
+    velocity_diff:normalize_inplace()
+
+    local acceleration = velocity_diff * entity_motion.maxAcceleration:len()
+
+
+    entity_motion:setAcceleration(acceleration.x, acceleration.y)
+
+
+
+  end
+
+
+end
+
+
+
+
 return AISteering
 

@@ -19,6 +19,11 @@ end
 
 Vector2.ZERO = Vector2(0,0)
 
+function Vector2:zero()
+	self.x = 0
+	self.y = 0
+end
+
 function Vector2.isVector2(a)
 	return a.class.name == 'Vector2'
 end
