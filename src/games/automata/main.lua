@@ -1,6 +1,9 @@
 require 'entity.systems.inputsystem'
 require 'entity.systems.schedulesystem'
 require 'entity.systems.timesystem'
+require 'entity.world'
+require 'entity.entityquery'
+
 
 require 'external.middleclass'
 
@@ -11,25 +14,38 @@ require 'collections.matrix'
 
 require 'game.automata.life'
 
-Actions = {}
+require 'textfade'
 
+DRAWABLE_ENTITIES = EntityQuery():addOrSet(Rendering):addOrSet(Transform)
 
 DEBUG = false
 
 frame = 1
 memsize = 0
 
+local world = nil
+
 function love.load()
 
+    world = World()
 
-    input_system = InputSystem()
+    local input_system = InputSystem()
     input_system:registerInput(' ', "pause")
     input_system:registerInput('r', "reset")
+    world:setSystem(input_system)
 
-    schedule_system = ScheduleSystem()
+    local schedule_system = ScheduleSystem()
+    world:setSystem(schedule_system)
 
-    time_system = TimeSystem()
-    time_system:stop()
+    local time_system = TimeSystem()
+    time_system:stop()    
+    world:setSystem(time_system)
+
+    local tween_system = TweenSystem(world)
+    world:setSystem(tween_system)
+
+    local rendering_system = RenderingSystem()
+    world:setSystem(rendering_system)
 
     local xtiles = 50
     local ytiles = 50
@@ -45,7 +61,17 @@ function love.load()
 
     life_grid = LifeGrid(xtiles, ytiles)
 
+
+    local em = world:getEntityManager()
+    local title = em:createEntity('instructions')
+    title:addComponent(Transform(25, 100))
+    local rendering = TextRendering("Press Space Bar to Pause, 'R' to reset"):setColor(255, 255, 255, 0)
+    title:addComponent(Rendering():addRenderable(rendering))
+
+    fadeTextInAndOut(world, rendering, 2, 5, 2)
+
 end
+
 
 function processAutomata()
     life_grid:updateFrame()
@@ -55,12 +81,14 @@ end
 -- Perform computations, etc. between screen refreshes.
 function love.update(dt)
 
-    input_system:update(dt)
-    time_system:update(dt)
-    
-    mouse_x, mouse_y = love.mouse.getPosition()
-    tile_hover = screen_map:getCoordinates(mouse_x, mouse_y)
+    local time_system = world:getTimeSystem()
 
+    time_system:update(dt)
+
+    local input_system = world:getInputSystem()
+
+    input_system:update(dt)
+    
     if input_system:newAction("pause") then
         time_system:switch()
     end
@@ -69,7 +97,8 @@ function love.update(dt)
         life_grid:init()
     end
 
-    schedule_system:update(time_system:getDt())
+    world:getScheduleSystem():update(time_system:getDt())
+    world:getTweenSystem():update(dt)
 
 
 end
@@ -78,8 +107,8 @@ end
 
 
 function love.mousepressed(x, y, button)
-    mouse_x, mouse_y = love.mouse.getPosition()
-    tile_hover = screen_map:getCoordinates(mouse_x, mouse_y)
+    local mouse_x, mouse_y = love.mouse.getPosition()
+    local tile_hover = screen_map:getCoordinates(mouse_x, mouse_y)
     local x, y = tile_hover:unpack()
     local current = life_grid:getCell(x, y)
     current:invertState()
@@ -95,6 +124,10 @@ function love.draw()
     love.graphics.setBackgroundColor(63, 63, 63, 255)
 
     drawCellularAutomata(screen_map)
+
+
+    local drawables = world:getEntityManager():query(DRAWABLE_ENTITIES)
+    world:getRenderingSystem():renderDrawables(drawables)
 
 
     if DEBUG then
@@ -132,16 +165,17 @@ function drawCellularAutomata(screen_map)
 
             local ytile = y * screen_map.tile_height
 
-            -- Draw Grid lines
+            --[[ Draw Grid lines
             if x == 0 and y > 0 then
                 love.graphics.setColor(200,200,200, 100)
-                --love.graphics.line(0, ytile, love.graphics.getWidth(), ytile)
+                love.graphics.line(0, ytile, love.graphics.getWidth(), ytile)
             end
 
             if y == 0 and x > 0 then
-               love.graphics.setColor(200,200,200, 100)
-                --love.graphics.line(xtile, 0, xtile, love.graphics.getHeight())
+                love.graphics.setColor(200,200,200, 100)
+                love.graphics.line(xtile, 0, xtile, love.graphics.getHeight())
             end
+            --]]
 
             -- Draw color
 
@@ -152,23 +186,13 @@ function drawCellularAutomata(screen_map)
 
             local current = life_grid:getCell(x1, y1)
 
-            --assert(current, "Should be a cell at " .. tostring(x1) .. ", " .. tostring(y1) .. " but not for grid " .. tostring(cellular_grid))
-
-            local mode = "line"
-
             if current:getState() == true then 
                 love.graphics.setColor(r,g,b, 255)
-                mode = "fill"
-                love.graphics.rectangle(mode, xtile, ytile, screen_map.tile_width, screen_map.tile_height)
+                love.graphics.rectangle("fill", xtile, ytile, screen_map.tile_width, screen_map.tile_height)
 
             else
                 --
             end
-
-            --love.graphics.rectangle(mode, x * screen_map.tile_width, y * screen_map.tile_height, screen_map.tile_width, screen_map.tile_height)
-           
-            -- love.graphics.setColor(200,200,200, 255)
-            -- love.graphics.print(tostring(current), x * screen_map.tile_width, y * screen_map.tile_height)
 
         end
     end
