@@ -6,7 +6,7 @@ require 'entity.components.behavior'
 require 'entity.components.inputresponse'
 require 'entity.components.soundcomponent'
 
-require 'behaviors.genericbehaviors'
+require 'game.generic.genericbehaviors'
 
 require 'enums.tags'
 require 'enums.palette'

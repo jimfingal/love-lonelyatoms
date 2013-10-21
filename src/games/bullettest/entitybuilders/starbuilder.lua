@@ -8,7 +8,7 @@ require 'enums.palette'
 require 'enums.tags'
 require 'enums.actions'
 
-require 'behaviors.genericbehaviors'
+require 'game.generic.genericbehaviors'
 require 'entitybuilders.emissionport'
 require 'particles.stars'
 

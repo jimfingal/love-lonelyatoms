@@ -10,7 +10,7 @@ require 'entity.systems.messagesystem'
 require 'enums.events'
 require 'enums.tags'
 require 'enums.palette'
-require 'behaviors.genericbehaviors'
+require 'game.generic.genericbehaviors'
 
 require 'entity.entitybuilder'
 

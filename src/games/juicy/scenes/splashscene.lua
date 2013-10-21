@@ -9,6 +9,7 @@ require 'enums.actions'
 require 'enums.tags'
 require 'enums.palette'
 
+require 'game.generic.genericbehaviors'
 
 local BEHAVIOR_ENTITIES = EntityQuery():addOrSet(Behavior)
 local DRAWABLE_ENTITIES =  EntityQuery():addOrSet(Rendering):addOrSet(Transform)

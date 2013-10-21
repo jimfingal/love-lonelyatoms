@@ -4,7 +4,6 @@ require 'entity.systems.timesystem'
 require 'entity.world'
 require 'entity.entityquery'
 
-
 require 'external.middleclass'
 
 require 'util.counters'
@@ -14,7 +13,8 @@ require 'collections.matrix'
 
 require 'game.automata.life'
 
-require 'textfade'
+require 'game.generic.genericbehaviors'
+
 
 DRAWABLE_ENTITIES = EntityQuery():addOrSet(Rendering):addOrSet(Transform)
 
@@ -62,13 +62,12 @@ function love.load()
     life_grid = LifeGrid(xtiles, ytiles)
 
 
-    local em = world:getEntityManager()
-    local title = em:createEntity('instructions')
-    title:addComponent(Transform(25, 100))
+    local instructions = world:getEntityManager():createEntity('instructions')
+    instructions:addComponent(Transform(25, 100))
     local rendering = TextRendering("Press Space Bar to Pause, 'R' to reset"):setColor(255, 255, 255, 0)
-    title:addComponent(Rendering():addRenderable(rendering))
+    instructions:addComponent(Rendering():addRenderable(rendering))
 
-    fadeTextInAndOut(world, rendering, 2, 5, 2)
+    GenericBehaviors.fadeTextInAndOut(instructions, 2, 5, 2)
 
 end
 
@@ -124,7 +123,6 @@ function love.draw()
     love.graphics.setBackgroundColor(63, 63, 63, 255)
 
     drawCellularAutomata(screen_map)
-
 
     local drawables = world:getEntityManager():query(DRAWABLE_ENTITIES)
     world:getRenderingSystem():renderDrawables(drawables)
