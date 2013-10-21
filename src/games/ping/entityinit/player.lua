@@ -20,7 +20,7 @@ function Player.init(world)
     player:addComponent(Transform(350, 500))
     player:addComponent(Rendering():addRenderable(ShapeRendering():setColor(147,147,205):setShape(RectangleShape:new(100, 20))))
     player:addComponent(Collider():setHitbox(RectangleShape:new(100, 20)))
-    player:addComponent(Motion():setMaxVelocity(800, 0):setMinVelocity(-800, 0):setDrag(800, 0))
+    player:addComponent(Motion():setMaxSpeed(800):setDrag(800, 0))
     -- player:addComponent(Behavior():addUpdateFunction(playerAI))
     player:addComponent(InputResponse():addResponse(playerInputResponse))
 
@@ -95,26 +95,26 @@ function playerInputResponse(player, held_actions, pressed_actions, dt)
 
     if held_actions[Actions.PLAYER_RIGHT] then
     
-        if player_movement.velocity < Vector2.ZERO then 
-            player_movement.velocity = base_speed
+        if player_movement.velocity.x < Vector2.ZERO.x then 
+            player_movement.velocity.x = base_speed.x
         end
 
         player_movement.velocity = player_movement.velocity + (speed_delta * dt)
 
-        if player_movement.velocity < base_speed then
-            player_movement.velocity = base_speed:clone()
+        if player_movement.velocity.x < base_speed.x then
+            player_movement.velocity.x  = base_speed.x 
         end
     
     elseif held_actions[Actions.PLAYER_LEFT] then
     
-        if player_movement.velocity > Vector2.ZERO then 
-            player_movement.velocity = -base_speed
+        if player_movement.velocity.x > Vector2.ZERO.x then 
+            player_movement.velocity.x = -base_speed.x
         end
 
         player_movement.velocity = player_movement.velocity - (speed_delta * dt)
 
-        if player_movement.velocity > -base_speed then
-            player_movement.velocity = -base_speed:clone()
+        if player_movement.velocity.x  > -base_speed.x  then
+            player_movement.velocity.x  = -base_speed.x 
         end
 
     end
