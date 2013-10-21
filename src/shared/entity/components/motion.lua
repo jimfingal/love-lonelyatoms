@@ -12,15 +12,27 @@ function Motion:initialize()
 	-- Motion either along the x or y axes, in pixels per second.
 	self.velocity = Vector2(0, 0)
 
+	-- Property: minSpeed
+	-- No matter what else may affect this sprite's velocity, it's length
+	-- will never go below this number.
+	self.minSpeed = 0
+
+	-- Property: maxSpeed
+	-- No matter what else may affect this sprite's velocity, it's length will
+	-- never go above this number.
+	self.maxSpeed = math.huge
+
+
 	-- Property: minVelocity
-	-- No matter what else may affect this sprite's velocity, it
+	-- No matter what else may affect this sprite's velocity, it's x and y values
 	-- will never go below these numbers.
-	self.minVelocity = Vector2(0, 0)
+	self.minVelocity = Vector2(-math.huge, -math.huge)
 
 	-- Property: maxVelocity
-	-- No matter what else may affect this sprite's velocity, it will
+	-- No matter what else may affect this sprite's velocity, it's x and y values
 	-- never go above these numbers.
-	self.maxVelocity = Vector2(math.huge, math.huge)
+	self.maxVelocity =  Vector2(math.huge, math.huge)
+
 
 	-- Property: acceleration
 	-- Acceleration along the x or y axes, or rotation about its center, in
@@ -65,6 +77,7 @@ function Motion:invertHorizontalVelocity()
 	return self
 end
 
+
 function Motion:setMinVelocity(x, y)
 	self.minVelocity.x = x
 	self.minVelocity.y = y
@@ -74,6 +87,16 @@ end
 function Motion:setMaxVelocity(x, y)
 	self.maxVelocity.x = x
 	self.maxVelocity.y = y
+	return self
+end
+
+function Motion:setMinSpeed(min)
+	self.minSpeed = min
+	return self
+end
+
+function Motion:setMaxSpeed(max)
+	self.maxSpeed = max
 	return self
 end
 
@@ -156,20 +179,18 @@ function Motion:capVelocity()
 
 	end
 
-	--[[
-	if self.velocity > self.maxVelocity then
+	if self.velocity:len() > self.maxSpeed then
 
-		assert(false, tostring(self.velocity) .. " bigger than " .. tostring(self.maxVelocity))
 		self.velocity:normalize_inplace()
-		self.velocity:multiply(self.maxVelocity:len())
+		self.velocity:multiply(self.maxSpeed)
 
-	elseif self.velocity < self.minVelocity then
+	elseif self.velocity:len() < self.minSpeed then
     
         self.velocity:normalize_inplace()
-		self.velocity:multiply(self.minVelocity:len())
+		self.velocity:multiply(self.minSpeed)
     
     end
-	]]
+
 	
    	return self
 end
