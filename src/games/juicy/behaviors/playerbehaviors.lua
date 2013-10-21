@@ -93,7 +93,7 @@ function PlayerBehaviors.playerInputResponse(player, held_actions, pressed_actio
 
     if held_actions[Actions.PLAYER_RIGHT] then
     
-        if player_movement.velocity < Vector2.ZERO then 
+        if player_movement.velocity.x < Vector2.ZERO.x then 
             player_movement.velocity.x = base_speed.x
         end
 
@@ -102,7 +102,7 @@ function PlayerBehaviors.playerInputResponse(player, held_actions, pressed_actio
     
     elseif held_actions[Actions.PLAYER_LEFT] then
     
-        if player_movement.velocity > Vector2.ZERO then 
+        if player_movement.velocity.x > Vector2.ZERO.x then 
             player_movement.velocity.x = -base_speed.x
         end
 

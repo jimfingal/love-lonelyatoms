@@ -135,8 +135,31 @@ end
 
 function Motion:capVelocity()
 
+	if self.velocity.x > self.maxVelocity.x then
+		
+		self.velocity.x = self.maxVelocity.x
+
+	elseif self.velocity.x < self.minVelocity.x then
+
+		self.velocity.x = self.minVelocity.x
+
+	end
+
+
+	if self.velocity.y > self.maxVelocity.y then
+		
+		self.velocity.y = self.maxVelocity.y
+
+	elseif self.velocity.y < self.minVelocity.y then
+
+		self.velocity.y = self.minVelocity.y
+
+	end
+
+	--[[
 	if self.velocity > self.maxVelocity then
 
+		assert(false, tostring(self.velocity) .. " bigger than " .. tostring(self.maxVelocity))
 		self.velocity:normalize_inplace()
 		self.velocity:multiply(self.maxVelocity:len())
 
@@ -146,7 +169,8 @@ function Motion:capVelocity()
 		self.velocity:multiply(self.minVelocity:len())
     
     end
-
+	]]
+	
    	return self
 end
 

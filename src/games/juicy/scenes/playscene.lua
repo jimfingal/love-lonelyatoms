@@ -190,7 +190,10 @@ function PlayScene:outputDebugText()
 
     local debugstart = 50
     local player_transform =  self.world:getTaggedEntity(Tags.PLAYER):getComponent(Transform)
+    local player_motion =  self.world:getTaggedEntity(Tags.PLAYER):getComponent(Motion)
+
     local ball_transform = self.world:getTaggedEntity(Tags.BALL):getComponent(Transform)
+
     local ball_collider = self.world:getTaggedEntity(Tags.BALL):getComponent(Collider)
 
     love.graphics.print("Ball x: " .. ball_transform.position.x, 50, debugstart + 20)
@@ -198,7 +201,11 @@ function PlayScene:outputDebugText()
     love.graphics.print("Ball collider active: " .. tostring(ball_collider.active), 50, debugstart + 60)
     love.graphics.print("Player x: " .. player_transform.position.x, 50, debugstart + 80)
     love.graphics.print("Player y: " .. player_transform.position.y, 50, debugstart + 100)
+
     love.graphics.print("FPS: " .. love.timer.getFPS(), 50, debugstart + 120)
+
+    love.graphics.print("Player movement: " .. tostring(player_motion.velocity), 50, debugstart)
+
 
     local statistics_system = self.world:getStatisticsSystem()
     local timer_system = self.world:getTimeSystem()

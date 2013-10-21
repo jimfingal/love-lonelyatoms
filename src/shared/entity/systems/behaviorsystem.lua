@@ -21,34 +21,34 @@ function BehaviorSystem:processBehaviors(entities, dt)
 	
 	for entity in entities:members() do
 	
-		self:runUpdateFunctions(entity, dt)
+		local behavior = entity:getComponent(Behavior)
+
+		self:runUpdateFunctions(entity, behavior, dt)
 		
-		self:runRoutines(entity, dt)
+		self:runRoutines(entity, behavior, dt)
 
 	end
 
 end
 
-function BehaviorSystem:runUpdateFunctions(entity, dt)
+function BehaviorSystem:runUpdateFunctions(entity, behavior, dt)
 
-		local entity_behavior = entity:getComponent(Behavior)
 
-		for _, update_function in entity_behavior:getUpdateFunctions():members() do
+	for _, update_function in behavior:getUpdateFunctions():members() do
 
-			update_function(entity, dt)
+		update_function(entity, dt)
 
-		end
+	end
 end
 
 
 
-function BehaviorSystem:runRoutines(entity, dt)
+function BehaviorSystem:runRoutines(entity, behavior, dt)
 
-	local entity_behavior = entity:getComponent(Behavior)
 
 	self.remove_buffer:clear()
 
-	for co in entity_behavior:getRoutines():members() do
+	for co in behavior:getRoutines():members() do
 
 		status, message = coroutine.resume(co, dt)
 		if not status then
@@ -61,7 +61,7 @@ function BehaviorSystem:runRoutines(entity, dt)
 	end
 
 	for co in self.remove_buffer:members() do
-		entity_behavior:removeRoutine(co)
+		behavior:removeRoutine(co)
 	end
 
 end

@@ -102,7 +102,7 @@ function BallBehaviors.collideBallWithWall(ball, wall)
     local ball_transform = ball:getComponent(Transform)
     local ball_movement = ball:getComponent(Motion)
     local ball_collider = ball:getComponent(Collider)
-    local ball_rendering = ball:getComponent(Rendering):getRenderable()
+    local ball_rendering = ball:getComponent(Rendering)
 
     local wall_position = wall:getComponent(Transform):getPosition()
     local wall_hitbox = wall:getComponent(Collider):hitbox()

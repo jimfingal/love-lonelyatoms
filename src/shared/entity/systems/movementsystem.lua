@@ -40,8 +40,9 @@ function MovementSystem:update(transform, movement, dt)
 	
 	if movement.drag then
 
-		local drag_x = movement.drag.x * dt
-		local drag_y = movement.drag.y * dt
+
+		local drag_x = movement.drag.x * 1.0 * dt
+		local drag_y = movement.drag.y * 1.0 * dt
 
 	 	if movement.velocity.x > 0 then
 	        
