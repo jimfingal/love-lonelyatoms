@@ -1,0 +1,8 @@
+distribute==0.6.28
+numpy==1.6.2
+remix==1.6.1
+stevedore==0.4
+virtualenv==1.8.2
+virtualenv-clone==0.2.4
+virtualenvwrapper==3.6
+wsgiref==0.1.2

@@ -1,0 +1,11 @@
+Sounds are:
+
+"Anne Lisa goes to bed" by Ballpen: http://freemusicarchive.org/music/Ballpen/The_dreams_trilogy/10_LBN005_10_-_Ballpen_-_Anne_Lisa_goes_to_bedmp3
+
+<div xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/" about="http://freemusicarchive.org/music/Ballpen/The_dreams_trilogy/10_LBN005_10_-_Ballpen_-_Anne_Lisa_goes_to_bedmp3"><span property="dct:title">Anne Lisa goes to bed</span> (<a rel="cc:attributionURL" property="cc:attributionName" href="http://freemusicarchive.org/music/Ballpen/">Ballpen</a>) / <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">CC BY-NC-ND 3.0</a></div>
+
+"You Kill My Brother - GoGoGo" and "Crazy Games - Wake Up"  from Micro Invasion - East Jakarta Chiptunes Compilation
+
+<div xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/" about="http://freemusicarchive.org/music/Indonesian_Chiptunes/Micro_Invasion_-_East_Jakarta_Chiptunes_Compilation/"><span property="dct:title">Micro Invasion - East Jakarta Chiptunes Compilation</span> (<a rel="cc:attributionURL" property="cc:attributionName" href="http://www.myspace.com/microinvasion">Indonesian Chiptunes</a>) / <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/us/">CC BY-NC-SA 3.0</a></div>
+
+If you're looking to the FMA for CC music there is a filter "By Use." http://freemusicarchive.org/search

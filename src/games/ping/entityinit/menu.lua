@@ -8,6 +8,7 @@ require 'entity.components.soundcomponent'
 
 require 'enums.tags'
 require 'enums.actions'
+require 'collections.list'
 
 
 Menu = {}
@@ -25,7 +26,11 @@ end
 local backgroundPlayer =  function(song)
         -- Hack -- read from con
 
-        local filename = song .. "_background.mp3"
+        local required = 'assets.spritemaps.' .. song
+        local config = require(required)
+        local filename = config.background_snd
+
+        --local filename = song .. "_background.mp3"
         
         local asset_manager = world:getAssetManager()
 
@@ -65,10 +70,16 @@ function Menu.init(world)
     menu_component:setHighlightColor(147,176,204, 255)
     menu_component:setFont(medium_font, 18)
     
-    menu_component:addMenuItem("CloudsForm", sceneChanger("CloudsForm"), backgroundPlayer("CloudsForm"))
-    menu_component:addMenuItem("LightningRiskedItAll", sceneChanger("LightningRiskedItAll"), backgroundPlayer("LightningRiskedItAll"))
-    menu_component:addMenuItem("ColorsShifting", sceneChanger("ColorsShifting"), backgroundPlayer("ColorsShifting"))
-    menu_component:addMenuItem("AsFireSweptCleanTheEarth", sceneChanger("AsFireSweptCleanTheEarth"), backgroundPlayer("AsFireSweptCleanTheEarth"))
+
+    local songs = List()
+    songs:append("Ballpen_AnneLisaGoesToBed")
+    songs:append("YouKillMyBrother_GoGoGo")
+    songs:append("CrazyGames_WakeUp")
+
+   
+    for _, songname in songs:members() do 
+        menu_component:addMenuItem(songname, sceneChanger(songname), backgroundPlayer(songname))
+    end
 
     menu:addComponent(menu_component)
 
