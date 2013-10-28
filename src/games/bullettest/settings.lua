@@ -2,6 +2,6 @@
 -- Global Settings, for turning particular things on and off
 Settings = {}
 
-Settings.DEBUG = true
+Settings.DEBUG = false
 
 return Settings

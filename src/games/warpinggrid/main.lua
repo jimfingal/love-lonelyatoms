@@ -4,7 +4,7 @@ require 'entity.systems.inputsystem'
 
 require 'game.warpinggrid.grid'
 
-DEBUG = true
+DEBUG = false
 
 
 local frame = 0

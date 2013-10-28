@@ -151,7 +151,7 @@ function PlayScene:draw()
     love.graphics.setLineStyle("smooth")
     --]]
 
-    self:drawQuadTree(self.root_node)
+    --self:drawQuadTree(self.root_node)
     
     -- Should be moved into rendering system probably
 
