@@ -4,3 +4,4 @@
 .DS_Store
 *.mp3
 *.wav
+/src/other/
