@@ -1,8 +1,26 @@
 love-lonelyatoms
 =============
 
-Overview of Code
-----------------
+Overview
+--------
+
+A package that includes game engine code that I have written for the Love2d framework.
+
+A few highlights:
+
+* A lua-based entity-component system, and a number of common components
+* Basic AI steering behavior
+* Real-time audio synthesis
+* Simple scene-system
+
+The "game" packages I have created, mainly to test and play around with the engine, are detailed below.
+
+Requirements: [Love2d](https://www.love2d.org/)
+
+The warpinggrid project runs very slow without the version of Love compiled with Luajit. The easiest way to get that is probably to search the forums for the latest 0.8.0 build.
+
+
+### Package Structure
 
 Directories:
 
@@ -10,6 +28,20 @@ Directories:
 * Scraps: Possibly working, probably obsolete and not-working games.
 * Shared: Game engine code shared across games
 
+
+
+### To Build and run a game
+
+Directories are organized to make it easier to have multiple game projects. To create a new game, add a new directory to the "games" folder. To build, run:
+
+	./build.sh {gamename}
+
+ex:
+
+	./build.sh juicy
+
+
+This script will build a .love package, put it into a "distro" directory, and automatically run the .love package.
 
 Games
 -----
@@ -19,7 +51,8 @@ Games
 ![automata](img/automata.png)
 
 
-"Game of Life" implementation.
+Minimalist "Game of Life" implementation with some pretty colors.
+
 
 ### Bullettest
 
@@ -53,12 +86,6 @@ Code to visually test my implementation of quadtrees
 ![soundtest](img/soundtest.png)
 
 Test implementation of real-time audio synthesis. Press up or down to change wave types, and press "w" or "s" to change note.
-
-Implementation drawn from:
-
-http://www.headchant.com/2011/09/20/sound-synthesis-with-love/
-
-http://gamedev.tutsplus.com/tutorials/implementation/noise-creating-a-synthesizer-for-retro-sound-effects-core-engine/
 
 ### Soundtiles
 
@@ -103,7 +130,14 @@ Directories:
 
 ### Audio
 
-Real-time Audio Synthesis in lua.
+Real-time Audio Synthesis in lua. 
+
+Implementation drawn from:
+
+http://www.headchant.com/2011/09/20/sound-synthesis-with-love/
+
+http://gamedev.tutsplus.com/tutorials/implementation/noise-creating-a-synthesizer-for-retro-sound-effects-core-engine/
+
 
 ### Collections
 
@@ -132,16 +166,3 @@ Some generic game code. Directories:
 * Warpinggrid: 3D warping groud source
 
 
-
-To Build a game
---------
-Directories are organized to make it easier to have multiple game projects. To create a new game, add a new directory to the "games" folder. To build, run:
-
-	./build.sh {gamename}
-
-ex:
-
-	./build.sh juicy
-
-
-This script will build and automatically run the .love package.
